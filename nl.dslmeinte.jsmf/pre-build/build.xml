@@ -1,5 +1,9 @@
 <!--
-	- ant 1.6 or higher for the concat fixlastline
+	Builds the jsmf.js file from constituent parts.
+
+	Requires ANT 1.6.3 or higher for the concat fixlastline.
+
+	(c) 2012 Meinte Boersma
 -->
 <project name="jsmf" default="build" basedir=".">
 
