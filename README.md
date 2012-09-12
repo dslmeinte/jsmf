@@ -11,7 +11,7 @@ It currently uses jQuery (instead of Prototype.js) to help with collection opera
 
 ## Dependencies
 
-JSMF is dependent on jQuery (comes with version 1.8.1), ANT (at least version 1.6.3) and QUnit for running some unit-like tests.
+JSMF is dependent on jQuery (comes with version 1.8.1), Apache ANT (at least version 1.6.3) and QUnit for running some unit-like tests.
 
 ## Building
 
