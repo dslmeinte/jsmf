@@ -1,0 +1,21 @@
+<!--
+	- ant 1.6 or higher for the concat fixlastline
+-->
+<project name="jsmf" default="build" basedir=".">
+
+	<condition property="antversionok">
+		<antversion atleast="1.6.3"/>
+	</condition>
+
+	<target name="build">
+		<fail unless="antversionok" message="ANT version is too old."/>
+		<concat destfile="../jsmf.js" fixlastline="true">
+			<!-- (concatenate in order:) -->
+			<fileset dir="." includes="jsmf-preamble.js"/>
+			<fileset dir="." includes="jsmf-emf.js"/>
+			<fileset dir="." includes="jsmf-ecore.js"/>
+			<fileset dir="." includes="jsmf-util.js"/>
+		</concat>
+	</target>
+
+</project>
