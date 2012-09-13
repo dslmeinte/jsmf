@@ -40,6 +40,10 @@ jsmf.util = new (function() {
 		}
 	};
 
+	this.asArray = function(objectOrArray) {
+		return( $.isArray(objectOrArray) ? objectOrArray : [ objectOrArray ] );
+	};
+
 	/* (mainly for unit testing purposes) */
 	this.countProperties = function(object) {
 		var count = 0;

@@ -41,7 +41,6 @@ jsmf.ecore = new (function() {
 		});
 
 		$.map(ePackage.classes, function(eClass, name) { eClass.resolveSuperTypes(ePackage); });
-		$.map(ePackage.classes, function(eClass, name) { eClass.finishInitialisation(); });
 
 		return ePackage;
 
@@ -102,8 +101,8 @@ jsmf.ecore = new (function() {
 		this.features = {};
 
 		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
-		if( initData.features != null && $.isArray(initData.features) ) {
-			$(initData.features).each(function(index) {
+		if( initData.features ) {
+			$(jsmf.util.asArray(initData.features)).each(function(index) {
 				jsmf.util.checkName(this, "feature name is empty");
 				if( _self.features[this.name] ) throw new Error("feature name '" + this.name + "' is not unique in class: " + initData.name);
 				_self.features[this.name] = createEFeature(this, _self);
@@ -130,21 +129,18 @@ jsmf.ecore = new (function() {
 			superTypesResolved = true;
 		};
 
-		// TODO  do this in the "pure" functional way? (has performance hit...)
-		var initialisationFinished = false;
-		this.finishInitialisation = function() {
-			if( initialisationFinished ) return;
+		this.allFeatures = function() {
 			var _allFeatures = this.features;
+
 			var leafClass = this;
-			$(this.superTypes).each(function() {
-				this.finishInitialisation();
-				$.map(this.allFeatures, function(feature, featureName) {
+			$(this.superTypes).each(function() {	// (this == EClass)
+				$.map(this.allFeatures(), function(feature, featureName) {
 					if( _allFeatures[featureName] ) throw new Error("duplicate feature named '" + featureName + "' in classes " + leafClass.name + " and " + this.name);
 					_allFeatures[featureName] = feature;
 				});
 			});
-			this.allFeatures = _allFeatures;
-			initialisationFinished = true;
+
+			return _allFeatures;
 		};
 
 	}

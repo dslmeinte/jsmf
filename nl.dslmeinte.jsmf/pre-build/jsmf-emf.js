@@ -41,18 +41,30 @@ jsmf.emf = new (function() {
 
 		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 
+		var _allFeatures = eClass.allFeatures();
+
 		// traverse values/settings of features:
 		$.map(initData, function(value, key) {
 			if( key !== '_class' ) {
 				_self[key] = (function(feature) {
 					switch(feature.kind) {
 						case 'attribute':	return value;
-						case 'containment':	return new jsmf.emf.EObject(value, feature.type);
-						case 'reference':	return value;	// leave as "proxy", resolve later
+						case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new jsmf.emf.EObject(_value, type); });
+						case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new EProxy(_value, type); });
 					}
-				})(eClass.allFeatures[key]);
+				})(_allFeatures[key]);
 			}
 		});
+
+		function createNestedObject(feature, value, creationFunc) {
+			if( $.isArray(value) ) {
+				if( feature.upperLimit === 1 ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingEClass.name + '#' + feature.name);
+				return $.map(value, function(nestedValue, index) {
+					return creationFunc.apply(this, [ nestedValue, feature.type ]);
+				});
+			}
+			return creationFunc.apply(value, feature.type);
+		}
 
 		this.eGet = function(feature) {
 			if( typeof(feature) === 'string' ) {
@@ -75,6 +87,11 @@ jsmf.emf = new (function() {
 		};
 
 		// TODO  add convenience function for traversal and such
+
+		function EProxy(value, type) {
+			this.value = value;
+			this.type = type;
+		}
 
 	};
 
