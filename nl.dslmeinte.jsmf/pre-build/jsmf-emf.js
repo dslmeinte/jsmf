@@ -39,17 +39,42 @@ jsmf.emf = new (function() {
 		var validPropertyNames = [ "_class" ].concat(eClass.annotations).concat($.map(eClass.features, function(k, v) { return k; }));
 		jsmf.util.checkProperties(initData, validPropertyNames);
 
-		var self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
+		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
+
+		// traverse values/settings of features:
 		$.map(initData, function(value, key) {
 			if( key !== '_class' ) {
-				self[key] = value;
+				_self[key] = (function(feature) {
+					switch(feature.kind) {
+						case 'attribute':	return value;
+						case 'containment':	return new jsmf.emf.EObject(value, feature.type);
+						case 'reference':	return value;	// leave as "proxy", resolve later
+					}
+				})(eClass.allFeatures[key]);
 			}
-			// TODO  check (and throwing an Error) for illegal names (like update and such) and whether eClass def. matches the initialisation data
 		});
 
-		// TODO  add convenience function for traversal and such (in prototype?)
+		this.eGet = function(feature) {
+			if( typeof(feature) === 'string' ) {
+				return this[feature];
+			}
+			if( feature instanceof EFeature ) {
+				return this[feature.name];
+			}
+			throw new Error('invalid feature argument to eGet');
+		};
 
-		// TODO  add hooks for adapters/annotations to be able to cope with documentation and view info in a meaningful way
+		this.eSet = function(feature, value) {
+			if( typeof(feature) === 'string' ) {
+				this[feature] = value;
+			}
+			if( feature instanceof EFeature ) {
+				this[feature.name] = value;
+			}
+			throw new Error('invalid feature argument to eGet');
+		};
+
+		// TODO  add convenience function for traversal and such
 
 	};
 

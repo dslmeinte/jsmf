@@ -32,14 +32,16 @@ jsmf.ecore = new (function() {
 		if( !ePackage.classifiers['String'] ) {
 			ePackage.classifiers['String'] = new EDatatype( { name: 'String' } );
 		}
+		// TODO  consider just adding all standard data types, including some behavior (=> do this in EPackage constructor)
 
-		// TODO  re-cast the following using jQuery's each (or something)
-
-		$.map(ePackage.classifiers, function(classifier, classifierName) {
-			if( classifier instanceof EClass ) {
-				classifier.resolve(ePackage);
+		$.map(ePackage.classifiers, function(eClassifier, name) {
+			if( eClassifier instanceof EClass) {
+				ePackage.classes[name] = eClassifier;
 			}
 		});
+
+		$.map(ePackage.classes, function(eClass, name) { eClass.resolveSuperTypes(ePackage); });
+		$.map(ePackage.classes, function(eClass, name) { eClass.finishInitialisation(); });
 
 		return ePackage;
 
@@ -47,6 +49,7 @@ jsmf.ecore = new (function() {
 
 	function EPackage() {
 		this.classifiers = {};
+		this.classes = {};
 	}
 
 
@@ -98,19 +101,18 @@ jsmf.ecore = new (function() {
 
 		this.features = {};
 
-		var self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
+		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 		if( initData.features != null && $.isArray(initData.features) ) {
 			$(initData.features).each(function(index) {
 				jsmf.util.checkName(this, "feature name is empty");
-				if( self.features[this.name] ) throw new Error("feature name '" + this.name + "' is not unique in class: " + initData.name);
-				self.features[this.name] = createEFeature(this, self);
+				if( _self.features[this.name] ) throw new Error("feature name '" + this.name + "' is not unique in class: " + initData.name);
+				_self.features[this.name] = createEFeature(this, _self);
 			});
 		}
 
-		var resolved = false;
-
-		this.resolve = function(ePackage) {
-			if( resolved ) throw new Error('EClass#resolve called twice');
+		var superTypesResolved = false;
+		this.resolveSuperTypes = function(ePackage) {
+			if( superTypesResolved ) throw new Error('EClass#resolve called twice');
 			var resolvedSuperTypes = [];
 			for( var index in this.superTypes ) {
 				var typeName = this.superTypes[index];
@@ -125,7 +127,24 @@ jsmf.ecore = new (function() {
 				if( refType == undefined ) throw new Error("could not resolve target type '" + feature.type + "' in " + this.name + "." + featureName);
 				feature.type = refType;
 			});
-			resolved = true;
+			superTypesResolved = true;
+		};
+
+		// TODO  do this in the "pure" functional way? (has performance hit...)
+		var initialisationFinished = false;
+		this.finishInitialisation = function() {
+			if( initialisationFinished ) return;
+			var _allFeatures = this.features;
+			var leafClass = this;
+			$(this.superTypes).each(function() {
+				this.finishInitialisation();
+				$.map(this.allFeatures, function(feature, featureName) {
+					if( _allFeatures[featureName] ) throw new Error("duplicate feature named '" + featureName + "' in classes " + leafClass.name + " and " + this.name);
+					_allFeatures[featureName] = feature;
+				});
+			});
+			this.allFeatures = _allFeatures;
+			initialisationFinished = true;
 		};
 
 	}
@@ -161,6 +180,7 @@ jsmf.ecore = new (function() {
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
 		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit" ]);
 
+		initData.kind = initData.kind || "attribute";
 		var feature = (function(kind) {
 				switch( kind ) {
 				case "attribute":	return new EAttribute(initData);
@@ -168,7 +188,9 @@ jsmf.ecore = new (function() {
 				case "reference":	return new EReference(initData, false);
 			}
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
-		})(initData.kind || "attribute");
+		})(initData.kind);
+
+		feature.kind = initData.kind;	// (has been checked now)
 
 		feature.name = initData.name;
 		feature.containingEClass = eClass;
@@ -188,6 +210,7 @@ jsmf.ecore = new (function() {
 
 	function EReference(initData, containment) {
 		this.containment = containment;
+		// TODO  consider whether opposite/unique/&c. make sense for us
 	}
 
 })();

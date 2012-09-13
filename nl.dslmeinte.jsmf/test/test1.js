@@ -40,12 +40,15 @@
 	                 {"_class": "Class", "name": "Value", "superTypes": "Expression", "features": 
 	                   {"_class": "Feature", "name": "value", "kind": "attribute", "lowerLimit": 1, "upperLimit": 1, "type": "String"}}];
 
-	test("initialising Concrete meta meta model and arithmetic expressions meta model", function() {
+	test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {
 			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
-			ok(metaModel != undefined, "meta meta model initialised");
+			ok(metaModel, "meta meta model initialised");
+			equal(jsmf.util.countProperties(metaModel.classifiers), 9, "#meta meta classes correct");
+			var datatypeEClass = metaModel.classes['Datatype'];
+			ok(datatypeEClass && datatypeEClass.name === 'Datatype', "EClass 'Datatype' loaded correctly");
+			ok(datatypeEClass.allFeatures['name'], "EClass 'Datatype' knows about its 'name' feature");
 			var model = jsmf.emf.createEResource(modelJSON, metaModel);
 			ok(model != undefined, "meta model initialised");
-			equal(jsmf.util.countProperties(metaModel.classifiers), 9, "#meta meta classes not correct");
 			equal(model.contents.length, 8, "#meta classes not correct");
 		});
 
