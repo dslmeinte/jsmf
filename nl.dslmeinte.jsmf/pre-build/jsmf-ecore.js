@@ -73,7 +73,7 @@ jsmf.ecore = new (function() {
 
 	function EClass(initData) {
 
-		checkAttributeNames(initData, ["features", "superTypes", "abstract"]);
+		jsmf.util.checkProperties(initData, [ "_class", "name", "features", "superTypes", "abstract", "annotations" ]);
 
 		this['abstract'] = !!initData['abstract'];	// note: 'abstract' is a reserved keyword in JS, and e.g. Safari-iPad parses it as such
 		this.superTypes = (function(types) {
@@ -88,10 +88,17 @@ jsmf.ecore = new (function() {
 			throw new Error("superTypes spec. of class " + initData.name + " is not an array of names");
 		})(initData.superTypes);
 
+
+		if( initData.annotations ) {
+			if( jsmf.util.isNonDegenerateStringArray(initData.annotations) ) {
+				throw new Error("annotations must be a non-empty array of non-empty strings");
+			}
+			this.annotations = initData.annotations;
+		}
+
 		this.features = {};
 
 		var self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
-
 		if( initData.features != null && $.isArray(initData.features) ) {
 			$(initData.features).each(function(index) {
 				jsmf.util.checkName(this, "feature name is empty");
@@ -125,17 +132,15 @@ jsmf.ecore = new (function() {
 
 
 	function EDatatype(initData) {
-
-		if( !$.inArray(this.name, ["String", "Integer", "Float", "Boolean"]) ) {
+		if( !$.inArray(this.name, [ "String", "Integer", "Float", "Boolean" ]) ) {
 			throw new Error("illegal datatype name: " + initData.name + " (datatype must be named one of [String, Integer, Float, Boolean])");
 		}
-
-		checkAttributeNames(initData);
+		jsmf.util.checkProperties(initData, [ "_class", "name" ]);
 	}
 
 
 	function EEnum(initData) {
-		checkAttributeNames(initData, ["literals"]);
+		jsmf.util.checkProperties(initData, [ "_class", "name", "literals" ]);
 
 		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
 			throw new Error("literals of an enumeration '" + initData.name + "' is not an (non-degenerate) array of strings");
@@ -154,7 +159,7 @@ jsmf.ecore = new (function() {
 	function createEFeature(initData, eClass) {
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
-		checkAttributeNames(initData, ["kind", "type", "lowerLimit", "upperLimit"]);
+		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit" ]);
 
 		var feature = (function(kind) {
 				switch( kind ) {
@@ -168,9 +173,11 @@ jsmf.ecore = new (function() {
 		feature.name = initData.name;
 		feature.containingEClass = eClass;
 		feature.type = initData.type;	// overwritten later by true object reference
-		// TODO  consider moving these to private members to encapsulate differences between Concrete and Ecore representation (lowerBound vs. lowerLimit, etc.)
+
 		feature.lowerLimit = initData.lowerLimit || 0;
+		feature.lowerBound = feature.lowerLimit;
 		feature.upperLimit = initData.upperLimit || ( initData.kind === "containment" ? -1 : 1 );
+		feature.upperBound = feature.upperLimit;
 
 		return feature;
 	}
@@ -181,30 +188,6 @@ jsmf.ecore = new (function() {
 
 	function EReference(initData, containment) {
 		this.containment = containment;
-	}
-
-
-	/*
-	 * +---------------+
-	 * | helper method |
-	 * +---------------+
-	 */
-
-	function checkAttributeNames(initData, nonBaseAttributeNames) {
-		var validAttributeNames = [ "_class", "name", "documentation" ];
-
-		if( nonBaseAttributeNames != undefined ) {
-			if( !jsmf.util.isNonDegenerateStringArray(nonBaseAttributeNames) ) {
-				throw new Error('illegal 2nd argument nonBaseAttributeNames: must be a non-empty array of non-empty string');
-			}
-			validAttributesNames = validAttributeNames.concat(nonBaseAttributeNames);
-		}
-
-		for( var attributeName in initData ) {
-			if( !$.inArray(attributeName, validAttributeNames) < 0 ) {
-				throw new Error("illegal attribute named '" + attributeName + "' in meta object '" + this.name + "'");
-			}
-		}
 	}
 
 })();

@@ -40,7 +40,7 @@
 	                 {"_class": "Class", "name": "Value", "superTypes": "Expression", "features": 
 	                   {"_class": "Feature", "name": "value", "kind": "attribute", "lowerLimit": 1, "upperLimit": 1, "type": "String"}}];
 
-	test("test 1: initialising meta meta model and a meta model", function() {
+	test("initialising Concrete meta meta model and arithmetic expressions meta model", function() {
 			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
 			ok(metaModel != undefined, "meta meta model initialised");
 			var model = jsmf.emf.createEResource(modelJSON, metaModel);

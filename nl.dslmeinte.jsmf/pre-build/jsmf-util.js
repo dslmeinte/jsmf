@@ -28,6 +28,18 @@ jsmf.util = new (function() {
 		if( this.isNonEmptyString(attributeValue) ) throw new Error(message);
 	};
 
+	this.checkProperties = function(object, validPropertyNames) {
+		if( !jsmf.util.isNonDegenerateStringArray(validPropertyNames) ) {
+			throw new Error('illegal 2nd argument validPropertyNames: must be a non-empty array of non-empty string');
+		}
+
+		for( var propertyName in object ) {
+			if( !$.inArray(propertyName, validPropertyNames) < 0 ) {
+				throw new Error("illegal poperty named '" + propertyName + "' in meta object '" + this.name + "'");
+			}
+		}
+	};
+
 	/* (mainly for unit testing purposes) */
 	this.countProperties = function(object) {
 		var count = 0;

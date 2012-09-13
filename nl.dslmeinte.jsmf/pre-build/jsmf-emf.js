@@ -36,8 +36,10 @@ jsmf.emf = new (function() {
 
 		this._eClass = eClass;
 
-		var self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
+		var validPropertyNames = [ "_class" ].concat(eClass.annotations).concat($.map(eClass.features, function(k, v) { return k; }));
+		jsmf.util.checkProperties(initData, validPropertyNames);
 
+		var self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 		$.map(initData, function(value, key) {
 			if( key !== '_class' ) {
 				self[key] = value;
