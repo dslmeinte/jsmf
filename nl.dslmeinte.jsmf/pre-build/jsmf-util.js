@@ -45,6 +45,12 @@ jsmf.util = new (function() {
 	};
 
 	/* (mainly for unit testing purposes) */
+	this.keys = function(object) {
+		if( typeof(object) != 'object' ) throw new Error('cannot compute keys of a non-Object');
+		return $.map(object, function(value, key) { return key; });
+	};
+
+	/* (mainly for unit testing purposes) */
 	this.countProperties = function(object) {
 		var count = 0;
 		for( var propertyName in object ) {

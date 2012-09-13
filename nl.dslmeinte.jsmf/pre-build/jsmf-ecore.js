@@ -96,6 +96,8 @@ jsmf.ecore = new (function() {
 				throw new Error("annotations must be a non-empty array of non-empty strings");
 			}
 			this.annotations = initData.annotations;
+		} else {
+			this.annotations = [];
 		}
 
 		this.features = {};
@@ -130,12 +132,16 @@ jsmf.ecore = new (function() {
 		};
 
 		this.allFeatures = function() {
-			var _allFeatures = this.features;
+			var _allFeatures = {};
+			// copy own features:
+			$.map(this.features, function(feature, featureName) {
+				_allFeatures[featureName] = feature;
+			});
 
-			var leafClass = this;
-			$(this.superTypes).each(function() {	// (this == EClass)
-				$.map(this.allFeatures(), function(feature, featureName) {
-					if( _allFeatures[featureName] ) throw new Error("duplicate feature named '" + featureName + "' in classes " + leafClass.name + " and " + this.name);
+			$(this.superTypes).each(function() {
+				var eClass = this;
+				$.map(eClass.allFeatures(), function(feature, featureName) {
+					if( _allFeatures[featureName] ) throw new Error("duplicate feature named '" + featureName + "' in classes " + _self.name + " and " + eClass.name);
 					_allFeatures[featureName] = feature;
 				});
 			});
