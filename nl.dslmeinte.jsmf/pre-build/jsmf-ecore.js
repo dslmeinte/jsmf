@@ -199,9 +199,13 @@ jsmf.ecore = new (function() {
 		feature.type = initData.type;	// overwritten later by true object reference
 
 		feature.lowerLimit = initData.lowerLimit || 0;
-		feature.lowerBound = feature.lowerLimit;
+		feature.lowerBound = feature.lowerLimit;	// duplicate to comply with Ecore
 		feature.upperLimit = initData.upperLimit || ( initData.kind === "containment" ? -1 : 1 );
-		feature.upperBound = feature.upperLimit;
+		feature.upperBound = feature.upperLimit;	// duplicate to comply with Ecore
+
+		feature.manyValued = function() {
+			return( this.upperLimit != 1 );
+		};
 
 		return feature;
 	}
