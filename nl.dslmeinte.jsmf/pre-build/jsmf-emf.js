@@ -9,19 +9,19 @@ jsmf.emf = new (function() {
 
 	this.createEResource = function(modelJSON, ePackage) {	/* (somewhat) analogous to org.eclipse.emf.ecore.resource.Resource (or rather: org.eclipse.emf.ecore.resource.impl.ResourceImpl) */
 
-		var eResource = new EResource(ePackage);
+		var _eResource = new EResource(ePackage);	// (have to use _prefix to soothe JS plug-in)
 
 		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
 		$(modelJSON).each(function(index) {
 			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
-			eResource.contents.push(new EObject(this));
+			_eResource.contents.push(new EObject(this));
 		});
 
 		// TODO  resolve references
 
-		return eResource;
+		return _eResource;
 
-		function EObject(initData) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
+		function EObject(initData, parent) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
 
 			if( typeof(initData) !== 'object' ) throw new Error('EObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
 			jsmf.util.checkClass(this);
@@ -32,6 +32,9 @@ jsmf.emf = new (function() {
 			if( this.eClass['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
 
 			log( "constructing an instance of '" + className + "' with initialisation data: " + JSON.stringify(initData) );
+
+			this.eResource = _eResource;
+			this.eContainer = parent;
 
 			var _allFeatures = this.eClass.allFeatures();
 
@@ -48,7 +51,7 @@ jsmf.emf = new (function() {
 					_self[featureName] = (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
-							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new EObject(_value); });
+							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new EObject(_value, this); });
 							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new EProxy(_value, type); });
 						}
 					})();
@@ -56,6 +59,15 @@ jsmf.emf = new (function() {
 					if( feature.lowerLimit > 0 ) throw new Error("no value given for required feature named '" + featureName + "'");
 				}
 				log("\t(set value of feature named '" + featureName + "')");
+
+				// add getter & setter:
+				var FeatureName = jsmf.util.toFirstUpper(featureName);
+				_self['get' + FeatureName] = function() {
+					return this.eGet(feature);
+				};
+				_self['set' + FeatureName] = function(_value) {
+					this.eSet(feature, _value);
+				};
 			});
 
 			function createNestedObject(feature, value, creationFunc) {
@@ -72,14 +84,22 @@ jsmf.emf = new (function() {
 				return object;
 			}
 
-			this.eGet = function(feature) {
-				if( typeof(feature) === 'string' ) {
-					return this[feature];
+			this.eGet = function(featureArg) {
+				var feature = (function() {
+					if( typeof(featureArg) === 'string' )					return this.eClass.features[featureArg];
+					if( featureArg.isEFeature && featureArg.isEFeature() )	return featureArg;
+					throw new Error('invalid feature argument to eGet: ' + JSON.stringify(featureArg));
+				})(this);
+				var value = this[feature.name];
+				switch(feature.kind) {
+					case 'attribute':	return value;
+					case 'containment':	return value;
+					case 'reference':	{
+						var target = value.resolve();
+						this[feature.name] = target;
+						return target;
+					}
 				}
-				if( feature instanceof EFeature ) {
-					return this[feature.name];
-				}
-				throw new Error('invalid feature argument to eGet');
 			};
 
 			this.eSet = function(feature, value) {
@@ -100,11 +120,54 @@ jsmf.emf = new (function() {
 					console.log(message);
 				}
 			}
+
 		}
 
+		/**
+		 * Converts this EResource to JSON, with references in the correct textual format - see below.
+		 */
+		this.toJSON = function() {
+			// TODO  implement!
+//			var runningFragment = '/';
+		};
+
+		/**
+		 * {code value} is a string in the format
+		 * 		"/id1(.feature1)?/id2(.feature2)?/.../id$n$"
+		 * indicating the path from the EResource's root to the target.
+		 * (feature$n$ is missing since we don't descend into a feature anymore)
+		 * All features are optional, since we can just traverse all (many-valued?)
+		 * features of containment type. This is a nod to the current Concrete format -
+		 * in general, I'd like to make the features required.
+		 * 
+		 * Note: we need a generic format (such as this one) or we need to implement
+		 * custom resolution for every EPackage - which isn't useful on the M2 level,
+		 * only on the level of the actual, concrete syntax of the language (== M0 + behavior).
+		 */
 		function EProxy(value, type) {
+
 			this.value = value;
 			this.type = type;
+
+			this.resolve = function() {
+				var fragments = value.split('/').slice(1);
+				var count = fragments.length;
+
+				var searchListOrObject = _eResource.contents;
+
+				for( var index = 0; index < count; index++ ) {
+					searchListOrObject = findIn(fragments[index], searchListOrObject);
+					if( searchListOrObject == null ) throw new Error('could not resolve reference to object of type ' + type.name + ', path=' + value + ', index=' + index + ', fragment=' + fragments[index]);
+				}
+
+				return searchListOrObject;
+
+				function findIn(fragment, list) {
+					// TODO  implement!
+				}
+
+			};
+
 		}
 
 	};

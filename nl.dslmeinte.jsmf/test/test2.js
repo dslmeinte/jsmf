@@ -37,19 +37,24 @@
 	                                                                       {"_class": "Trigger", "name": "OnButton"}, 
 	                                                                       {"_class": "Trigger", "name": "ModeButton"}], "states": [
 	                                                                       {"_class": "SimpleState", "name": "Off", "transitions": 
-	                                                                         {"_class": "Transition", "targetState": "/AC/On", "trigger": "/AC/OnButton"}}, 
+	                                                                         {"_class": "Transition", "targetState": "/AC.states/On", "trigger": "/AC.triggers/OnButton"}}, 
 	                                                                       {"_class": "CompositeState", "name": "On", "subStates": [
 	                                                                         {"_class": "SimpleState", "name": "Heating", "transitions": 
-	                                                                           {"_class": "Transition", "targetState": "/AC/On/Cooling", "trigger": "/AC/ModeButton"}}, 
+	                                                                           {"_class": "Transition", "targetState": "/AC.states/On/Cooling", "trigger": "/AC.triggers/ModeButton"}}, 
 	                                                                         {"_class": "SimpleState", "name": "Cooling", "transitions": 
-	                                                                           {"_class": "Transition", "targetState": "/AC/On/Heating", "trigger": "/AC/ModeButton"}}], "transitions": 
-	                                                                         {"_class": "Transition", "targetState": "/AC/Off", "trigger": "/AC/OnButton"}}]}];
+	                                                                           {"_class": "Transition", "targetState": "/AC.states/On/Heating", "trigger": "/AC.triggers/ModeButton"}}], "transitions": 
+	                                                                         {"_class": "Transition", "targetState": "/AC.states/Off", "trigger": "/AC.triggers/OnButton"}}]}];
 
 	test("initialising statemachine meta model and model (test2.js)", function() {
 			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
 			ok(metaModel, "meta meta model initialised");
-			var model = jsmf.emf.createEResource(modelJSON, metaModel);
-			ok(model, "meta model initialised");
+			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
+			ok(modelResource, "meta model initialised");
+			var statemachine = modelResource.contents[0];
+			ok(statemachine.eResource === modelResource, "backlink to eResource correct");
+			var offState = statemachine.states[0];
+			var onState = statemachine.states[1];
+			ok(offState.transitions[0].getTargetState() === onState, "reference to On state resolved correctly");
 		});
 
 })();

@@ -44,6 +44,10 @@ jsmf.util = new (function() {
 		return( $.isArray(objectOrArray) ? objectOrArray : [ objectOrArray ] );
 	};
 
+	this.toFirstUpper = function(string) {
+		return( string.charAt(0).toUpperCase() + string.slice(1) );
+	};
+
 	/* (mainly for unit testing purposes) */
 	this.keys = function(object) {
 		if( typeof(object) != 'object' ) throw new Error('cannot compute keys of a non-Object');

@@ -206,6 +206,9 @@ jsmf.ecore = new (function() {
 		feature.manyValued = function() {
 			return( this.upperLimit != 1 );
 		};
+		feature.isEFeature = function() {
+			return true;
+		};
 
 		return feature;
 	}

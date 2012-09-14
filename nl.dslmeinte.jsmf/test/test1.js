@@ -49,9 +49,9 @@
 			var datatypeEClass = metaModel.classes['Datatype'];
 			ok(datatypeEClass && datatypeEClass.name === 'Datatype', "EClass 'Datatype' loaded correctly");
 			ok(datatypeEClass.allFeatures()['name'], "EClass 'Datatype' knows about its 'name' feature");
-			var model = jsmf.emf.createEResource(modelJSON, metaModel);
-			ok(model, "meta model initialised");
-			equal(model.contents.length, 8, "#meta classes not correct");
+			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
+			ok(modelResource, "meta model initialised");
+			equal(modelResource.contents.length, 8, "#meta classes correct");
 		});
 
 })();
