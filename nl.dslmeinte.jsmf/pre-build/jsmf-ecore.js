@@ -131,6 +131,9 @@ jsmf.ecore = new (function() {
 			superTypesResolved = true;
 		};
 
+		/**
+		 * @returns A <em>dictionary</em> of all features of this EClass, indexed by their (unqualified) name.
+		 */
 		this.allFeatures = function() {
 			var _allFeatures = {};
 			// copy own features:
