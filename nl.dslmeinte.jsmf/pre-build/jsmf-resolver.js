@@ -10,6 +10,7 @@ jsmf.resolver = new (function() {
 
 	// TODO  fix implementation of regex check
 //	var uriRegExp = /^(\/\w+(\.\w+)?)*\/\w+$/g;
+//	uriRegExp.compile();
 
 	/**
 	 * {code path} is a string in the format
@@ -59,12 +60,21 @@ jsmf.resolver = new (function() {
 			$(this.fragments).each(function(index) {	// this is a Fragment
 				searchListOrObject = findIn(this, searchListOrObject);
 				if( searchListOrObject == null ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
+				if( this.featureId ) {
+					searchListOrObject = searchListOrObject[this.featureId];
+				}
 			});
 
 			return searchListOrObject;
 
 			function findIn(fragment, list) {
-				// TODO  implement!
+				var match = null;
+				$(list).each(function(i) {
+					if( this.name && this.name === fragment.id ) {
+						match = this;
+					}
+				});
+				return match;
 			}
 
 		};

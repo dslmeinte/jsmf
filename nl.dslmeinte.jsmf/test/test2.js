@@ -54,7 +54,8 @@
 			ok(statemachine.eResource === modelResource, "backlink to eResource correct");
 			var offState = statemachine.states[0];
 			var onState = statemachine.states[1];
-			ok(offState.transitions[0].getTargetState() === onState, "reference to On state resolved correctly");
+			var referencedState = offState.transitions[0].getTargetState();
+			ok( referencedState === onState, "reference to On state resolved correctly");
 		});
 
 })();

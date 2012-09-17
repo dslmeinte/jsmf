@@ -14,7 +14,7 @@ jsmf.emf = new (function() {
 		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
 		$(modelJSON).each(function(index) {
 			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
-			_eResource.contents.push(new EObject(this));
+			_eResource.contents.push(new EObject(this, null));
 		});
 
 		return _eResource;
@@ -49,7 +49,7 @@ jsmf.emf = new (function() {
 					_self[featureName] = (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
-							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new EObject(_value, this); });
+							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new EObject(_value, _self); });
 							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new EProxy(_value, type); });
 						}
 					})();
@@ -59,7 +59,7 @@ jsmf.emf = new (function() {
 				log("\t(set value of feature named '" + featureName + "')");
 
 				// add getter & setter:
-				var FeatureName = jsmf.util.toFirstUpper(featureName);
+				var FeatureName = jsmf.util.toFirstUpper(featureName);	// TODO  sanitize feature name a bit more!
 				_self['get' + FeatureName] = function() {
 					return this.eGet(feature);
 				};
@@ -127,7 +127,7 @@ jsmf.emf = new (function() {
 			this.type = type;
 
 			this.resolve = function() {
-				this.uri.resolveInEResource(_eResource);
+				return this.uri.resolveInEResource(_eResource);
 			};
 
 		}
