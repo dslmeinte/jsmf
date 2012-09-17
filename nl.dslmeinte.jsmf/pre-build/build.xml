@@ -18,6 +18,7 @@
 			<fileset dir="." includes="jsmf-preamble.js"/>
 			<fileset dir="." includes="jsmf-emf.js"/>
 			<fileset dir="." includes="jsmf-ecore.js"/>
+			<fileset dir="." includes="jsmf-resolver.js"/>
 			<fileset dir="." includes="jsmf-util.js"/>
 		</concat>
 	</target>

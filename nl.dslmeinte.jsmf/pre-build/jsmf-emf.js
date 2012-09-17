@@ -17,8 +17,6 @@ jsmf.emf = new (function() {
 			_eResource.contents.push(new EObject(this));
 		});
 
-		// TODO  resolve references
-
 		return _eResource;
 
 		function EObject(initData, parent) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
@@ -123,6 +121,17 @@ jsmf.emf = new (function() {
 
 		}
 
+		function EProxy(value, type) {
+
+			this.uri = jsmf.resolver.createUri(value);
+			this.type = type;
+
+			this.resolve = function() {
+				this.uri.resolveInEResource(_eResource);
+			};
+
+		}
+
 		/**
 		 * Converts this EResource to JSON, with references in the correct textual format - see below.
 		 */
@@ -130,45 +139,6 @@ jsmf.emf = new (function() {
 			// TODO  implement!
 //			var runningFragment = '/';
 		};
-
-		/**
-		 * {code value} is a string in the format
-		 * 		"/id1(.feature1)?/id2(.feature2)?/.../id$n$"
-		 * indicating the path from the EResource's root to the target.
-		 * (feature$n$ is missing since we don't descend into a feature anymore)
-		 * All features are optional, since we can just traverse all (many-valued?)
-		 * features of containment type. This is a nod to the current Concrete format -
-		 * in general, I'd like to make the features required.
-		 * 
-		 * Note: we need a generic format (such as this one) or we need to implement
-		 * custom resolution for every EPackage - which isn't useful on the M2 level,
-		 * only on the level of the actual, concrete syntax of the language (== M0 + behavior).
-		 */
-		function EProxy(value, type) {
-
-			this.value = value;
-			this.type = type;
-
-			this.resolve = function() {
-				var fragments = value.split('/').slice(1);
-				var count = fragments.length;
-
-				var searchListOrObject = _eResource.contents;
-
-				for( var index = 0; index < count; index++ ) {
-					searchListOrObject = findIn(fragments[index], searchListOrObject);
-					if( searchListOrObject == null ) throw new Error('could not resolve reference to object of type ' + type.name + ', path=' + value + ', index=' + index + ', fragment=' + fragments[index]);
-				}
-
-				return searchListOrObject;
-
-				function findIn(fragment, list) {
-					// TODO  implement!
-				}
-
-			};
-
-		}
 
 	};
 
