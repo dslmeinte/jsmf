@@ -92,7 +92,7 @@ jsmf.ecore = new (function() {
 
 
 		if( initData.annotations ) {
-			if( jsmf.util.isNonDegenerateStringArray(initData.annotations) ) {
+			if( !jsmf.util.isNonDegenerateStringArray(initData.annotations) ) {
 				throw new Error("annotations must be a non-empty array of non-empty strings");
 			}
 			this.annotations = initData.annotations;
@@ -136,6 +136,7 @@ jsmf.ecore = new (function() {
 		 */
 		this.allFeatures = function() {
 			var _allFeatures = {};
+
 			// copy own features:
 			$.map(this.features, function(feature, featureName) {
 				_allFeatures[featureName] = feature;
@@ -152,6 +153,17 @@ jsmf.ecore = new (function() {
 			return _allFeatures;
 		};
 
+		this.allAnnotations = function() {
+			var _allAnnotations = [];
+
+			_allAnnotations = _allAnnotations.concat(this.annotations);
+
+			$(this.superTypes).each(function() {
+				_allAnnotations = _allAnnotations.concat(this.allAnnotations());
+			});
+
+			return _allAnnotations;
+		};
 	}
 
 

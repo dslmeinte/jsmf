@@ -34,8 +34,8 @@ jsmf.util = new (function() {
 		}
 
 		for( var propertyName in object ) {
-			if( !$.inArray(propertyName, validPropertyNames) < 0 ) {
-				throw new Error("illegal poperty named '" + propertyName + "' in meta object '" + this.name + "'");
+			if( $.inArray(propertyName, validPropertyNames) < 0 ) {
+				throw new Error("illegal poperty named '" + propertyName + "' in object: " + JSON.stringify(object));
 			}
 		}
 	};
