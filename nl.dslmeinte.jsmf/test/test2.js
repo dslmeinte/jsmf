@@ -266,11 +266,11 @@
 		} ]
 	} ];
 
-	test("initialising statemachine meta model and model (test2.js)", function() {
+	test("initialising statemachine meta model and example model (test2.js)", function() {
 			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
-			ok(metaModel, "meta meta model initialised");
+			ok(metaModel, "statemachine meta model initialised");
 			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
-			ok(modelResource, "meta model initialised");
+			ok(modelResource, "example model initialised");
 			var statemachine = modelResource.contents[0];
 			ok(statemachine.eResource === modelResource, "backlink to eResource correct");
 			var offState = statemachine.states[0];
@@ -278,7 +278,6 @@
 			var referencedState = offState.transitions[0].getTargetState();
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
-			// $('#json').text(JSON.stringify(json));
 			deepEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");
 		});
 
