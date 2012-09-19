@@ -1,4 +1,4 @@
-(function test3() {
+(function() {
 
 	var metaModelJSON = [ {
 		"_class" : "Datatype",
