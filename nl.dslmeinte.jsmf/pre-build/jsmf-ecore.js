@@ -32,11 +32,11 @@ jsmf.ecore = new (function() {
 		if( !ePackage.classifiers['String'] ) {
 			ePackage.classifiers['String'] = new EDatatype( { name: 'String' } );
 		}
-		// TODO  consider just adding all standard data types, including some behavior (=> do this in EPackage constructor)
+		// TODO  consider just adding (by reference to singletons) all standard data types, including some behavior (=> do this in EPackage constructor)
 
 		$.map(ePackage.classifiers, function(eClassifier, name) {
 			if( eClassifier instanceof EClass) {
-				eClassifier.resolveSuperTypes(ePackage);
+				eClassifier.resolveTypes(ePackage);
 			}
 		});
 
@@ -108,9 +108,11 @@ jsmf.ecore = new (function() {
 			});
 		}
 
-		var superTypesResolved = false;
-		this.resolveSuperTypes = function(ePackage) {
-			if( superTypesResolved ) throw new Error('EClass#resolve called twice');
+		var typesResolved = false;
+		this.resolveTypes = function(ePackage) {
+			if( typesResolved ) throw new Error('EClass#resolve called twice');
+
+			// resolve super types:
 			var resolvedSuperTypes = [];
 			for( var index in this.superTypes ) {
 				var typeName = this.superTypes[index];
@@ -120,12 +122,15 @@ jsmf.ecore = new (function() {
 				resolvedSuperTypes.push(refType);
 			}
 			this.superTypes = resolvedSuperTypes;
+
+			// resolve type references in EFeature.type:
 			$.map(this.features, function(feature, featureName) {
 				var refType = ePackage.classifiers[feature.type];
 				if( refType == undefined ) throw new Error("could not resolve target type '" + feature.type + "' in " + this.name + "." + featureName);
 				feature.type = refType;
 			});
-			superTypesResolved = true;
+
+			typesResolved = true;
 		};
 
 		/**
@@ -217,8 +222,6 @@ jsmf.ecore = new (function() {
 			}
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
 		})(initData.kind);
-
-		feature.prototype = this.EFeature;
 
 		feature.kind = initData.kind;	// (has been checked now)
 
