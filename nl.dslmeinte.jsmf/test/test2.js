@@ -200,7 +200,7 @@
 				"name" : "Heating",
 				"transitions" : {
 					"_class" : "Transition",
-					"targetState" : "/AC.states/On/Cooling",
+					"targetState" : "/AC.states/On.subStates/Cooling",
 					"trigger" : "/AC.triggers/ModeButton"
 				}
 			}, {
@@ -208,7 +208,7 @@
 				"name" : "Cooling",
 				"transitions" : {
 					"_class" : "Transition",
-					"targetState" : "/AC.states/On/Heating",
+					"targetState" : "/AC.states/On.subStates/Heating",
 					"trigger" : "/AC.triggers/ModeButton"
 				}
 			} ],
@@ -246,7 +246,7 @@
 				"name" : "Heating",
 				"transitions" : [ {
 					"_class" : "Transition",
-					"targetState" : "/AC.states/On/Cooling",
+					"targetState" : "/AC.states/On.subStates/Cooling",
 					"trigger" : [ "/AC.triggers/ModeButton" ]
 				} ]
 			}, {
@@ -254,7 +254,7 @@
 				"name" : "Cooling",
 				"transitions" : [ {
 					"_class" : "Transition",
-					"targetState" : "/AC.states/On/Heating",
+					"targetState" : "/AC.states/On.subStates/Heating",
 					"trigger" : [ "/AC.triggers/ModeButton" ]
 				} ]
 			} ],
@@ -273,9 +273,10 @@
 			ok(modelResource, "example model initialised");
 			var statemachine = modelResource.contents[0];
 			ok(statemachine.eResource === modelResource, "backlink to eResource correct");
-			var offState = statemachine.states[0];
-			var onState = statemachine.states[1];
-			var referencedState = offState.transitions[0].getTargetState();
+			var states = statemachine.eGet("states");
+			var offState = states[0];
+			var onState = states[1];
+			var referencedState = offState.eGet("transitions")[0].eGet("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
 			deepEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");

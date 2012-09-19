@@ -239,9 +239,20 @@ jsmf.ecore = new (function() {
 	}
 
 	this.EFeature = function() {
+
+		this.isNameFeature = function() {
+			return(
+					   this.name === 'name'
+					&& this.kind === 'attribute'
+					&& this.type.name === 'String'
+					&& this.upperLimit === 1
+				);
+		};
+
 		this.manyValued = function() {
 			return( this.upperLimit != 1 );
 		};
+
 	};
 
 })();

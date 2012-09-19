@@ -14,7 +14,7 @@ jsmf.resolver = new (function() {
 
 	/**
 	 * {code path} is a string in the format
-	 * 		"/id1(.feature1)?/id2(.feature2)?/.../id$n$"
+	 * 		"/name1(.feature1)?/name2(.feature2)?/.../name$n$"
 	 * indicating the path from the EResource's root to the target.
 	 * (feature$n$ is missing since we don't descend into a feature anymore)
 	 * All features are optional, since we can just traverse all (many-valued?)
@@ -44,13 +44,13 @@ jsmf.resolver = new (function() {
 
 		this.fragments = [];
 
-		this.Fragment = function(_id, _featureId) {
+		this.Fragment = function(_name, _featureName) {
 
-			this.id = _id;
-			this.featureId = _featureId;	// may be null/undefined
+			this.name = _name;
+			this.featureName = _featureName;	// may be null/undefined
 
 			this.toString = function() {
-				return( this.id + ( this.featureId == null ? '' : ( '.' + this.featureId ) ) );
+				return( this.name + ( this.featureName == null ? '' : ( '.' + this.featureName ) ) );
 			};
 
 		};
@@ -60,8 +60,8 @@ jsmf.resolver = new (function() {
 			$(this.fragments).each(function(index) {	// this is a Fragment
 				searchListOrObject = findIn(this, searchListOrObject);
 				if( searchListOrObject == null ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
-				if( this.featureId ) {
-					searchListOrObject = searchListOrObject[this.featureId];
+				if( this.featureName ) {
+					searchListOrObject = searchListOrObject.eGet(this.featureName);
 				}
 			});
 
@@ -70,7 +70,7 @@ jsmf.resolver = new (function() {
 			function findIn(fragment, list) {
 				var match = null;
 				$(list).each(function(i) {
-					if( this.name && this.name === fragment.id ) {
+					if( this.name && this.name === fragment.name ) {
 						match = this;
 					}
 				});

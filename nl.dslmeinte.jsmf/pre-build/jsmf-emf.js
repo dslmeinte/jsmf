@@ -42,31 +42,27 @@ jsmf.emf = new (function() {
 
 			var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 
+			var settings = {};
+
 			// traverse values/settings of features:
 			$.map(_allFeatures, function(feature, featureName) {
 				var value = initData[featureName];
 				log("\tsetting value of feature named '" + featureName + "' with value: " + JSON.stringify(value));
 				if( value ) {
-					_self[featureName] = (function() {
+					settings[featureName] = (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
 							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new EObject(_value, _self, feature); });
 							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new EProxy(_value, type); });
 						}
 					})();
+					if( feature.isNameFeature() ) {
+						_self.name = value;
+					}
 				} else {
 					if( feature.lowerLimit > 0 ) throw new Error("no value given for required feature named '" + featureName + "'");
 				}
 				log("\t(set value of feature named '" + featureName + "')");
-
-				// add getter & setter:
-				var FeatureName = jsmf.util.toFirstUpper(featureName);	// TODO  sanitize feature name a bit more!
-				_self['get' + FeatureName] = function() {
-					return this.eGet(feature);
-				};
-				_self['set' + FeatureName] = function(_value) {
-					this.eSet(feature, _value);
-				};
 			});
 
 			function createNestedObject(feature, value, creationFunc) {
@@ -84,32 +80,33 @@ jsmf.emf = new (function() {
 				return object;
 			}
 
+			function getFeature(featureArg, eClass) {
+				if( typeof(featureArg) === 'string' )			return eClass.allFeatures()[featureArg];
+				if( featureArg instanceof jsmf.ecore.EFeature )	return featureArg;
+				throw new Error('invalid feature argument to e{G|S}et: ' + JSON.stringify(featureArg));
+			}
+
 			this.eGet = function(featureArg) {
-				var feature = (function() {
-					if( typeof(featureArg) === 'string' )			return this.eClass.features[featureArg];
-					if( featureArg instanceof jsmf.ecore.EFeature )	return featureArg;
-					throw new Error('invalid feature argument to eGet: ' + JSON.stringify(featureArg));
-				})(this);
-				var value = this[feature.name];
+				var feature = getFeature(featureArg, this.eClass);
+				var value = settings[feature.name];
 				switch(feature.kind) {
 					case 'attribute':	return value;
 					case 'containment':	return value;
 					case 'reference':	{
-						var target = value.resolve();
-						this[feature.name] = target;
-						return target;
+						if( value instanceof EProxy ) {
+							var target = value.resolve();
+							settings[feature.name] = target;
+							return target;
+						}
+						return value;
 					}
 				}
 			};
 
-			this.eSet = function(feature, value) {
-				if( typeof(feature) === 'string' ) {
-					this[feature] = value;
-				}
-				if( feature instanceof EFeature ) {
-					this[feature.name] = value;
-				}
-				throw new Error('invalid feature argument to eGet');
+			this.eSet = function(featureArg, value) {
+				var feature = getFeature(featureArg, this.eClass);
+				settings[feature.name] = value;
+				throw new Error('invalid feature argument to eSet: ' + JSON.stringify(feature));
 			};
 
 			this.uri = function() {
@@ -177,7 +174,7 @@ jsmf.emf = new (function() {
 				json['_class'] = eObject.eClass.name;
 
 				$.map(eObject.eClass.allFeatures(), function(feature, featureName) {
-					var convertedValue = convertValue(eObject[featureName], feature);
+					var convertedValue = convertValue(eObject.eGet(featureName), feature);
 					if( convertedValue != null ) {
 						json[featureName] = convertedValue;
 					}
