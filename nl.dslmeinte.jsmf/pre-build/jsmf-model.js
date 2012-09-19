@@ -5,39 +5,45 @@
  */
 
 
-jsmf.emf = new (function() {
+jsmf.model = new (function() {
 
-	this.createEResource = function(modelJSON, ePackage) {	/* (somewhat) analogous to org.eclipse.emf.ecore.resource.Resource (or rather: org.eclipse.emf.ecore.resource.impl.ResourceImpl) */
+	this.createResource = function(modelJSON, metaModel) {	/* (somewhat) analogous to org.eclipse.emf.ecore.resource.Resource (or rather: org.eclipse.emf.ecore.resource.impl.ResourceImpl) */
 
-		var _eResource = new EResource(ePackage);	// (have to use _prefix to soothe JS plug-in)
+		var _resource = new Resource(metaModel);	// (have to use _prefix to soothe JS plug-in)
 
 		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
 		$(modelJSON).each(function(index) {
 			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
-			_eResource.contents.push(new EObject(this, null, null));
+			_resource.contents.push(new MObject(this, null, null));
 		});
 
-		return _eResource;
+		return _resource;
 
-		function EObject(initData, parent, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
 
-			if( typeof(initData) !== 'object' ) throw new Error('EObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
+		// TODO  the following is still somewhat specific for Concrete => separate out factory function
+
+		/**
+		 * A <em>model</em> object.
+		 */
+		function MObject(initData, parent, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
+
+			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
 			jsmf.util.checkClass(this);
 
 			var className = initData['_class'];
-			this.eClass = ePackage.classifiers[className];
-			if( !this.eClass ) throw new Error("declared object's type '" + className + "' not defined in meta model");
-			if( this.eClass['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
+			this._class = metaModel.classifiers[className];
+			if( !this._class ) throw new Error("declared object's type '" + className + "' not defined in meta model");
+			if( this._class['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
 
 			log( "constructing an instance of '" + className + "' with initialisation data: " + JSON.stringify(initData) );
 
-			this.eResource = _eResource;
-			this.eContainer = parent;
-			this.eContainingFeature = containingFeature;
+			this.resource = _resource;
+			this.container = parent;
+			this.containingFeature = containingFeature;
 
-			var _allFeatures = this.eClass.allFeatures();
+			var _allFeatures = this._class.allFeatures();
 
-			var validPropertyNames = [ "_class" ].concat(this.eClass.allAnnotations()).concat($.map(_allFeatures, function(value, key) { return key; }));
+			var validPropertyNames = [ "_class" ].concat(this._class.allAnnotations()).concat($.map(_allFeatures, function(value, key) { return key; }));
 			jsmf.util.checkProperties(initData, validPropertyNames);
 
 			var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
@@ -52,8 +58,8 @@ jsmf.emf = new (function() {
 					settings[featureName] = (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
-							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new EObject(_value, _self, feature); });
-							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new EProxy(_value, type); });
+							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new MObject(_value, _self, feature); });
+							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new Proxy(_value, type); });
 						}
 					})();
 					if( feature.isNameFeature() ) {
@@ -82,18 +88,18 @@ jsmf.emf = new (function() {
 
 			function getFeature(featureArg, eClass) {
 				if( typeof(featureArg) === 'string' )			return eClass.allFeatures()[featureArg];
-				if( featureArg instanceof jsmf.ecore.EFeature )	return featureArg;
-				throw new Error('invalid feature argument to e{G|S}et: ' + JSON.stringify(featureArg));
+				if( featureArg instanceof jsmf.meta.EFeature )	return featureArg;
+				throw new Error('invalid feature argument to {g|s}et: ' + JSON.stringify(featureArg));
 			}
 
-			this.eGet = function(featureArg) {
-				var feature = getFeature(featureArg, this.eClass);
+			this.get = function(featureArg) {
+				var feature = getFeature(featureArg, this._class);
 				var value = settings[feature.name];
 				switch(feature.kind) {
 					case 'attribute':	return value;
 					case 'containment':	return value;
 					case 'reference':	{
-						if( value instanceof EProxy ) {
+						if( value instanceof Proxy ) {
 							var target = value.resolve();
 							settings[feature.name] = target;
 							return target;
@@ -103,19 +109,18 @@ jsmf.emf = new (function() {
 				}
 			};
 
-			this.eSet = function(featureArg, value) {
-				var feature = getFeature(featureArg, this.eClass);
+			this.set = function(featureArg, value) {
+				var feature = getFeature(featureArg, this._class);
 				settings[feature.name] = value;
-				throw new Error('invalid feature argument to eSet: ' + JSON.stringify(feature));
 			};
 
 			this.uri = function() {
-				if( this.eContainer == null ) {
+				if( this.container == null ) {
 					if( !this.name ) throw new Error("cannot compute URI for object due to missing name");
 						// TODO  switch to a count-based system for name-less things
 					return '/' + this.name;
 				}
-				return this.eContainer.uri() + '.' + this.eContainingFeature.name + '/' + this.name;
+				return this.container.uri() + '.' + this.containingFeature.name + '/' + this.name;
 			};
 
 			// TODO  add convenience function for traversal and such
@@ -129,17 +134,17 @@ jsmf.emf = new (function() {
 
 		}
 
-		function EProxy(_uriString, type) {
+		function Proxy(_uriString, type) {
 
 			this.uriString = _uriString;
 			this.uri = jsmf.resolver.createUri(_uriString);
 			this.type = type;
 
 			this.resolve = function() {
-				return this.uri.resolveInEResource(_eResource);
+				return this.uri.resolveInResource(_resource);
 			};
 
-			this.isEProxy = function() {
+			this.isProxy = function() {
 				return true;
 			};
 
@@ -147,13 +152,13 @@ jsmf.emf = new (function() {
 
 	};
 
-	function EResource(ePackage) {
+	function Resource(metaModel) {
 
-		this.ePackage = ePackage;
+		this.metaModel = metaModel;
 		this.contents = [];
 
 		/**
-		 * Converts this EResource to JSON, with references in the correct textual format - see below.
+		 * Converts this Resource to JSON, with references in the correct textual format - see below.
 		 */
 		this.toJSON = function() {
 
@@ -171,10 +176,10 @@ jsmf.emf = new (function() {
 				}
 
 				var json = {};
-				json['_class'] = eObject.eClass.name;
+				json['_class'] = eObject._class.name;
 
-				$.map(eObject.eClass.allFeatures(), function(feature, featureName) {
-					var convertedValue = convertValue(eObject.eGet(featureName), feature);
+				$.map(eObject._class.allFeatures(), function(feature, featureName) {
+					var convertedValue = convertValue(eObject.get(featureName), feature);
 					if( convertedValue != null ) {
 						json[featureName] = convertedValue;
 					}
@@ -203,7 +208,7 @@ jsmf.emf = new (function() {
 						case 'containment':	return convertObject(value);
 						case 'reference':	{
 							if( value == null )		return null;
-							if( value.isEProxy )	return value.uriString;
+							if( value.isProxy )	return value.uriString;
 							return value.uri();
 						}
 					}

@@ -308,12 +308,12 @@
 	} ];
 
 	test("initialising statemachine meta model and example model (test3.js) - with view info", function() {
-			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
+			var metaModel = jsmf.meta.createMetaModelFromConcrete(metaModelJSON);
 			ok(metaModel, "statemachine meta model initialised");
-			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
+			var modelResource = jsmf.model.createResource(modelJSON, metaModel);
 			ok(modelResource, "example model initialised");
 			var statemachine = modelResource.contents[0];
-			ok(statemachine.eResource === modelResource, "backlink to eResource correct");
+			ok(statemachine.resource === modelResource, "backlink to resource correct");
 		});
 
 })();

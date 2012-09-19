@@ -142,9 +142,9 @@
 	} ];
 
 	test("initialising arithmetic expressions meta model and example model (test4.js)", function() {
-			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
+			var metaModel = jsmf.meta.createMetaModelFromConcrete(metaModelJSON);
 			ok(metaModel, "arithmetic expressions meta model initialised");
-			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
+			var modelResource = jsmf.model.createResource(modelJSON, metaModel);
 			ok(modelResource, "example model initialised");
 		});
 

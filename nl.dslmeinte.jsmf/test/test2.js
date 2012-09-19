@@ -267,16 +267,16 @@
 	} ];
 
 	test("initialising statemachine meta model and example model (test2.js)", function() {
-			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
+			var metaModel = jsmf.meta.createMetaModelFromConcrete(metaModelJSON);
 			ok(metaModel, "statemachine meta model initialised");
-			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
+			var modelResource = jsmf.model.createResource(modelJSON, metaModel);
 			ok(modelResource, "example model initialised");
 			var statemachine = modelResource.contents[0];
-			ok(statemachine.eResource === modelResource, "backlink to eResource correct");
-			var states = statemachine.eGet("states");
+			ok(statemachine.resource === modelResource, "backlink to eResource correct");
+			var states = statemachine.get("states");
 			var offState = states[0];
 			var onState = states[1];
-			var referencedState = offState.eGet("transitions")[0].eGet("targetState");
+			var referencedState = offState.get("transitions")[0].get("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
 			deepEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");

@@ -55,13 +55,13 @@ jsmf.resolver = new (function() {
 
 		};
 
-		this.resolveInEResource = function(eResource) {
-			var searchListOrObject = eResource.contents;
+		this.resolveInResource = function(resource) {
+			var searchListOrObject = resource.contents;
 			$(this.fragments).each(function(index) {	// this is a Fragment
 				searchListOrObject = findIn(this, searchListOrObject);
 				if( searchListOrObject == null ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
 				if( this.featureName ) {
-					searchListOrObject = searchListOrObject.eGet(this.featureName);
+					searchListOrObject = searchListOrObject.get(this.featureName);
 				}
 			});
 

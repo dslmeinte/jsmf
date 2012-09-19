@@ -206,17 +206,17 @@
 	} ];
 
 	test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {
-			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
+			var metaModel = jsmf.meta.createMetaModelFromConcrete(metaModelJSON);
 			ok(metaModel, "meta meta model initialised");
 			equal(jsmf.util.countProperties(metaModel.classifiers), 9, "#meta meta classes correct");
-			var classifierEClass = metaModel.classifiers['Classifier'];
-			ok(classifierEClass.features['name'], "EClass 'Class' knows about its 'name' feature");
-			var datatypeEClass = metaModel.classifiers['Datatype'];
-			ok(datatypeEClass && datatypeEClass.name === 'Datatype', "EClass 'Datatype' loaded correctly");
-			ok(datatypeEClass.allFeatures()['name'], "EClass 'Datatype' knows about its 'name' feature");
+			var classifierClass = metaModel.classifiers['Classifier'];
+			ok(classifierClass.features['name'], "Class 'Class' knows about its 'name' feature");
+			var datatypeClass = metaModel.classifiers['Datatype'];
+			ok(datatypeClass && datatypeClass.name === 'Datatype', "Class 'Datatype' loaded correctly");
+			ok(datatypeClass.allFeatures()['name'], "Class 'Datatype' knows about its 'name' feature");
 			var featuresFeature = metaModel.classifiers['Class'].features['features'];
-			ok(featuresFeature instanceof jsmf.ecore.EFeature, "EFeature is reified");
-			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
+			ok(featuresFeature instanceof jsmf.meta.Feature, "Feature is reified");
+			var modelResource = jsmf.model.createResource(modelJSON, metaModel);
 			ok(modelResource, "meta model initialised");
 			equal(modelResource.contents.length, 8, "#meta classes correct");
 		});

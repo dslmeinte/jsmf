@@ -6,7 +6,7 @@
  */
 
 
-jsmf.ecore = new (function() {
+jsmf.meta = new (function() {
 
 	/**
 	 * An EPackage represents a meta model.
@@ -15,36 +15,36 @@ jsmf.ecore = new (function() {
 	 * 
 	 * @param metaModel - a "standard" representation of the meta model (i.e., the Concrete's representation for it)
 	 */
-	this.createEPackageFromConcrete = function(metaModelJSON) {
+	this.createMetaModelFromConcrete = function(metaModelJSON) {
 
 		if( !$.isArray(metaModelJSON) ) throw new Error("meta model JSON is not an array");
 
-		var ePackage = new EPackage();
+		var metaModel = new MetaModel();
 
 		$(metaModelJSON).each(function(index) {
 			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within meta model JSON array: index=' + index);
 			jsmf.util.checkName(this, "classifier name is empty");
-			if( ePackage.classifiers[this.name] ) throw new Error("classifier name '" + this.name + "' not unique");
-			ePackage.classifiers[this.name] = createEClassifier(this);
+			if( metaModel.classifiers[this.name] ) throw new Error("classifier name '" + this.name + "' not unique");
+			metaModel.classifiers[this.name] = createClassifier(this);
 		});
 		// post condition: all names in metaModelJSON are non-empty strings, or ("fatal") Error would have been thrown
 
-		if( !ePackage.classifiers['String'] ) {
-			ePackage.classifiers['String'] = new EDatatype( { name: 'String' } );
+		if( !metaModel.classifiers['String'] ) {
+			metaModel.classifiers['String'] = new Datatype( { name: 'String' } );
 		}
 		// TODO  consider just adding (by reference to singletons) all standard data types, including some behavior (=> do this in EPackage constructor)
 
-		$.map(ePackage.classifiers, function(eClassifier, name) {
-			if( eClassifier instanceof EClass) {
-				eClassifier.resolveTypes(ePackage);
+		$.map(metaModel.classifiers, function(eClassifier, name) {
+			if( eClassifier instanceof Class) {
+				eClassifier.resolveTypes(metaModel);
 			}
 		});
 
-		return ePackage;
+		return metaModel;
 
 	};
 
-	function EPackage() {
+	function MetaModel() {
 		this.classifiers = {};
 	}
 
@@ -55,14 +55,14 @@ jsmf.ecore = new (function() {
 	 * +---------------------+
 	 */
 
-	function createEClassifier(initData) {
+	function createClassifier(initData) {
 		jsmf.util.checkName(initData, "classifier name is empty");
 		jsmf.util.checkClass(initData);
 		var classifier = (function() {
 			switch( initData["_class"] ) {
-				case 'Datatype':	return new EDatatype(initData);
-				case 'Enum':		return new EEnum(initData);
-				case 'Class':		return new EClass(initData);
+				case 'Datatype':	return new Datatype(initData);
+				case 'Enum':		return new Enum(initData);
+				case 'Class':		return new Class(initData);
 			}
 			throw new Error("illegal classifier meta type: " + initData["_class"]);
 		})();
@@ -70,7 +70,7 @@ jsmf.ecore = new (function() {
 		return classifier;
 	}
 
-	function EClass(initData) {
+	function Class(initData) {
 
 		jsmf.util.checkProperties(initData, [ "_class", "name", "features", "superTypes", "abstract", "annotations" ]);
 
@@ -104,28 +104,28 @@ jsmf.ecore = new (function() {
 			$(jsmf.util.asArray(initData.features)).each(function(index) {
 				jsmf.util.checkName(this, "feature name is empty");
 				if( _self.features[this.name] ) throw new Error("feature name '" + this.name + "' is not unique in class: " + initData.name);
-				_self.features[this.name] = createEFeature(this, _self);
+				_self.features[this.name] = createFeature(this, _self);
 			});
 		}
 
 		var typesResolved = false;
-		this.resolveTypes = function(ePackage) {
-			if( typesResolved ) throw new Error('EClass#resolve called twice');
+		this.resolveTypes = function(metaModel) {
+			if( typesResolved ) throw new Error('Class#resolve called twice');
 
 			// resolve super types:
 			var resolvedSuperTypes = [];
 			for( var index in this.superTypes ) {
 				var typeName = this.superTypes[index];
-				var refType = ePackage.classifiers[typeName];
+				var refType = metaModel.classifiers[typeName];
 				if( refType == undefined ) throw new Error("could not resolve super type '" + typeName + "' of " + this.name);
-				if( !(refType instanceof EClass) ) throw new Error("super type '" + typeName + "' is not a class");
+				if( !(refType instanceof Class) ) throw new Error("super type '" + typeName + "' is not a class");
 				resolvedSuperTypes.push(refType);
 			}
 			this.superTypes = resolvedSuperTypes;
 
-			// resolve type references in EFeature.type:
+			// resolve type references in Feature.type:
 			$.map(this.features, function(feature, featureName) {
-				var refType = ePackage.classifiers[feature.type];
+				var refType = metaModel.classifiers[feature.type];
 				if( refType == undefined ) throw new Error("could not resolve target type '" + feature.type + "' in " + this.name + "." + featureName);
 				feature.type = refType;
 			});
@@ -134,7 +134,7 @@ jsmf.ecore = new (function() {
 		};
 
 		/**
-		 * @returns A <em>dictionary</em> of all features of this EClass, indexed by their (unqualified) name.
+		 * @returns A <em>dictionary</em> of all features of this Class, indexed by their (unqualified) name.
 		 */
 		this.allFeatures = function() {
 			var _allFeatures = {};
@@ -169,7 +169,7 @@ jsmf.ecore = new (function() {
 	}
 
 
-	function EDatatype(initData) {
+	function Datatype(initData) {
 		if( !$.inArray(this.name, [ "String", "Integer", "Float", "Boolean" ]) ) {
 			throw new Error("illegal datatype name: " + initData.name + " (datatype must be named one of [String, Integer, Float, Boolean])");
 		}
@@ -177,7 +177,7 @@ jsmf.ecore = new (function() {
 	}
 
 
-	function EEnum(initData) {
+	function Enum(initData) {
 		jsmf.util.checkProperties(initData, [ "_class", "name", "literals" ]);
 
 		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
@@ -194,20 +194,20 @@ jsmf.ecore = new (function() {
 	 * +------------------+
 	 */
 
-	function createEFeature(initData, eClass) {
+	function createFeature(initData, eClass) {
 
-		function EAttribute(initData) {
+		function Attribute(initData) {
 			// (nothing to add)
 		}
 
-		EAttribute.prototype = new jsmf.ecore.EFeature();
+		Attribute.prototype = new jsmf.meta.Feature();
 		
-		function EReference(initData, containment) {
+		function Reference(initData, containment) {
 			this.containment = containment;
 			// TODO  consider whether opposite/unique/&c. make sense for us
 		}
 
-		EReference.prototype = new jsmf.ecore.EFeature();
+		Reference.prototype = new jsmf.meta.Feature();
 
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
@@ -216,9 +216,9 @@ jsmf.ecore = new (function() {
 		initData.kind = initData.kind || "attribute";
 		var feature = (function(kind) {
 				switch( kind ) {
-				case "attribute":	return new EAttribute(initData);
-				case "containment":	return new EReference(initData, true);
-				case "reference":	return new EReference(initData, false);
+				case "attribute":	return new Attribute(initData);
+				case "containment":	return new Reference(initData, true);
+				case "reference":	return new Reference(initData, false);
 			}
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
 		})(initData.kind);
@@ -226,7 +226,7 @@ jsmf.ecore = new (function() {
 		feature.kind = initData.kind;	// (has been checked now)
 
 		feature.name = initData.name;
-		feature.containingEClass = eClass;
+		feature.containingClass = eClass;
 		feature.type = initData.type;	// overwritten later by true object reference
 
 		feature.lowerLimit = initData.lowerLimit || 0;
@@ -238,7 +238,7 @@ jsmf.ecore = new (function() {
 
 	}
 
-	this.EFeature = function() {
+	this.Feature = function() {
 
 		this.isNameFeature = function() {
 			return(
