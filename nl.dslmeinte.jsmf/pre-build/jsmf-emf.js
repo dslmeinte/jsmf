@@ -86,8 +86,8 @@ jsmf.emf = new (function() {
 
 			this.eGet = function(featureArg) {
 				var feature = (function() {
-					if( typeof(featureArg) === 'string' )					return this.eClass.features[featureArg];
-					if( featureArg.isEFeature && featureArg.isEFeature() )	return featureArg;
+					if( typeof(featureArg) === 'string' )			return this.eClass.features[featureArg];
+					if( featureArg instanceof jsmf.ecore.EFeature )	return featureArg;
 					throw new Error('invalid feature argument to eGet: ' + JSON.stringify(featureArg));
 				})(this);
 				var value = this[feature.name];

@@ -36,11 +36,9 @@ jsmf.ecore = new (function() {
 
 		$.map(ePackage.classifiers, function(eClassifier, name) {
 			if( eClassifier instanceof EClass) {
-				ePackage.classes[name] = eClassifier;
+				eClassifier.resolveSuperTypes(ePackage);
 			}
 		});
-
-		$.map(ePackage.classes, function(eClass, name) { eClass.resolveSuperTypes(ePackage); });
 
 		return ePackage;
 
@@ -48,7 +46,6 @@ jsmf.ecore = new (function() {
 
 	function EPackage() {
 		this.classifiers = {};
-		this.classes = {};
 	}
 
 
@@ -193,6 +190,20 @@ jsmf.ecore = new (function() {
 	 */
 
 	function createEFeature(initData, eClass) {
+
+		function EAttribute(initData) {
+			// (nothing to add)
+		}
+
+		EAttribute.prototype = new jsmf.ecore.EFeature();
+		
+		function EReference(initData, containment) {
+			this.containment = containment;
+			// TODO  consider whether opposite/unique/&c. make sense for us
+		}
+
+		EReference.prototype = new jsmf.ecore.EFeature();
+
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
 		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit" ]);
@@ -207,6 +218,8 @@ jsmf.ecore = new (function() {
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
 		})(initData.kind);
 
+		feature.prototype = this.EFeature;
+
 		feature.kind = initData.kind;	// (has been checked now)
 
 		feature.name = initData.name;
@@ -218,24 +231,15 @@ jsmf.ecore = new (function() {
 		feature.upperLimit = initData.upperLimit || ( initData.kind === "containment" ? -1 : 1 );
 		feature.upperBound = feature.upperLimit;	// duplicate to comply with Ecore
 
-		feature.manyValued = function() {
+		return feature;
+
+	}
+
+	this.EFeature = function() {
+		this.manyValued = function() {
 			return( this.upperLimit != 1 );
 		};
-		feature.isEFeature = function() {
-			return true;
-		};
-
-		return feature;
-	}
-
-	function EAttribute(initData) {
-		// (nothing to add)
-	}
-
-	function EReference(initData, containment) {
-		this.containment = containment;
-		// TODO  consider whether opposite/unique/&c. make sense for us
-	}
+	};
 
 })();
 

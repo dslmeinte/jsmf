@@ -44,11 +44,13 @@
 			var metaModel = jsmf.ecore.createEPackageFromConcrete(metaModelJSON);
 			ok(metaModel, "meta meta model initialised");
 			equal(jsmf.util.countProperties(metaModel.classifiers), 9, "#meta meta classes correct");
-			var classifierEClass = metaModel.classes['Classifier'];
+			var classifierEClass = metaModel.classifiers['Classifier'];
 			ok(classifierEClass.features['name'], "EClass 'Class' knows about its 'name' feature");
-			var datatypeEClass = metaModel.classes['Datatype'];
+			var datatypeEClass = metaModel.classifiers['Datatype'];
 			ok(datatypeEClass && datatypeEClass.name === 'Datatype', "EClass 'Datatype' loaded correctly");
 			ok(datatypeEClass.allFeatures()['name'], "EClass 'Datatype' knows about its 'name' feature");
+			var featuresFeature = metaModel.classifiers['Class'].features['features'];
+			ok(featuresFeature instanceof jsmf.ecore.EFeature, "EFeature is reified");
 			var modelResource = jsmf.emf.createEResource(modelJSON, metaModel);
 			ok(modelResource, "meta model initialised");
 			equal(modelResource.contents.length, 8, "#meta classes correct");
