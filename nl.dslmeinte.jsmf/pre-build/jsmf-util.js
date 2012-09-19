@@ -7,6 +7,8 @@
 
 jsmf.util = new (function() {
 
+	"use strict";
+
 	this.checkName = function(data, message) {
 		this.checkNonEmptyStringAttribute(data, 'name', message);
 	};
@@ -50,7 +52,7 @@ jsmf.util = new (function() {
 
 	/* (mainly for unit testing purposes) */
 	this.keys = function(object) {
-		if( typeof(object) != 'object' ) throw new Error('cannot compute keys of a non-Object');
+		if( typeof(object) !== 'object' ) throw new Error('cannot compute keys of a non-Object');
 		return $.map(object, function(value, key) { return key; });
 	};
 
@@ -60,7 +62,7 @@ jsmf.util = new (function() {
 		for( var propertyName in object ) {
 			if( object.hasOwnProperty(propertyName) ) {
 				++count;
-		    }
+			}
 		}
 		return count;
 	};

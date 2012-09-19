@@ -8,6 +8,8 @@
 
 jsmf.meta = new (function() {
 
+	"use strict";
+
 	/**
 	 * An EPackage represents a meta model.
 	 * <p>
@@ -59,12 +61,12 @@ jsmf.meta = new (function() {
 		jsmf.util.checkName(initData, "classifier name is empty");
 		jsmf.util.checkClass(initData);
 		var classifier = (function() {
-			switch( initData["_class"] ) {
+			switch( initData._class ) {
 				case 'Datatype':	return new Datatype(initData);
 				case 'Enum':		return new Enum(initData);
 				case 'Class':		return new Class(initData);
 			}
-			throw new Error("illegal classifier meta type: " + initData["_class"]);
+			throw new Error("illegal classifier meta type: " + initData._class);
 		})();
 		classifier.name = initData.name;
 		return classifier;
@@ -76,11 +78,11 @@ jsmf.meta = new (function() {
 
 		this['abstract'] = !!initData['abstract'];	// note: 'abstract' is a reserved keyword in JS, and e.g. Safari-iPad parses it as such
 		this.superTypes = (function(types) {
-			if( types == undefined ) return [];
+			if( !types ) return [];
 			if( !$.isArray(types) && typeof(types) === 'string' ) {
 				return [ types ];
 			}
-			if( types.length == 0 ) return [];
+			if( types.length === 0 ) return [];
 			if( !jsmf.util.isNonDegenerateStringArray(types) ) {
 				return types;
 			}
@@ -114,19 +116,19 @@ jsmf.meta = new (function() {
 
 			// resolve super types:
 			var resolvedSuperTypes = [];
-			for( var index in this.superTypes ) {
-				var typeName = this.superTypes[index];
+			$(this.superTypes).each(function(index) {
+				var typeName = this;
 				var refType = metaModel.classifiers[typeName];
-				if( refType == undefined ) throw new Error("could not resolve super type '" + typeName + "' of " + this.name);
+				if( !refType ) throw new Error("could not resolve super type '" + typeName + "' of " + _self.name);
 				if( !(refType instanceof Class) ) throw new Error("super type '" + typeName + "' is not a class");
 				resolvedSuperTypes.push(refType);
-			}
+			});
 			this.superTypes = resolvedSuperTypes;
 
 			// resolve type references in Feature.type:
 			$.map(this.features, function(feature, featureName) {
 				var refType = metaModel.classifiers[feature.type];
-				if( refType == undefined ) throw new Error("could not resolve target type '" + feature.type + "' in " + this.name + "." + featureName);
+				if( !refType ) throw new Error("could not resolve target type '" + feature.type + "' in " + this.name + "." + featureName);
 				feature.type = refType;
 			});
 
@@ -196,13 +198,13 @@ jsmf.meta = new (function() {
 
 	function createFeature(initData, eClass) {
 
-		function Attribute(initData) {
+		function Attribute() {
 			// (nothing to add)
 		}
 
 		Attribute.prototype = new jsmf.meta.Feature();
 		
-		function Reference(initData, containment) {
+		function Reference(containment) {
 			this.containment = containment;
 			// TODO  consider whether opposite/unique/&c. make sense for us
 		}
@@ -216,9 +218,9 @@ jsmf.meta = new (function() {
 		initData.kind = initData.kind || "attribute";
 		var feature = (function(kind) {
 				switch( kind ) {
-				case "attribute":	return new Attribute(initData);
-				case "containment":	return new Reference(initData, true);
-				case "reference":	return new Reference(initData, false);
+				case "attribute":	return new Attribute();
+				case "containment":	return new Reference(true);
+				case "reference":	return new Reference(false);
 			}
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
 		})(initData.kind);

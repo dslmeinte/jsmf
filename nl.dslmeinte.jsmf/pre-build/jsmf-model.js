@@ -7,6 +7,8 @@
 
 jsmf.model = new (function() {
 
+	"use strict";
+
 	this.createResource = function(modelJSON, metaModel) {	/* (somewhat) analogous to org.eclipse.emf.ecore.resource.Resource (or rather: org.eclipse.emf.ecore.resource.impl.ResourceImpl) */
 
 		var _resource = new Resource(metaModel);	// (have to use _prefix to soothe JS plug-in)
@@ -30,7 +32,7 @@ jsmf.model = new (function() {
 			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
 			jsmf.util.checkClass(this);
 
-			var className = initData['_class'];
+			var className = initData._class;
 			this._class = metaModel.classifiers[className];
 			if( !this._class ) throw new Error("declared object's type '" + className + "' not defined in meta model");
 			if( this._class['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
@@ -115,7 +117,7 @@ jsmf.model = new (function() {
 			};
 
 			this.uri = function() {
-				if( this.container == null ) {
+				if( !this.container ) {
 					if( !this.name ) throw new Error("cannot compute URI for object due to missing name");
 						// TODO  switch to a count-based system for name-less things
 					return '/' + this.name;
@@ -171,16 +173,16 @@ jsmf.model = new (function() {
 			return json;
 
 			function convertObject(eObject) {
-				if( eObject == null ) {
+				if( !eObject ) {
 					return null;
 				}
 
 				var json = {};
-				json['_class'] = eObject._class.name;
+				json._class = eObject._class.name;
 
 				$.map(eObject._class.allFeatures(), function(feature, featureName) {
 					var convertedValue = convertValue(eObject.get(featureName), feature);
-					if( convertedValue != null ) {
+					if( convertedValue ) {
 						json[featureName] = convertedValue;
 					}
 				});
@@ -207,7 +209,7 @@ jsmf.model = new (function() {
 						case 'attribute':	return value;
 						case 'containment':	return convertObject(value);
 						case 'reference':	{
-							if( value == null )		return null;
+							if( !value )		return null;
 							if( value.isProxy )	return value.uriString;
 							return value.uri();
 						}
@@ -221,5 +223,5 @@ jsmf.model = new (function() {
 	}
 
 
-});
+})();
 

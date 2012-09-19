@@ -8,13 +8,15 @@
 
 jsmf.resolver = new (function() {
 
-	// TODO  fix implementation of regex check
-//	var uriRegExp = /^(\/\w+(\.\w+)?)*\/\w+$/g;
-//	uriRegExp.compile();
+	"use strict";
+
+	// TODO  fix implementation of regex check:
+	//var uriRegExp = /^(\/\w+(\.\w+)?)*\/\w+$/g;
+	//uriRegExp.compile();
 
 	/**
 	 * {code path} is a string in the format
-	 * 		"/name1(.feature1)?/name2(.feature2)?/.../name$n$"
+	 *		"/name1(.feature1)?/name2(.feature2)?/.../name$n$"
 	 * indicating the path from the EResource's root to the target.
 	 * (feature$n$ is missing since we don't descend into a feature anymore)
 	 * All features are optional, since we can just traverse all (many-valued?)
@@ -50,7 +52,7 @@ jsmf.resolver = new (function() {
 			this.featureName = _featureName;	// may be null/undefined
 
 			this.toString = function() {
-				return( this.name + ( this.featureName == null ? '' : ( '.' + this.featureName ) ) );
+				return( this.name + ( this.featureName ? ( '.' + this.featureName ) : '' ) );
 			};
 
 		};
@@ -59,7 +61,7 @@ jsmf.resolver = new (function() {
 			var searchListOrObject = resource.contents;
 			$(this.fragments).each(function(index) {	// this is a Fragment
 				searchListOrObject = findIn(this, searchListOrObject);
-				if( searchListOrObject == null ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
+				if( !searchListOrObject ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
 				if( this.featureName ) {
 					searchListOrObject = searchListOrObject.get(this.featureName);
 				}
