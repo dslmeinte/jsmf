@@ -33,25 +33,25 @@
 	}, {
 		"_class" : "Class",
 		"name" : "Variable",
-		"features" : {
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Trigger",
-		"features" : {
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
-		},
+		} ],
 		"annotations": [ "_view" ]
 	}, {
 		"_class" : "Class",
@@ -62,7 +62,7 @@
 		"_class" : "Class",
 		"name" : "State",
 		"abstract" : true,
-		"superTypes" : "ChartElement",
+		"superTypes" : [ "ChartElement" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "name",
@@ -75,22 +75,22 @@
 	}, {
 		"_class" : "Class",
 		"name" : "SimpleState",
-		"superTypes" : "State"
+		"superTypes" : [ "State" ]
 	}, {
 		"_class" : "Class",
 		"name" : "CompositeState",
-		"superTypes" : "State",
-		"features" : {
+		"superTypes" : [ "State" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "chartElements",
 			"kind" : "containment",
 			"upperLimit" : -1,
 			"type" : "ChartElement"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Transition",
-		"superTypes" : "ChartElement",
+		"superTypes" : [ "ChartElement" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "sourceState",
@@ -107,7 +107,7 @@
 			"type" : "State"
 		}, {
 			"_class" : "Feature",
-			"name" : "trigger",
+			"name" : "triggers",
 			"kind" : "reference",
 			"upperLimit" : -1,
 			"type" : "Trigger"
@@ -124,7 +124,7 @@
 	}, {
 		"_class" : "Class",
 		"name" : "AndExpression",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -143,7 +143,7 @@
 	}, {
 		"_class" : "Class",
 		"name" : "OrExpression",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -162,27 +162,27 @@
 	}, {
 		"_class" : "Class",
 		"name" : "NotExpression",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr",
 			"kind" : "containment",
 			"lowerLimit" : 1,
 			"upperLimit" : -1,
 			"type" : "Expression"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "VarRef",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "variable",
 			"kind" : "reference",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "Variable"
-		}
+		} ]
 	} ];
 
 	var modelJSON = [ {
@@ -266,7 +266,7 @@
 				},
 				"sourceState" : "/AC/On/Heating",
 				"targetState" : "/AC/On/Cooling",
-				"trigger" : "/AC/ModeButton"
+				"triggers" : [ "/AC/ModeButton" ]
 			}, {
 				"_class" : "Transition",
 				"_view" : {
@@ -278,7 +278,7 @@
 				},
 				"sourceState" : "/AC/On/Cooling",
 				"targetState" : "/AC/On/Heating",
-				"trigger" : "/AC/ModeButton"
+				"triggers" : [ "/AC/ModeButton" ]
 			} ]
 		}, {
 			"_class" : "Transition",
@@ -291,7 +291,7 @@
 			},
 			"sourceState" : "/AC/Off",
 			"targetState" : "/AC/On/Heating",
-			"trigger" : "/AC/OnButton"
+			"triggers" : [ "/AC/OnButton" ]
 		}, {
 			"_class" : "Transition",
 			"_view" : {
@@ -303,7 +303,7 @@
 			},
 			"sourceState" : "/AC/On",
 			"targetState" : "/AC/Off",
-			"trigger" : "/AC/OnButton"
+			"triggers" : [ "/AC/OnButton" ]
 		} ]
 	} ];
 

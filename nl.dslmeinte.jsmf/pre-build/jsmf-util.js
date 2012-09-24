@@ -42,10 +42,6 @@ jsmf.util = new (function() {
 		}
 	};
 
-	this.asArray = function(objectOrArray) {
-		return( $.isArray(objectOrArray) ? objectOrArray : [ objectOrArray ] );
-	};
-
 	this.toFirstUpper = function(string) {
 		return( string.charAt(0).toUpperCase() + string.slice(1) );
 	};

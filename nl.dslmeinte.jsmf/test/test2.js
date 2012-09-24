@@ -32,25 +32,25 @@
 	}, {
 		"_class" : "Class",
 		"name" : "Variable",
-		"features" : {
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Trigger",
-		"features" : {
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "State",
@@ -72,18 +72,18 @@
 	}, {
 		"_class" : "Class",
 		"name" : "SimpleState",
-		"superTypes" : "State"
+		"superTypes" : [ "State" ]
 	}, {
 		"_class" : "Class",
 		"name" : "CompositeState",
-		"superTypes" : "State",
-		"features" : {
+		"superTypes" : [ "State" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "subStates",
 			"kind" : "containment",
 			"upperLimit" : -1,
 			"type" : "State"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Transition",
@@ -96,7 +96,7 @@
 			"type" : "State"
 		}, {
 			"_class" : "Feature",
-			"name" : "trigger",
+			"name" : "triggers",
 			"kind" : "reference",
 			"upperLimit" : -1,
 			"type" : "Trigger"
@@ -113,7 +113,7 @@
 	}, {
 		"_class" : "Class",
 		"name" : "AndExpression",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -132,7 +132,7 @@
 	}, {
 		"_class" : "Class",
 		"name" : "OrExpression",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -151,27 +151,27 @@
 	}, {
 		"_class" : "Class",
 		"name" : "NotExpression",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr",
 			"kind" : "containment",
 			"lowerLimit" : 1,
 			"upperLimit" : -1,
 			"type" : "Expression"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "VarRef",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "variable",
 			"kind" : "reference",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "Variable"
-		}
+		} ]
 	} ];
 
 	var modelJSON = [ {
@@ -187,36 +187,36 @@
 		"states" : [ {
 			"_class" : "SimpleState",
 			"name" : "Off",
-			"transitions" : {
+			"transitions" : [ {
 				"_class" : "Transition",
 				"targetState" : "/AC.states/On",
-				"trigger" : "/AC.triggers/OnButton"
-			}
+				"triggers" : [ "/AC.triggers/OnButton" ]
+			} ]
 		}, {
 			"_class" : "CompositeState",
 			"name" : "On",
 			"subStates" : [ {
 				"_class" : "SimpleState",
 				"name" : "Heating",
-				"transitions" : {
+				"transitions" : [ {
 					"_class" : "Transition",
 					"targetState" : "/AC.states/On.subStates/Cooling",
-					"trigger" : "/AC.triggers/ModeButton"
-				}
+					"triggers" : [ "/AC.triggers/ModeButton" ]
+				} ]
 			}, {
 				"_class" : "SimpleState",
 				"name" : "Cooling",
-				"transitions" : {
+				"transitions" : [ {
 					"_class" : "Transition",
 					"targetState" : "/AC.states/On.subStates/Heating",
-					"trigger" : "/AC.triggers/ModeButton"
-				}
+					"triggers" : [ "/AC.triggers/ModeButton" ]
+				} ]
 			} ],
-			"transitions" : {
+			"transitions" : [ {
 				"_class" : "Transition",
 				"targetState" : "/AC.states/Off",
-				"trigger" : "/AC.triggers/OnButton"
-			}
+				"triggers" : [ "/AC.triggers/OnButton" ]
+			} ]
 		} ]
 	} ];
 
@@ -236,7 +236,7 @@
 			"transitions" : [ {
 				"_class" : "Transition",
 				"targetState" : "/AC.states/On",
-				"trigger" : [ "/AC.triggers/OnButton" ]
+				"triggers" : [ "/AC.triggers/OnButton" ]
 			} ]
 		}, {
 			"_class" : "CompositeState",
@@ -247,7 +247,7 @@
 				"transitions" : [ {
 					"_class" : "Transition",
 					"targetState" : "/AC.states/On.subStates/Cooling",
-					"trigger" : [ "/AC.triggers/ModeButton" ]
+					"triggers" : [ "/AC.triggers/ModeButton" ]
 				} ]
 			}, {
 				"_class" : "SimpleState",
@@ -255,13 +255,13 @@
 				"transitions" : [ {
 					"_class" : "Transition",
 					"targetState" : "/AC.states/On.subStates/Heating",
-					"trigger" : [ "/AC.triggers/ModeButton" ]
+					"triggers" : [ "/AC.triggers/ModeButton" ]
 				} ]
 			} ],
 			"transitions" : [ {
 				"_class" : "Transition",
 				"targetState" : "/AC.states/Off",
-				"trigger" : [ "/AC.triggers/OnButton" ]
+				"triggers" : [ "/AC.triggers/OnButton" ]
 			} ]
 		} ]
 	} ];

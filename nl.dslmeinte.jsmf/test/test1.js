@@ -17,34 +17,34 @@
 		"_class" : "Class",
 		"name" : "Classifier",
 		"abstract" : true,
-		"features" : {
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Datatype",
-		"superTypes" : "Classifier"
+		"superTypes" : [ "Classifier" ]
 	}, {
 		"_class" : "Class",
 		"name" : "Enum",
-		"superTypes" : "Datatype",
-		"features" : {
+		"superTypes" : [ "Datatype" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "literals",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : -1,
 			"type" : "String"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Class",
-		"superTypes" : "Classifier",
+		"superTypes" : [ "Classifier" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "superTypes",
@@ -113,19 +113,19 @@
 	}, {
 		"_class" : "Class",
 		"name" : "Sqrt",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr",
 			"kind" : "containment",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "Expression"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Fraction",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -144,7 +144,7 @@
 	}, {
 		"_class" : "Class",
 		"name" : "Mult",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -163,7 +163,7 @@
 	}, {
 		"_class" : "Class",
 		"name" : "Plus",
-		"superTypes" : "Expression",
+		"superTypes" : [ "Expression" ],
 		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr1",
@@ -182,27 +182,27 @@
 	}, {
 		"_class" : "Class",
 		"name" : "Neg",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "expr",
 			"kind" : "containment",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "Expression"
-		}
+		} ]
 	}, {
 		"_class" : "Class",
 		"name" : "Value",
-		"superTypes" : "Expression",
-		"features" : {
+		"superTypes" : [ "Expression" ],
+		"features" : [ {
 			"_class" : "Feature",
 			"name" : "value",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
-		}
+		} ]
 	} ];
 
 	test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {

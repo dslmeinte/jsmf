@@ -75,17 +75,13 @@ jsmf.model = new (function() {
 
 			function createNestedObject(feature, value, creationFunc) {
 				if( $.isArray(value) ) {
-					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingEClass.name + '#' + feature.name);
+					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
 					return $.map(value, function(nestedValue, index) {
 						return creationFunc.apply(this, [ nestedValue, feature.type ]);
 					});
 				}
-				var object = creationFunc.apply(this, [ value, feature.type ]);
-				if( feature.manyValued() ) {
-					// TODO  consider not allowing this type of shortcuts
-					return [ object ];
-				}
-				return object;
+				if( feature.manyValued() ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
+				return creationFunc.apply(this, [ value, feature.type ]);
 			}
 
 			function getFeature(featureArg, eClass) {

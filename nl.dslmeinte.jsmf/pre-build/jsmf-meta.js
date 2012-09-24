@@ -79,11 +79,8 @@ jsmf.meta = new (function() {
 		this['abstract'] = !!initData['abstract'];	// note: 'abstract' is a reserved keyword in JS, and e.g. Safari-iPad parses it as such
 		this.superTypes = (function(types) {
 			if( !types ) return [];
-			if( !$.isArray(types) && typeof(types) === 'string' ) {
-				return [ types ];
-			}
 			if( types.length === 0 ) return [];
-			if( !jsmf.util.isNonDegenerateStringArray(types) ) {
+			if( jsmf.util.isNonDegenerateStringArray(types) ) {
 				return types;
 			}
 			throw new Error("superTypes spec. of class " + initData.name + " is not an array of names");
@@ -103,7 +100,8 @@ jsmf.meta = new (function() {
 
 		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 		if( initData.features ) {
-			$(jsmf.util.asArray(initData.features)).each(function(index) {
+			if( !$.isArray(initData.features) ) throw new Error('feature spec. is not an array (of features) in class: ' + initData.name);
+			$(initData.features).each(function(index) {
 				jsmf.util.checkName(this, "feature name is empty");
 				if( _self.features[this.name] ) throw new Error("feature name '" + this.name + "' is not unique in class: " + initData.name);
 				_self.features[this.name] = createFeature(this, _self);
@@ -199,17 +197,24 @@ jsmf.meta = new (function() {
 	function createFeature(initData, eClass) {
 
 		function Attribute() {
-			// (nothing to add)
+			this.get = function(value) { return value; };
 		}
-
 		Attribute.prototype = new jsmf.meta.Feature();
 		
-		function Reference(containment) {
-			this.containment = containment;
-			// TODO  consider whether opposite/unique/&c. make sense for us
+		function Reference() {
+			this.get = function(setting) {
+				if( setting instanceof setting.resource.Proxy ) {
+					return setting.resolve();
+				}
+				return setting;
+			};
 		}
-
 		Reference.prototype = new jsmf.meta.Feature();
+
+		function Containment() {
+			this.get = function(value) { return value; };
+		}
+		Containment.prototype = new jsmf.meta.Feature();
 
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
@@ -218,9 +223,9 @@ jsmf.meta = new (function() {
 		initData.kind = initData.kind || "attribute";
 		var feature = (function(kind) {
 				switch( kind ) {
-				case "attribute":	return new Attribute();
-				case "containment":	return new Reference(true);
-				case "reference":	return new Reference(false);
+					case "attribute":	return new Attribute();
+					case "containment":	return new Containment();
+					case "reference":	return new Reference();
 			}
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
 		})(initData.kind);
