@@ -86,7 +86,7 @@ jsmf.model = new (function() {
 
 			function getFeature(featureArg, eClass) {
 				if( typeof(featureArg) === 'string' )			return eClass.allFeatures()[featureArg];
-				if( featureArg instanceof jsmf.meta.EFeature )	return featureArg;
+				if( featureArg instanceof jsmf.meta.Feature )	return featureArg;
 				throw new Error('invalid feature argument to {g|s}et: ' + JSON.stringify(featureArg));
 			}
 
