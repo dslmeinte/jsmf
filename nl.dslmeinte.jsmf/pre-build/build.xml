@@ -13,7 +13,7 @@
 
 	<target name="build">
 		<fail unless="antversionok" message="ANT version is too old."/>
-		<concat destfile="../jsmf.js" fixlastline="true">
+		<concat destfile="../dist/jsmf.js" fixlastline="true">
 			<!-- (concatenate in order:) -->
 			<fileset dir="." includes="jsmf-preamble.js"/>
 			<fileset dir="." includes="jsmf-meta.js"/>
