@@ -113,12 +113,13 @@ jsmf.model = new (function() {
 			};
 
 			this.uri = function() {
+				var objName = this.get('name');
 				if( !this.container ) {
-					if( !this.name ) throw new Error("cannot compute URI for object due to missing name");
+					if( !objName ) throw new Error("cannot compute URI for object due to missing name");
 						// TODO  switch to a count-based system for name-less things
-					return '/' + this.name;
+					return '/' + objName;
 				}
-				return this.container.uri() + '.' + this.containingFeature.name + '/' + this.name;
+				return this.container.uri() + '.' + this.containingFeature.name + '/' + objName;
 			};
 
 			// TODO  add convenience function for traversal and such
