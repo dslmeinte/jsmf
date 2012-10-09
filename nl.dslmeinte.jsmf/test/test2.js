@@ -274,9 +274,10 @@
 			var statemachine = modelResource.contents[0];
 			ok(statemachine.resource === modelResource, "backlink to eResource correct");
 			var states = statemachine.get("states");
-			var offState = states[0];
-			var onState = states[1];
-			var referencedState = offState.get("transitions")[0].get("targetState");
+			var offState = states.get(0);
+			var onState = states.get(1);
+			var transition0 = offState.get("transitions").get(0);
+			var referencedState = transition0.get("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
 			deepEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");

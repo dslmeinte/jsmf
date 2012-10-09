@@ -58,12 +58,12 @@ jsmf.resolver = new (function() {
 		};
 
 		this.resolveInResource = function(resource) {
-			var searchListOrObject = resource.contents;
+			var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment
 			$(this.fragments).each(function(index) {	// this is a Fragment
 				searchListOrObject = findIn(this, searchListOrObject);
 				if( !searchListOrObject ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
 				if( this.featureName ) {
-					searchListOrObject = searchListOrObject.get(this.featureName);
+					searchListOrObject = searchListOrObject.get(this.featureName).get();
 				}
 			});
 

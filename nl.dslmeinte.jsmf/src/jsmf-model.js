@@ -24,6 +24,8 @@ jsmf.model = new (function() {
 
 		// TODO  the following is still somewhat specific for Concrete => separate out factory function
 
+		// TODO  make separate factory methods for this
+
 		/**
 		 * A <em>model</em> object.
 		 */
@@ -61,7 +63,7 @@ jsmf.model = new (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
 							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new MObject(_value, _self, feature); });
-							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new Proxy(_value, type); });
+							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new MProxy(_value, type); });
 						}
 					})();
 					if( feature.isNameFeature() ) {
@@ -76,9 +78,10 @@ jsmf.model = new (function() {
 			function createNestedObject(feature, value, creationFunc) {
 				if( $.isArray(value) ) {
 					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
-					return $.map(value, function(nestedValue, index) {
-						return creationFunc.apply(this, [ nestedValue, feature.type ]);
-					});
+					return new MList(feature, $.map(value, function(nestedValue, index) {
+											return creationFunc.apply(this, [ nestedValue, feature.type ]);
+										})
+									);
 				}
 				if( feature.manyValued() ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
 				return creationFunc.apply(this, [ value, feature.type ]);
@@ -97,7 +100,7 @@ jsmf.model = new (function() {
 					case 'attribute':	return value;
 					case 'containment':	return value;
 					case 'reference':	{
-						if( value instanceof Proxy ) {
+						if( value instanceof MProxy ) {
 							var target = value.resolve();
 							settings[feature.name] = target;
 							return target;
@@ -133,7 +136,10 @@ jsmf.model = new (function() {
 
 		}
 
-		function Proxy(_uriString, type) {
+		/**
+		 * Holds the as-yet-unresolved target of a reference.
+		 */
+		function MProxy(_uriString, type) {
 
 			this.uriString = _uriString;
 			this.uri = jsmf.resolver.createUri(_uriString);
@@ -145,6 +151,40 @@ jsmf.model = new (function() {
 
 			this.isProxy = function() {
 				return true;
+			};
+
+		}
+
+		/**
+		 * Holds the values of a many-valued (non-Attribute) feature.
+		 * <p>
+		 * We need this to be able to do distinguish the collection of
+		 * values vs. the individual values, e.g. to be able to do
+		 * notifications on changes of either sort.
+		 * <p>
+		 * We also need this to be able to keep track of opposites.
+		 */
+		function MList(feature, initialValues) {
+
+			var values = initialValues || [];
+
+			this.get = function(index) {
+				if( index != undefined ) {
+					return values[index];	// TODO  add validation
+				}
+				return values;
+			};
+
+			this.add = function(value, optIndex) {
+				if( optIndex != undefined ) {
+					values.push(optIndex, value);	// FIXME
+				} else {
+					values.push(value);
+				}
+			};
+
+			this.removeValue = function(index) {
+				values.slice(index);	// FIXME
 			};
 
 		}
@@ -179,7 +219,7 @@ jsmf.model = new (function() {
 
 				$.map(eObject._class.allFeatures(), function(feature, featureName) {
 					var convertedValue = convertValue(eObject.get(featureName), feature);
-					if( convertedValue ) {
+					if( convertedValue != undefined ) {
 						json[featureName] = convertedValue;
 					}
 				});
@@ -189,13 +229,15 @@ jsmf.model = new (function() {
 				function convertValue(value, feature) {
 					if( feature.manyValued() ) {
 						var json = [];
-						$(value).each(function(i) {
-							json.push(convertSingleValue(this, feature));
-						});
+						if( value != undefined ) {
+							$(value.get()).each(function(i) {
+								json.push(convertSingleValue(this, feature));
+							});
+						}
 						if( json.length > 0 ) {
 							return json;
 						}
-						return null;
+						return undefined;
 					}
 
 					return convertSingleValue(value, feature);
