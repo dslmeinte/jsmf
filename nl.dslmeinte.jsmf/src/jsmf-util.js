@@ -63,5 +63,12 @@ jsmf.util = new (function() {
 		return count;
 	};
 
+	// simple, switchable debugging (remove later)
+	this.log = function(message) {
+		if( false ) {
+			console.log(message);
+		}
+	};
+
 })();
 

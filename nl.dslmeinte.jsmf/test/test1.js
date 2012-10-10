@@ -206,7 +206,7 @@
 	} ];
 
 	test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {
-			var metaModel = jsmf.meta.createMetaModelFromConcrete(metaModelJSON);
+			var metaModel = jsmf.meta.createMetaModelFromJSON(metaModelJSON);
 			ok(metaModel, "meta meta model initialised");
 			equal(jsmf.util.countProperties(metaModel.classifiers), 9, "#meta meta classes correct");
 			var classifierClass = metaModel.classifiers['Classifier'];
@@ -216,7 +216,7 @@
 			ok(datatypeClass.allFeatures()['name'], "Class 'Datatype' knows about its 'name' feature");
 			var featuresFeature = metaModel.classifiers['Class'].features['features'];
 			ok(featuresFeature instanceof jsmf.meta.Feature, "Feature is reified");
-			var modelResource = jsmf.model.createResource(modelJSON, metaModel);
+			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel);
 			ok(modelResource, "meta model initialised");
 			equal(modelResource.contents.length, 8, "#meta classes correct");
 		});

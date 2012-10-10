@@ -15,9 +15,9 @@ jsmf.meta = new (function() {
 	 * <p>
 	 * Note that I don't care for meta-circularity all that much, so it's separate from EObject etc.
 	 * 
-	 * @param metaModel - a "standard" representation of the meta model (i.e., the Concrete's representation for it)
+	 * @param metaModel - a "standard" representation of the meta model (i.e., Concrete's representation for it - but more restricted)
 	 */
-	this.createMetaModelFromConcrete = function(metaModelJSON) {
+	this.createMetaModelFromJSON = function(metaModelJSON) {
 
 		if( !$.isArray(metaModelJSON) ) throw new Error("meta model JSON is not an array");
 
