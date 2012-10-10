@@ -34,7 +34,7 @@ jsmf.meta = new (function() {
 		if( !metaModel.classifiers['String'] ) {
 			metaModel.classifiers['String'] = new Datatype( { name: 'String' } );
 		}
-		// TODO  consider just adding (by reference to singletons) all standard data types, including some behavior (=> do this in EPackage constructor)
+		// TODO  consider just adding (by reference to singletons) all standard data types, including some behavior (=> do this in MetaModel constructor)
 
 		$.map(metaModel.classifiers, function(eClassifier, name) {
 			if( eClassifier instanceof Class) {
@@ -166,6 +166,13 @@ jsmf.meta = new (function() {
 
 			return _allAnnotations;
 		};
+
+		this.getFeature = function(featureArg) {
+			if( typeof(featureArg) === 'string' )			return this.allFeatures()[featureArg];
+			if( featureArg instanceof jsmf.meta.Feature )	return featureArg;
+			throw new Error('invalid feature argument: ' + JSON.stringify(featureArg));
+		};
+
 	}
 
 

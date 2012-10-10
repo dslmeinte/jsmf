@@ -9,6 +9,108 @@ jsmf.model = new (function() {
 
 	"use strict";
 
+
+	/**
+	 * A <em>model</em> object.
+	 */
+	this.MObject = function(_class, resource, container, containingFeature) {
+
+		this._class = _class;
+		this.resource = resource;
+		this.container = container;
+		this.containingFeature = containingFeature;
+
+		var settings = {};
+
+		this.get = function(featureArg) {
+			var feature = this._class.getFeature(featureArg);
+			var value = settings[feature.name];
+			switch(feature.kind) {
+				case 'attribute':	return value;
+				case 'containment':	return value;
+				case 'reference':	{
+					if( value instanceof jsmf.model.MProxy ) {
+						var target = value.resolve();
+						settings[feature.name] = target;
+						return target;
+					}
+					return value;
+				}
+			}
+		};
+
+		this.set = function(featureArg, value) {
+			var feature = this._class.getFeature(featureArg);
+			settings[feature.name] = value;
+		};
+
+		this.uri = function() {
+			var objName = this.get('name');
+			if( !this.container ) {
+				if( !objName ) throw new Error("cannot compute URI for object due to missing name");
+					// TODO  switch to a count-based system for name-less things
+				return '/' + objName;
+			}
+			return this.container.uri() + '.' + this.containingFeature.name + '/' + objName;
+		};
+
+	};
+
+
+	/**
+	 * Holds the as-yet-unresolved target of a reference.
+	 */
+	this.MProxy = function(_uriString, type, resource) {
+
+		this.uriString = _uriString;
+		this.uri = jsmf.resolver.createUri(_uriString);
+		this.type = type;
+
+		this.resolve = function() {
+			return this.uri.resolveInResource(resource);
+		};
+
+		this.isProxy = function() {
+			return true;
+		};
+
+	};
+
+	/**
+	 * Holds the values of a many-valued (non-Attribute) feature.
+	 * <p>
+	 * We need this to be able to do distinguish the collection of
+	 * values vs. the individual values, e.g. to be able to do
+	 * notifications on changes of either sort.
+	 * <p>
+	 * We also need this to be able to keep track of opposites.
+	 */
+	this.MList = function(feature, initialValues) {
+
+		var values = initialValues || [];
+
+		this.get = function(index) {
+			if( index != undefined ) {
+				return values[index];	// TODO  add validation
+			}
+			return values;
+		};
+
+		this.add = function(value, optIndex) {
+			if( optIndex != undefined ) {
+				values.push(optIndex, value);	// FIXME
+			} else {
+				values.push(value);
+			}
+		};
+
+		this.removeValue = function(index) {
+			values.slice(index);	// FIXME
+		};
+
+	};
+
+
 	this.createResource = function(modelJSON, metaModel) {	/* (somewhat) analogous to org.eclipse.emf.ecore.resource.Resource (or rather: org.eclipse.emf.ecore.resource.impl.ResourceImpl) */
 
 		var _resource = new Resource(metaModel);	// (have to use _prefix to soothe JS plug-in)
@@ -16,7 +118,7 @@ jsmf.model = new (function() {
 		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
 		$(modelJSON).each(function(index) {
 			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
-			_resource.contents.push(new MObject(this, null, null));
+			_resource.contents.push(createMObject(this, null, null));
 		});
 
 		return _resource;
@@ -26,48 +128,38 @@ jsmf.model = new (function() {
 
 		// TODO  make separate factory methods for this
 
-		/**
-		 * A <em>model</em> object.
-		 */
-		function MObject(initData, parent, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
+		function createMObject(initData, parent, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
 
 			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
-			jsmf.util.checkClass(this);
+			jsmf.util.checkClass(initData);
 
 			var className = initData._class;
-			this._class = metaModel.classifiers[className];
-			if( !this._class ) throw new Error("declared object's type '" + className + "' not defined in meta model");
-			if( this._class['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
+			var _class = metaModel.classifiers[className];
+			if( !_class ) throw new Error("declared object's type '" + className + "' not defined in meta model");
+			if( _class['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
+
+			var _allFeatures = _class.allFeatures();
+
+			var validPropertyNames = [ "_class" ].concat(_class.allAnnotations()).concat($.map(_allFeatures, function(value, key) { return key; }));
+			jsmf.util.checkProperties(initData, validPropertyNames);
 
 			log( "constructing an instance of '" + className + "' with initialisation data: " + JSON.stringify(initData) );
 
-			this.resource = _resource;
-			this.container = parent;
-			this.containingFeature = containingFeature;
-
-			var _allFeatures = this._class.allFeatures();
-
-			var validPropertyNames = [ "_class" ].concat(this._class.allAnnotations()).concat($.map(_allFeatures, function(value, key) { return key; }));
-			jsmf.util.checkProperties(initData, validPropertyNames);
-
-			var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
-
-			var settings = {};
+			var mObject = new jsmf.model.MObject(_class, _resource, parent, containingFeature);
 
 			// traverse values/settings of features:
 			$.map(_allFeatures, function(feature, featureName) {
 				var value = initData[featureName];
 				log("\tsetting value of feature named '" + featureName + "' with value: " + JSON.stringify(value));
 				if( value ) {
-					settings[featureName] = (function() {
+					mObject.set(feature, (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
-							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return new MObject(_value, _self, feature); });
-							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new MProxy(_value, type); });
-						}
-					})();
+							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return createMObject(_value, mObject, feature); });
+							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new jsmf.model.MProxy(_value, type, _resource); });
+						}})());
 					if( feature.isNameFeature() ) {
-						_self.name = value;
+						mObject.name = value;
 					}
 				} else {
 					if( feature.lowerLimit > 0 ) throw new Error("no value given for required feature named '" + featureName + "'");
@@ -75,10 +167,13 @@ jsmf.model = new (function() {
 				log("\t(set value of feature named '" + featureName + "')");
 			});
 
+			return mObject;
+
+
 			function createNestedObject(feature, value, creationFunc) {
 				if( $.isArray(value) ) {
 					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
-					return new MList(feature, $.map(value, function(nestedValue, index) {
+					return new jsmf.model.MList(feature, $.map(value, function(nestedValue, index) {
 											return creationFunc.apply(this, [ nestedValue, feature.type ]);
 										})
 									);
@@ -86,44 +181,6 @@ jsmf.model = new (function() {
 				if( feature.manyValued() ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
 				return creationFunc.apply(this, [ value, feature.type ]);
 			}
-
-			function getFeature(featureArg, eClass) {
-				if( typeof(featureArg) === 'string' )			return eClass.allFeatures()[featureArg];
-				if( featureArg instanceof jsmf.meta.Feature )	return featureArg;
-				throw new Error('invalid feature argument to {g|s}et: ' + JSON.stringify(featureArg));
-			}
-
-			this.get = function(featureArg) {
-				var feature = getFeature(featureArg, this._class);
-				var value = settings[feature.name];
-				switch(feature.kind) {
-					case 'attribute':	return value;
-					case 'containment':	return value;
-					case 'reference':	{
-						if( value instanceof MProxy ) {
-							var target = value.resolve();
-							settings[feature.name] = target;
-							return target;
-						}
-						return value;
-					}
-				}
-			};
-
-			this.set = function(featureArg, value) {
-				var feature = getFeature(featureArg, this._class);
-				settings[feature.name] = value;
-			};
-
-			this.uri = function() {
-				var objName = this.get('name');
-				if( !this.container ) {
-					if( !objName ) throw new Error("cannot compute URI for object due to missing name");
-						// TODO  switch to a count-based system for name-less things
-					return '/' + objName;
-				}
-				return this.container.uri() + '.' + this.containingFeature.name + '/' + objName;
-			};
 
 			// TODO  add convenience function for traversal and such
 
@@ -133,59 +190,6 @@ jsmf.model = new (function() {
 					console.log(message);
 				}
 			}
-
-		}
-
-		/**
-		 * Holds the as-yet-unresolved target of a reference.
-		 */
-		function MProxy(_uriString, type) {
-
-			this.uriString = _uriString;
-			this.uri = jsmf.resolver.createUri(_uriString);
-			this.type = type;
-
-			this.resolve = function() {
-				return this.uri.resolveInResource(_resource);
-			};
-
-			this.isProxy = function() {
-				return true;
-			};
-
-		}
-
-		/**
-		 * Holds the values of a many-valued (non-Attribute) feature.
-		 * <p>
-		 * We need this to be able to do distinguish the collection of
-		 * values vs. the individual values, e.g. to be able to do
-		 * notifications on changes of either sort.
-		 * <p>
-		 * We also need this to be able to keep track of opposites.
-		 */
-		function MList(feature, initialValues) {
-
-			var values = initialValues || [];
-
-			this.get = function(index) {
-				if( index != undefined ) {
-					return values[index];	// TODO  add validation
-				}
-				return values;
-			};
-
-			this.add = function(value, optIndex) {
-				if( optIndex != undefined ) {
-					values.push(optIndex, value);	// FIXME
-				} else {
-					values.push(value);
-				}
-			};
-
-			this.removeValue = function(index) {
-				values.slice(index);	// FIXME
-			};
 
 		}
 
@@ -249,8 +253,7 @@ jsmf.model = new (function() {
 						case 'containment':	return convertObject(value);
 						case 'reference':	{
 							if( !value )		return null;
-							if( value.isProxy )	return value.uriString;
-							return value.uri();
+							return( value.isProxy ? value.uriString : value.uri() );
 						}
 					}
 				}
