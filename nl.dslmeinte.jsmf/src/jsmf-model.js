@@ -12,14 +12,14 @@ jsmf.model = {};
 
 jsmf.model.Factory = new (function() {
 
-	this.createMResource = function(modelJSON, metaModel) {	/* (somewhat) analogous to org.eclipse.emf.ecore.resource.Resource (or rather: org.eclipse.emf.ecore.resource.impl.ResourceImpl) */
+	this.createMResource = function(modelJSON, metaModel) {
 
 		var _resource = new jsmf.model.MResource(metaModel);	// (have to use _prefix to soothe JS plug-in)
 
 		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
 		$(modelJSON).each(function(index) {
 			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
-			_resource.contents.push(createMObject(this, null, null));
+			_resource.contents.add(createMObject(this, null, null));
 		});
 
 		return _resource;
@@ -67,16 +67,16 @@ jsmf.model.Factory = new (function() {
 			return mObject;
 
 
-			function createNestedObject(feature, value, creationFunc) {
+			function createNestedObject(feature, value, creator) {
 				if( $.isArray(value) ) {
 					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
 					return new jsmf.model.MList(feature, $.map(value, function(nestedValue, index) {
-											return creationFunc.apply(this, [ nestedValue, feature.type ]);
+											return creator.apply(this, [ nestedValue, feature.type ]);
 										})
 									);
 				}
 				if( feature.manyValued() ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
-				return creationFunc.apply(this, [ value, feature.type ]);
+				return creator.apply(this, [ value, feature.type ]);
 			}
 
 		}
@@ -86,6 +86,14 @@ jsmf.model.Factory = new (function() {
 
 
 })();
+
+
+/**
+ * An abstract type (for values of non-Attribute features).
+ */
+jsmf.model.MElement = function() {
+	throw new Error("MElement is abstract");
+};
 
 
 /**
@@ -102,19 +110,10 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 
 	this.get = function(featureArg) {
 		var feature = this._class.getFeature(featureArg);
-		var value = settings[feature.name];
-		switch(feature.kind) {
-			case 'attribute':	return value;
-			case 'containment':	return value;
-			case 'reference':	{
-				if( value instanceof jsmf.model.MProxy ) {
-					var target = value.resolve();
-					settings[feature.name] = target;
-					return target;
-				}
-				return value;
-			}
-		}
+		var setting = settings[feature.name];
+		var value = feature.get(setting);
+		settings[feature.name] = value;
+		return value;
 	};
 
 	this.set = function(featureArg, value) {
@@ -133,72 +132,25 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 	};
 
 	this.toJSON = function() {
-
 		var json = {};
 		json._class = this._class.name;
 
+		var _self = this;
 		$.map(this._class.allFeatures(), function(feature, featureName) {
-			var convertedValue = convertValue(settings[featureName], feature);
+			var convertedValue = feature.toJSON(_self.get(feature));
 			if( convertedValue != undefined ) {
 				json[featureName] = convertedValue;
 			}
 		});
 
 		return json;
-
-		function convertValue(value, feature) {
-			if( feature.manyValued() ) {
-				var json = [];
-				if( value != undefined ) {
-					$(value.get()).each(function(i) {
-						json.push(convertSingleValue(this, feature));
-					});
-				}
-				if( json.length > 0 ) {
-					return json;
-				}
-				return undefined;
-			}
-
-			return convertSingleValue(value, feature);
-		}
-
-		function convertSingleValue(value, feature) {
-			switch(feature.kind) {
-				case 'attribute':	return value;
-				case 'containment':	return( !value ? null : value.toJSON() );
-				case 'reference':	{
-					if( !value )		return null;
-					return( value.isProxy ? value.uriString : value.uri() );
-				}
-			}
-		}
-
 	};
 
-	// TODO  add convenience function for traversal and such
+	// TODO  add functions for traversal and notification
 
 };
 
-
-/**
- * Holds the as-yet-unresolved target of a reference.
- */
-jsmf.model.MProxy = function(_uriString, type, resource) {
-
-	this.uriString = _uriString;
-	this.uri = jsmf.resolver.createUri(_uriString);
-	this.type = type;
-
-	this.resolve = function() {
-		return this.uri.resolveInResource(resource);
-	};
-
-	this.isProxy = function() {
-		return true;
-	};
-
-};
+jsmf.model.MObject.prototype = jsmf.model.MElement;
 
 
 /**
@@ -210,50 +162,103 @@ jsmf.model.MProxy = function(_uriString, type, resource) {
  * <p>
  * We also need this to be able to keep track of opposites.
  */
-jsmf.model.MList = function(feature, initialValues) {
+jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValues) {
 
+	/*
+	 * If feature == null, then this MList instance is contained by an MResource as its 'contents' feature.
+	 * Note: feature is currently unused.
+	 */
 	var values = initialValues || [];
 
 	this.get = function(index) {
-		if( index != undefined ) {
-			return values[index];	// TODO  add validation
-		}
+		checkIndex(index);
+		return values[index];
+	};
+
+	this.values = function() {
 		return values;
 	};
 
-	this.add = function(value, optIndex) {
+	this.add = function(value, /* optional: */ optIndex) {
 		if( optIndex != undefined ) {
-			values.push(optIndex, value);	// FIXME
+			checkIndex(optIndex, true);
+			values.splice(optIndex, 0, value);
 		} else {
 			values.push(value);
 		}
 	};
 
 	this.removeValue = function(index) {
-		values.slice(index);	// FIXME
+		checkIndex(index);
+		values.splice(index, 1);
+	};
+
+	function checkIndex(index, /* optional with default=false: */ adding) {
+		if( typeof(index) !== 'number' ) {
+			throw new Error("list index must be a number");
+		}
+		if( index < 0 ) {
+			throw new Error("list index must be non-negative");
+		}
+		if( index >= values.length ) {
+			if( !(adding && index === values.length) ) {
+				throw new Error("list index out of bounds");
+			}
+		}
+	}
+
+	this.toJSON = function() {
+		return $.map(values, function(item, i) {
+			return item.toJSON();
+		});
+	};
+
+	this.uri = function() {
+		return $.map(values, function(value, index) {
+			return value.uri().toString();
+		});
+	};
+
+};
+
+jsmf.model.MList.prototype = jsmf.model.MElement;
+
+
+/**
+ * Holds the as-yet-unresolved target of a reference.
+ */
+jsmf.model.MProxy = function(uriString, type, resource) {
+
+	this.type = type;
+
+	var computedUri = jsmf.resolver.createUri(uriString);
+	this.uri = function() {
+		return computedUri;
+	};
+
+	this.resolve = function() {
+		return computedUri.resolveInResource(resource);
+		// TODO  do something with type info as well (e.g., validate)
 	};
 
 };
 
 
+/**
+ * Holds an entire model conforming to the given {@param metaModel}.
+ */
 jsmf.model.MResource = function(metaModel) {
 
 	this.metaModel = metaModel;
-	this.contents = [];
+	this.contents = new jsmf.model.MList(null);
 
 	/**
 	 * Converts this Resource to JSON, with references in the correct textual format.
 	 */
 	this.toJSON = function() {
-
-		var json = [];
-
-		$(this.contents).each(function(i) {
-			json.push(!this ? null : this.toJSON());
-		});
-
-		return json;
+		return this.contents.toJSON();
 	};
 
 };
+
 

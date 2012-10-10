@@ -31,8 +31,7 @@ jsmf.resolver = new (function() {
 		if( typeof(uriString) !== 'string' ) throw new Error('URI must be a String');
 //		if( !uriRegExp.test(uriString) ) throw new Error('URI must have the correct format: ' + uriString);
 		var _fragments = uriString.slice(1).split('/');
-		var uri = new Uri();
-		uri.completeUri = uriString;
+		var uri = new Uri(uriString);
 		$(_fragments).each(function(i) {		// this is a String
 			var splitFragment = this.split('.');
 			uri.fragments[i] = new uri.Fragment(splitFragment[0], ( splitFragment.length === 1 ? null : splitFragment[1] ));
@@ -40,9 +39,11 @@ jsmf.resolver = new (function() {
 		return uri;
 	};
 
-	function Uri() {
+	function Uri(uriString) {
 
-		this.completeUri = null;
+		this.toString = function() {
+			return uriString;
+		};
 
 		this.fragments = [];
 
@@ -58,20 +59,20 @@ jsmf.resolver = new (function() {
 		};
 
 		this.resolveInResource = function(resource) {
-			var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment
+			var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment, before that an MList
 			$(this.fragments).each(function(index) {	// this is a Fragment
 				searchListOrObject = findIn(this, searchListOrObject);
 				if( !searchListOrObject ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
 				if( this.featureName ) {
-					searchListOrObject = searchListOrObject.get(this.featureName).get();
+					searchListOrObject = searchListOrObject.get(this.featureName);
 				}
 			});
 
 			return searchListOrObject;
 
-			function findIn(fragment, list) {
+			function findIn(fragment, mList) {
 				var match = null;
-				$(list).each(function(i) {
+				$(mList.values()).each(function(i) {
 					if( this.name && this.name === fragment.name ) {
 						match = this;
 					}

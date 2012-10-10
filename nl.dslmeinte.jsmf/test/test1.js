@@ -218,7 +218,7 @@
 			ok(featuresFeature instanceof jsmf.meta.Feature, "Feature is reified");
 			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel);
 			ok(modelResource, "meta model initialised");
-			equal(modelResource.contents.length, 8, "#meta classes correct");
+			equal(modelResource.contents.values().length, 8, "#meta classes correct");
 		});
 
 })();

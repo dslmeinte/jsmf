@@ -203,25 +203,38 @@ jsmf.meta = new (function() {
 
 	function createFeature(initData, eClass) {
 
+
+		/*
+		 * The following are sub types of Feature.
+		 * Note that these types already contain knowledge on how to deal with instances.
+		 */
+
 		function Attribute() {
-			this.get = function(value) { return value; };
+			this.get = function(value)		{ return value; };
+			this.toJSON = function(value)	{ return value; };
 		}
 		Attribute.prototype = new jsmf.meta.Feature();
-		
+
 		function Reference() {
 			this.get = function(setting) {
-				if( setting instanceof setting.resource.Proxy ) {
+				if( setting instanceof jsmf.model.MProxy ) {
 					return setting.resolve();
 				}
 				return setting;
+			};
+			this.toJSON = function(value) {
+				if( value === undefined ) return null;
+				return( value instanceof jsmf.model.MProxy ? value.uriString : value.uri() );
 			};
 		}
 		Reference.prototype = new jsmf.meta.Feature();
 
 		function Containment() {
-			this.get = function(value) { return value; };
+			this.get = function(value)		{ return value; };
+			this.toJSON = function(value)	{ return( value === undefined ? null : value.toJSON() ); };	// FIXME  doesn't take many-valued features into account
 		}
 		Containment.prototype = new jsmf.meta.Feature();
+
 
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
@@ -265,6 +278,14 @@ jsmf.meta = new (function() {
 
 		this.manyValued = function() {
 			return( this.upperLimit != 1 );
+		};
+
+		this.get = function(value) {
+			throw new Error("#get(value) not implemented!");
+		};
+
+		this.toJSON = function(value) {
+			throw new Error("#toJSON(value) not implemented!");
 		};
 
 	};
