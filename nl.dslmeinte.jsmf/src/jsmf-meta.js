@@ -173,6 +173,11 @@ jsmf.meta = new (function() {
 			throw new Error('invalid feature argument: ' + JSON.stringify(featureArg));
 		};
 
+		this.checkAnnotation = function(annotationName) {
+			if( typeof(annotationArg) === 'string' ) return this.allAnnotations()[annotationName];
+			throw new Error('invalid annotation argument: ' + JSON.stringify(annotationName));
+		};
+
 	}
 
 

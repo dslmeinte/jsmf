@@ -272,7 +272,6 @@
 			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel);
 			ok(modelResource, "example model initialised");
 			var statemachine = modelResource.contents.at(0);
-			ok(statemachine.resource === modelResource, "backlink to eResource correct");
 			var states = statemachine.get("states");
 			var offState = states.at(0);
 			var onState = states.at(1);

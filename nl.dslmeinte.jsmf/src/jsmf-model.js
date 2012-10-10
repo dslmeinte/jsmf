@@ -14,9 +14,6 @@
 jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 
 	this._class = _class;
-	this.resource = resource;
-	this.container = container;
-	this.containingFeature = containingFeature;
 
 	var settings = {};
 
@@ -28,19 +25,24 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 		return value;
 	};
 
-	this.set = function(featureArg, value) {
+	this.set = function(featureArg, newValue) {
 		var feature = this._class.getFeature(featureArg);
-		settings[feature.name] = value;
+		var oldValue = settings[feature.name];
+		settings[feature.name] = newValue;
+		if( oldValue !== newValue ) {
+			resource.notifyValueChanged(this, feature, oldValue, newValue);
+		}
+		return this;	// for chaining
 	};
 
 	this.uri = function() {
 		var objName = this.get('name');
-		if( !this.container ) {
+		if( container === null ) {
 			if( !objName ) throw new Error("cannot compute URI for object due to missing name");
 				// TODO  switch to a count-based system for name-less things
 			return '/' + objName;
 		}
-		return this.container.uri() + '.' + this.containingFeature.name + '/' + objName;
+		return container.uri() + '.' + containingFeature.name + '/' + objName;
 	};
 
 	this.toJSON = function() {
@@ -54,11 +56,26 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 				json[featureName] = convertedValue;
 			}
 		});
+		$.map(this._class.allAnnotations(), function(annotationName) {
+			json[annotationName] = _self.getAnnotation(annotationName);
+		});
 
 		return json;
 	};
 
-	// TODO  add functions for notification
+
+	var annotationSettings = {};
+
+	this.getAnnotation = function(annotationName) {
+		this._class.checkAnnotation(annotationName);
+		return annotationSettings[annotationName];
+	};
+
+	this.setAnnotation = function(annotationName, value) {
+		this._class.checkAnnotation(annotationName);
+		annotationSettings[annotationName] = value;
+		return this;	// for chaining
+	};
 
 };
 
@@ -72,7 +89,7 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
  * <p>
  * We also need this to be able to keep track of opposites.
  */
-jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValues) {
+jsmf.model.MList = function(resource, container, feature, /* optional with default=[]: */ initialValues) {
 
 	/*
 	 * If feature == null, then this MList instance is contained by an MResource as its 'contents' feature.
@@ -93,14 +110,19 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 		if( optIndex != undefined ) {
 			checkIndex(optIndex, true);
 			values.splice(optIndex, 0, value);
+			resource.notifyValueAdded(this, optIndex, value);
 		} else {
 			values.push(value);
+			resource.notifyValueAdded(this, values.length-1, value);
 		}
+		resource.notifyListChanged(container, feature);
 	};
 
 	this.removeValue = function(index) {
 		checkIndex(index);
-		values.splice(index, 1);
+		var removedValue = values.splice(index, 1);
+		resource.notifyValueRemoved(this, index, removedValue);
+		resource.notifyListChanged(container, feature);
 	};
 
 	function checkIndex(index, /* optional with default=false: */ adding) {
@@ -118,13 +140,13 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 	}
 
 	this.toJSON = function() {
-		return $.map(values, function(item, i) {
+		return $.map(values, function(item) {
 			return item.toJSON();
 		});
 	};
 
 	this.uri = function() {
-		return $.map(values, function(value, index) {
+		return $.map(values, function(value) {
 			return value.uri().toString();
 		});
 	};
@@ -137,7 +159,9 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 		$(values).filter(indicator).first();
 	};
 
-	// TODO  add (more) functions for traversal and notification
+	// TODO  add more functions for traversal
+
+	// TODO  Can MList-s have annotations as well (e.g., for viewing purposes like collapsed etc.)? In which case: how to declare such annotations in the meta model?
 
 };
 

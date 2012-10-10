@@ -312,8 +312,6 @@
 			ok(metaModel, "statemachine meta model initialised");
 			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel);
 			ok(modelResource, "example model initialised");
-			var statemachine = modelResource.contents.at(0);
-			ok(statemachine.resource === modelResource, "backlink to resource correct");
 		});
 
 })();

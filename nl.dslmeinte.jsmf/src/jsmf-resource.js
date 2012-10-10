@@ -12,13 +12,46 @@
 jsmf.model.MResource = function(metaModel) {
 
 	this.metaModel = metaModel;
-	this.contents = new jsmf.model.MList(null);
+	this.contents = new jsmf.model.MList(this, null, null);
 
 	/**
 	 * Converts this Resource to JSON, with references in the correct textual format.
 	 */
 	this.toJSON = function() {
 		return this.contents.toJSON();
+	};
+
+	var listeners = [];
+
+	this.addListener = function(listener) {
+		listeners.push(listener);
+	};
+
+
+	// farm out notifications across listeners:
+
+	this.notifyValueAdded = function(mList, index, value) {
+		$(listeners).each(function() {
+			this.notifyValueAdded(mList, index, value);
+		});
+	};
+
+	this.notifyValueRemoved= function(mList, index, removedValue) {
+		$(listeners).each(function() {
+			this.notifyValueRemoved(mList, index, removedValue);
+		});
+	};
+
+	this.notifyListChanged = function(mObject, feature) {
+		$(listeners).each(function() {
+			this.notifyListChanged(mList, index);
+		});
+	};
+
+	this.notifyValueChanged = function(mObject, feature, oldValue, newValue) {
+		$(listeners).each(function() {
+			this.notifyValueChanged(mObject, feature, oldValue, newValue);
+		});
 	};
 
 };
@@ -44,7 +77,7 @@ jsmf.model.Factory = new (function() {
 		return _resource;
 
 
-		function createMObject(initData, parent, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
+		function createMObject(initData, container, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
 
 			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
 			jsmf.util.checkClass(initData);
@@ -61,7 +94,7 @@ jsmf.model.Factory = new (function() {
 
 			jsmf.util.log( "constructing an instance of '" + className + "' with initialisation data: " + JSON.stringify(initData) );
 
-			var mObject = new jsmf.model.MObject(_class, _resource, parent, containingFeature);
+			var mObject = new jsmf.model.MObject(_class, _resource, container, containingFeature);
 
 			// traverse values/settings of features:
 			$.map(_allFeatures, function(feature, featureName) {
@@ -89,7 +122,7 @@ jsmf.model.Factory = new (function() {
 			function createNestedObject(feature, value, creator) {
 				if( $.isArray(value) ) {
 					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
-					return new jsmf.model.MList(feature, $.map(value, function(nestedValue, index) {
+					return new jsmf.model.MList(_resource, container, feature, $.map(value, function(nestedValue, index) {
 											return creator.apply(this, [ nestedValue, feature.type ]);
 										})
 									);
