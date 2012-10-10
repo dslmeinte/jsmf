@@ -24,7 +24,7 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 		var feature = this._class.getFeature(featureArg);
 		var setting = settings[feature.name];
 		var value = feature.get(setting);
-		settings[feature.name] = value;
+		settings[feature.name] = value;		// re-set setting for resolved proxies
 		return value;
 	};
 
@@ -58,7 +58,7 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 		return json;
 	};
 
-	// TODO  add functions for traversal and notification
+	// TODO  add functions for notification
 
 };
 
@@ -85,9 +85,8 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 		return values[index];
 	};
 
-	// TODO  replace with traversal functions
-	this.values = function() {
-		return values;
+	this.size = function() {
+		return values.length;
 	};
 
 	this.add = function(value, /* optional: */ optIndex) {
@@ -129,6 +128,16 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 			return value.uri().toString();
 		});
 	};
+
+	this.each = function(iterator) {
+		$(values).each(iterator);
+	};
+
+	this.find = function(indicator) {
+		$(values).filter(indicator).first();
+	};
+
+	// TODO  add (more) functions for traversal and notification
 
 };
 

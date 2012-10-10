@@ -138,6 +138,7 @@ jsmf.model.Resolver = new (function() {
 		return uri;
 	};
 
+
 	function Uri(uriString) {
 
 		this.toString = function() {
@@ -170,8 +171,9 @@ jsmf.model.Resolver = new (function() {
 			return searchListOrObject;
 
 			function findIn(fragment, mList) {
+				// TODO  rephrase in a functional style
 				var match = null;
-				$(mList.values()).each(function(i) {
+				mList.each(function(i) {
 					if( this.name && this.name === fragment.name ) {
 						match = this;
 					}
