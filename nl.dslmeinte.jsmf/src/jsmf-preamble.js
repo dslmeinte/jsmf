@@ -6,5 +6,7 @@
  * (c) 2012 Meinte Boersma
  */
 
-jsmf = {};
+// pre-create all module containers:
+var jsmf = {};
+jsmf.model = {};
 

@@ -5,95 +5,7 @@
  */
 
 
-jsmf.model = {};
-
 "use strict";
-
-
-jsmf.model.Factory = new (function() {
-
-	this.createMResource = function(modelJSON, metaModel) {
-
-		var _resource = new jsmf.model.MResource(metaModel);	// (have to use _prefix to soothe JS plug-in)
-
-		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
-		$(modelJSON).each(function(index) {
-			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
-			_resource.contents.add(createMObject(this, null, null));
-		});
-
-		return _resource;
-
-
-		function createMObject(initData, parent, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
-
-			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
-			jsmf.util.checkClass(initData);
-
-			var className = initData._class;
-			var _class = metaModel.classifiers[className];
-			if( !_class ) throw new Error("declared object's type '" + className + "' not defined in meta model");
-			if( _class['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
-
-			var _allFeatures = _class.allFeatures();
-
-			var validPropertyNames = [ "_class" ].concat(_class.allAnnotations()).concat($.map(_allFeatures, function(value, key) { return key; }));
-			jsmf.util.checkProperties(initData, validPropertyNames);
-
-			jsmf.util.log( "constructing an instance of '" + className + "' with initialisation data: " + JSON.stringify(initData) );
-
-			var mObject = new jsmf.model.MObject(_class, _resource, parent, containingFeature);
-
-			// traverse values/settings of features:
-			$.map(_allFeatures, function(feature, featureName) {
-				var value = initData[featureName];
-				jsmf.util.log("\tsetting value of feature named '" + featureName + "' with value: " + JSON.stringify(value));
-				if( value ) {
-					mObject.set(feature, (function() {
-						switch(feature.kind) {
-							case 'attribute':	return value;
-							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return createMObject(_value, mObject, feature); });
-							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new jsmf.model.MProxy(_value, type, _resource); });
-						}})());
-					if( feature.isNameFeature() ) {
-						mObject.name = value;
-					}
-				} else {
-					if( feature.lowerLimit > 0 ) throw new Error("no value given for required feature named '" + featureName + "'");
-				}
-				jsmf.util.log("\t(set value of feature named '" + featureName + "')");
-			});
-
-			return mObject;
-
-
-			function createNestedObject(feature, value, creator) {
-				if( $.isArray(value) ) {
-					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
-					return new jsmf.model.MList(feature, $.map(value, function(nestedValue, index) {
-											return creator.apply(this, [ nestedValue, feature.type ]);
-										})
-									);
-				}
-				if( feature.manyValued() ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
-				return creator.apply(this, [ value, feature.type ]);
-			}
-
-		}
-
-	};
-
-
-
-})();
-
-
-/**
- * An abstract type (for values of non-Attribute features).
- */
-jsmf.model.MElement = function() {
-	throw new Error("MElement is abstract");
-};
 
 
 /**
@@ -150,8 +62,6 @@ jsmf.model.MObject = function(_class, resource, container, containingFeature) {
 
 };
 
-jsmf.model.MObject.prototype = jsmf.model.MElement;
-
 
 /**
  * Holds the values of a many-valued (non-Attribute) feature.
@@ -170,11 +80,12 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 	 */
 	var values = initialValues || [];
 
-	this.get = function(index) {
+	this.at = function(index) {
 		checkIndex(index);
 		return values[index];
 	};
 
+	// TODO  replace with traversal functions
 	this.values = function() {
 		return values;
 	};
@@ -221,8 +132,6 @@ jsmf.model.MList = function(feature, /* optional with default=[]: */ initialValu
 
 };
 
-jsmf.model.MList.prototype = jsmf.model.MElement;
-
 
 /**
  * Holds the as-yet-unresolved target of a reference.
@@ -231,7 +140,7 @@ jsmf.model.MProxy = function(uriString, type, resource) {
 
 	this.type = type;
 
-	var computedUri = jsmf.resolver.createUri(uriString);
+	var computedUri = jsmf.model.Resolver.createUri(uriString);
 	this.uri = function() {
 		return computedUri;
 	};
@@ -242,23 +151,4 @@ jsmf.model.MProxy = function(uriString, type, resource) {
 	};
 
 };
-
-
-/**
- * Holds an entire model conforming to the given {@param metaModel}.
- */
-jsmf.model.MResource = function(metaModel) {
-
-	this.metaModel = metaModel;
-	this.contents = new jsmf.model.MList(null);
-
-	/**
-	 * Converts this Resource to JSON, with references in the correct textual format.
-	 */
-	this.toJSON = function() {
-		return this.contents.toJSON();
-	};
-
-};
-
 

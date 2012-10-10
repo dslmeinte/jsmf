@@ -18,7 +18,7 @@
 			<fileset dir="." includes="jsmf-preamble.js"/>
 			<fileset dir="." includes="jsmf-meta.js"/>
 			<fileset dir="." includes="jsmf-model.js"/>
-			<fileset dir="." includes="jsmf-resolver.js"/>
+			<fileset dir="." includes="jsmf-resource.js"/>
 			<fileset dir="." includes="jsmf-util.js"/>
 		</concat>
 	</target>

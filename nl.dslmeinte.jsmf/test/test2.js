@@ -271,12 +271,12 @@
 			ok(metaModel, "statemachine meta model initialised");
 			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel);
 			ok(modelResource, "example model initialised");
-			var statemachine = modelResource.contents.get(0);
+			var statemachine = modelResource.contents.at(0);
 			ok(statemachine.resource === modelResource, "backlink to eResource correct");
 			var states = statemachine.get("states");
-			var offState = states.get(0);
-			var onState = states.get(1);
-			var transition0 = offState.get("transitions").get(0);
+			var offState = states.at(0);
+			var onState = states.at(1);
+			var transition0 = offState.get("transitions").at(0);
 			var referencedState = transition0.get("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
