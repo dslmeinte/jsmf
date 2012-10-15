@@ -236,14 +236,15 @@ jsmf.meta = new (function() {
 
 		function Containment() {
 			this.get = function(value)		{ return value; };
-			this.toJSON = function(value)	{ return( value === undefined ? null : value.toJSON() ); };	// FIXME  doesn't take many-valued features into account
+			this.toJSON = function(value)	{ return( value === undefined ? null : value.toJSON() ); };
 		}
 		Containment.prototype = new jsmf.meta.Feature();
 
 
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
-		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit" ]);
+		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit", "annotations" ]);
+		jsmf.util.isStringArrayOrNothing(initData.annotations);
 
 		initData.kind = initData.kind || "attribute";
 		var feature = (function(kind) {
@@ -265,6 +266,8 @@ jsmf.meta = new (function() {
 		feature.lowerBound = feature.lowerLimit;	// duplicate to comply with Ecore
 		feature.upperLimit = initData.upperLimit || ( initData.kind === "containment" ? -1 : 1 );
 		feature.upperBound = feature.upperLimit;	// duplicate to comply with Ecore
+
+		feature.annotations = initData.annotations;
 
 		return feature;
 
@@ -291,6 +294,16 @@ jsmf.meta = new (function() {
 
 		this.toJSON = function(value) {
 			throw new Error("#toJSON(value) not implemented!");
+		};
+
+		this.toString = function() {
+			return( this.containingClass.name + "." + this.name );
+		};
+
+		this.checkAnnotation = function(annotationName) {
+			if( !this.annotations[annotationName] ) {
+				throw new Error("feature " + this.toString() + " doesn't have an annotation named '" + annotationName + "'");
+			}
 		};
 
 	};

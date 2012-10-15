@@ -25,6 +25,10 @@ jsmf.util = new (function() {
 		return( $.isArray(a) && a.length > 0 && $.grep(a, function(l) { return jsmf.util.isNonEmptyString(l); }).length === 0 );
 	};
 
+	this.isStringArrayOrNothing = function(a) {
+		return( !a || ( $.isArray(a) && $.grep(a, function(l) { return jsmf.util.isNonEmptyString(l); }).length === 0 ) );
+	};
+
 	this.checkNonEmptyStringAttribute = function(data, attributeName, message) {
 		var attributeValue = data[attributeName];
 		if( this.isNonEmptyString(attributeValue) ) throw new Error(message);
@@ -68,6 +72,20 @@ jsmf.util = new (function() {
 		if( false ) {
 			console.log(message);
 		}
+	};
+
+	/**
+	 * Sets up inheritance on the given base and sub types, including constructors.
+	 * 
+	 * See: http://stackoverflow.com/questions/4152931/javascript-inheritance-call-super-constructor-or-use-prototype-chain
+	 */
+	this.extend = function(base, sub) {
+		function delegateConstructor() { /* do nothing */ }
+		// copy the prototype from the base to setup inheritance:
+		delegateConstructor.prototype = base.prototype;
+		sub.prototype = new delegateConstructor();
+		// fix setting of constructor:
+		sub.prototype.constructor = sub;
 	};
 
 })();

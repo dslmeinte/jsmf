@@ -4,9 +4,9 @@
  * (c) 2012 Meinte Boersma
  */
 
+// TODO  rephrase in idiomatic module-style
 
 "use strict";
-
 
 /**
  * A <em>model</em> object.
@@ -167,6 +167,27 @@ jsmf.model.MList = function(resource, container, feature, /* optional with defau
 
 
 /**
+* Common, abstract super type for the two concrete sub types of a Setting w.r.t. a reference feature.
+*/
+jsmf.model.ReferenceSetting = function(feature) {
+
+	var annotationSettings = {};
+
+	this.getAnnotation = function(annotationName) {
+		feature.checkAnnotation(annotationName);
+		return annotationSettings[annotationName];
+	};
+
+	this.setAnnotation = function(annotationName, value) {
+		feature.checkAnnotation(annotationName);
+		annotationSettings[annotationName] = value;
+		return this;	// for chaining
+	};
+
+};
+
+
+/**
  * Holds the as-yet-unresolved target of a reference.
  */
 jsmf.model.MProxy = function(uriString, type, resource) {
@@ -184,4 +205,22 @@ jsmf.model.MProxy = function(uriString, type, resource) {
 	};
 
 };
+
+
+jsmf.model.Setting = function(feature) {
+	this.get = function() {
+		throw new Error("Setting#get not implemented!");
+	};
+	this.toJSON = function() {
+		throw new Error("Setting#toJSON not implemented!");
+	};
+};
+
+
+jsmf.model.AttributeSetting = function(feature, value) {
+	jsmf.model.Setting.call(this, feature);
+	this.get = function()		{ return value; };
+	this.toJSON = function()	{ return value; };
+};
+jsmf.util.extend(jsmf.model.Setting, jsmf.model.AttributeSetting);
 
