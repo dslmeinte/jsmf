@@ -246,7 +246,7 @@ jsmf.model = new (function() {
 
 	this.ProxySetting = function(feature, uriString, resource) {
 		module.Setting.call(this, [ feature ]);
-		var computedUri = module.Resolver.createUri(uriString);
+		var computedUri = module.Factory.createUri(uriString);
 		this.toJSON = function() {
 			return uriString;
 		};

@@ -135,14 +135,6 @@ jsmf.model.Factory = new (function() {
 
 	};
 
-})();
-
-
-// TODO  move jsmf.model.Resolver stuff into jsmf.model module
-
-jsmf.model.Resolver = new (function() {
-
-	"use strict";
 
 	// TODO  fix implementation of regex check:
 	//var uriRegExp = /^(\/\w+(\.\w+)?)*\/\w+$/g;
@@ -162,6 +154,7 @@ jsmf.model.Resolver = new (function() {
 	 * only on the level of the actual, concrete syntax of the language (== M0 + behavior).
 	 */
 	this.createUri = function(uriString) {
+
 		if( typeof(uriString) !== 'string' ) throw new Error('URI must be a String');
 //		if( !uriRegExp.test(uriString) ) throw new Error('URI must have the correct format: ' + uriString);
 		var _fragments = uriString.slice(1).split('/');
@@ -171,54 +164,55 @@ jsmf.model.Resolver = new (function() {
 			uri.fragments[i] = new uri.Fragment(splitFragment[0], ( splitFragment.length === 1 ? null : splitFragment[1] ));
 		});
 		return uri;
-	};
 
 
-	function Uri(uriString) {
-
-		this.toString = function() {
-			return uriString;
-		};
-
-		this.fragments = [];
-
-		this.Fragment = function(_name, _featureName) {
-
-			this.name = _name;
-			this.featureName = _featureName;	// may be null/undefined
+		function Uri(uriString) {
 
 			this.toString = function() {
-				return( this.name + ( this.featureName ? ( '.' + this.featureName ) : '' ) );
+				return uriString;
 			};
 
-		};
+			this.fragments = [];
 
-		this.resolveInResource = function(resource) {
-			var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment, before that an MList
-			$(this.fragments).each(function(index) {	// this is a Fragment
-				searchListOrObject = findIn(this, searchListOrObject);
-				if( !searchListOrObject ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
-				if( this.featureName ) {
-					searchListOrObject = searchListOrObject.get(this.featureName);
-				}
-			});
+			this.Fragment = function(_name, _featureName) {
 
-			return searchListOrObject;
+				this.name = _name;
+				this.featureName = _featureName;	// may be null/undefined
 
-			function findIn(fragment, mList) {
-				// TODO  rephrase in a functional style
-				var match = null;
-				mList.each(function(i) {
-					if( this.name && this.name === fragment.name ) {
-						match = this;
+				this.toString = function() {
+					return( this.name + ( this.featureName ? ( '.' + this.featureName ) : '' ) );
+				};
+
+			};
+
+			this.resolveInResource = function(resource) {
+				var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment, before that an MList
+				$(this.fragments).each(function(index) {	// this is a Fragment
+					searchListOrObject = findIn(this, searchListOrObject);
+					if( !searchListOrObject ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
+					if( this.featureName ) {
+						searchListOrObject = searchListOrObject.get(this.featureName);
 					}
 				});
-				return match;
-			}
 
-		};
+				return searchListOrObject;
 
-	}
+				function findIn(fragment, mList) {
+					// TODO  rephrase in a functional style
+					var match = null;
+					mList.each(function(i) {
+						if( this.name && this.name === fragment.name ) {
+							match = this;
+						}
+					});
+					return match;
+				}
+
+			};
+
+		}
+
+	};
 
 })();
 
