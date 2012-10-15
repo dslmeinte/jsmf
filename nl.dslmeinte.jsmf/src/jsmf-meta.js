@@ -256,7 +256,7 @@ jsmf.meta = new (function() {
 			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
 		})(initData.kind);
 
-		feature.kind = initData.kind;	// (has been checked now)
+		feature.kind = initData.kind;	// (has been checked now)	--	TODO  remove (only used in one place now)
 
 		feature.name = initData.name;
 		feature.containingClass = eClass;
