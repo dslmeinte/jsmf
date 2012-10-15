@@ -8,6 +8,9 @@ jsmf.model = new (function() {
 
 	"use strict";
 
+	var module = this;
+
+
 	/**
 	 * A <em>model</em> object.
 	 */
@@ -17,24 +20,40 @@ jsmf.model = new (function() {
 
 		var settings = {};
 
+		/**
+		 * {@returns} The value of the indicated feature.
+		 * The type of the value is either an MObject, an MList, a String, a Boolean or a Number.
+		 */
 		this.get = function(featureArg) {
 			var feature = this._class.getFeature(featureArg);
 			var setting = settings[feature.name];
-			var value = feature.get(setting);
-			settings[feature.name] = value;		// re-set setting for resolved proxies
+			if( !setting ) return undefined;
+
+			var value = setting.get();
+			if( setting instanceof module.ProxySetting ) {
+				settings[feature.name] = new module.ReferenceSetting(feature, value);	// re-set setting for resolved proxy
+			}
 			return value;
 		};
 
+		/**
+		 * Sets the value of the indicated feature to the given {@code new value}.
+		 */
 		this.set = function(featureArg, newValue) {
 			var feature = this._class.getFeature(featureArg);
-			var oldValue = settings[feature.name];
-			settings[feature.name] = newValue;
+			var oldSetting = settings[feature.name];
+			var oldValue = ( oldSetting ? oldSetting : null );
 			if( oldValue !== newValue ) {
+				// TODO  type checking
+				settings[feature.name] = createSetting(feature, newValue);
 				resource.notifyValueChanged(this, feature, oldValue, newValue);
 			}
 			return this;	// for chaining
 		};
 
+		/**
+		 * {@returns} A complete URI string of <b>this</b> MObject or produces an Error.
+		 */
 		this.uri = function() {
 			var objName = this.get('name');
 			if( container === null ) {
@@ -51,9 +70,12 @@ jsmf.model = new (function() {
 
 			var _self = this;
 			$.map(this._class.allFeatures(), function(feature, featureName) {
-				var convertedValue = feature.toJSON(_self.get(feature));
-				if( convertedValue != undefined ) {
-					json[featureName] = convertedValue;
+				var setting = settings[featureName];
+				if( setting ) {
+					var convertedValue = setting.toJSON();
+					if( convertedValue != undefined ) {
+						json[featureName] = convertedValue;
+					}
 				}
 			});
 			$.map(this._class.allAnnotations(), function(annotationName) {
@@ -85,9 +107,13 @@ jsmf.model = new (function() {
 	*/
 	this.Setting = function(feature) {
 
+		/**
+		 * {@returns} The value of this Setting. It has the same range of types as MObject#get.
+		 */
 		this.get = function() {
 			throw new Error("Setting#get not implemented!");
 		};
+
 		this.toJSON = function() {
 			throw new Error("Setting#toJSON not implemented!");
 		};
@@ -119,9 +145,10 @@ jsmf.model = new (function() {
 	 */
 	this.MList = function(resource, container, feature, /* optional with default=[]: */ initialValues) {
 
+		module.Setting.call(this, [ feature ]);
+
 		/*
 		 * If feature == null, then this MList instance is contained by an MResource as its 'contents' feature.
-		 * Note: feature is currently unused.
 		 */
 		var values = initialValues || [];
 
@@ -129,7 +156,7 @@ jsmf.model = new (function() {
 		 * (For internal use only!)
 		 */
 		this.get = function() {
-			return values;
+			return this;
 		};
 
 		this.at = function(index) {
@@ -182,6 +209,7 @@ jsmf.model = new (function() {
 
 		this.uri = function() {
 			return $.map(values, function(value) {
+				if( !value.uri ) throw new Error();
 				return value.uri().toString();
 			});
 		};
@@ -201,7 +229,7 @@ jsmf.model = new (function() {
 
 
 	this.AttributeSetting = function(feature, value) {
-		this.Setting.call(this, [ feature ]);
+		module.Setting.call(this, [ feature ]);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value; };
 	};
@@ -209,54 +237,53 @@ jsmf.model = new (function() {
 
 
 	this.ContainmentSetting = function(feature, value) {
-		this.Setting.call(this, [ feature ]);
+		module.Setting.call(this, [ feature ]);
 		this.get = function()		{ return value; };
-		this.toJSON = function()	{ return( value === undefined ? null : value.toJSON() ); };
+		this.toJSON = function()	{ return( value ? value.toJSON() : undefined ); };
 	};
 	jsmf.util.extend(this.Setting, this.ContainmentSetting);
 
 
 	this.ProxySetting = function(feature, uriString, resource) {
-		this.Setting.call(this, [ feature ]);
-		var computedUri = jsmf.model.Resolver.createUri(uriString);
-		this.uri = function() {
-			return computedUri;
+		module.Setting.call(this, [ feature ]);
+		var computedUri = module.Resolver.createUri(uriString);
+		this.toJSON = function() {
+			return uriString;
 		};
-
-		this.resolve = function() {
+		this.get = function() {
 			return computedUri.resolveInResource(resource);
 			// TODO  do something with type info as well (e.g., validate)
+		};
+		this.uri = function() {
+			return uriString;
 		};
 	};
 	jsmf.util.extend(this.Setting, this.ProxySetting);
 
 
 	this.ReferenceSetting = function(feature, value) {
-		this.ReferenceSetting.call(this, [ feature ]);
+		module.Setting.call(this, [ feature ]);
 		this.get = function()		{ return value; };
-		// TODO  implement toJSON
+		this.toJSON = function()	{ return value.uri(); };
 	};
 	jsmf.util.extend(this.Setting, this.ReferenceSetting);
 
 
-	/**
-	 * Holds the as-yet-unresolved target of a reference.
-	 */
-	this.MProxy = function(uriString, type, resource) {
-
-		this.type = type;
-
-		var computedUri = jsmf.model.Resolver.createUri(uriString);
-		this.uri = function() {
-			return computedUri;
-		};
-
-		this.resolve = function() {
-			return computedUri.resolveInResource(resource);
-			// TODO  do something with type info as well (e.g., validate)
-		};
-
-	};
+	function createSetting(feature, value) {
+		switch(feature.kind) {
+			case 'attribute':	return new module.AttributeSetting(feature, value);
+			case 'containment':	return new module.ContainmentSetting(feature, value);
+			case 'reference': {
+				if( typeof(value) === 'string' ) {
+					return new module.ProxySetting(feature, value, resource);
+				}
+				if( value instanceof module.ProxySetting ) {
+					return value;
+				}
+				return new module.ReferenceSetting(feature, value);
+			}
+		}
+	}
 
 })();
 

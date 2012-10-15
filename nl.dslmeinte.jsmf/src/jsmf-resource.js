@@ -105,7 +105,7 @@ jsmf.model.Factory = new (function() {
 						switch(feature.kind) {
 							case 'attribute':	return value;
 							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return createMObject(_value, mObject, feature); });
-							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new jsmf.model.MProxy(_value, type, _resource); });
+							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new jsmf.model.ProxySetting(feature, _value, _resource); });
 						}})());
 					if( feature.isNameFeature() ) {
 						mObject.name = value;
@@ -137,6 +137,8 @@ jsmf.model.Factory = new (function() {
 
 })();
 
+
+// TODO  move jsmf.model.Resolver stuff into jsmf.model module
 
 jsmf.model.Resolver = new (function() {
 

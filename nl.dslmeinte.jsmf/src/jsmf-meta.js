@@ -208,55 +208,17 @@ jsmf.meta = new (function() {
 
 	function createFeature(initData, eClass) {
 
-
-		/*
-		 * The following are sub types of Feature.
-		 * Note that these types already contain knowledge on how to deal with instances.
-		 */
-
-		function Attribute() {
-			this.get = function(value)		{ return value; };
-			this.toJSON = function(value)	{ return value; };
-		}
-		Attribute.prototype = new jsmf.meta.Feature();
-
-		function Reference() {
-			this.get = function(setting) {
-				if( setting instanceof jsmf.model.MProxy ) {
-					return setting.resolve();
-				}
-				return setting;
-			};
-			this.toJSON = function(value) {
-				if( value === undefined ) return null;
-				return( value instanceof jsmf.model.MProxy ? value.uriString : value.uri() );
-			};
-		}
-		Reference.prototype = new jsmf.meta.Feature();
-
-		function Containment() {
-			this.get = function(value)		{ return value; };
-			this.toJSON = function(value)	{ return( value === undefined ? null : value.toJSON() ); };
-		}
-		Containment.prototype = new jsmf.meta.Feature();
-
-
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
 		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit", "annotations" ]);
 		jsmf.util.isStringArrayOrNothing(initData.annotations);
 
-		initData.kind = initData.kind || "attribute";
-		var feature = (function(kind) {
-				switch( kind ) {
-					case "attribute":	return new Attribute();
-					case "containment":	return new Containment();
-					case "reference":	return new Reference();
-			}
-			throw new Error("illegal kind type '" + kind + "' for feature " + eClass.name + "." + initData.name);
-		})(initData.kind);
-
-		feature.kind = initData.kind;	// (has been checked now)	--	TODO  remove (only used in one place now)
+		var feature = new jsmf.meta.Feature();
+		var kind = initData.kind || "attribute";
+		if( $.inArray(kind, [ "attribute", "containment", "reference" ]) < 0 ) {
+			throw new Error("given feature kind is invalid: " + kind);
+		}
+		feature.kind = kind;
 
 		feature.name = initData.name;
 		feature.containingClass = eClass;
@@ -286,14 +248,6 @@ jsmf.meta = new (function() {
 
 		this.manyValued = function() {
 			return( this.upperLimit != 1 );
-		};
-
-		this.get = function(value) {
-			throw new Error("#get(value) not implemented!");
-		};
-
-		this.toJSON = function(value) {
-			throw new Error("#toJSON(value) not implemented!");
 		};
 
 		this.toString = function() {
