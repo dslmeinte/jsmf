@@ -7,24 +7,20 @@
 		"_class" : "Class",
 		"name" : "Statemachine",
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "String"
 		}, {
-			"_class" : "Feature",
 			"name" : "variables",
 			"kind" : "containment",
 			"type" : "Variable"
 		}, {
-			"_class" : "Feature",
 			"name" : "triggers",
 			"kind" : "containment",
 			"type" : "Trigger"
 		}, {
-			"_class" : "Feature",
 			"name" : "chartElements",
 			"kind" : "containment",
 			"type" : "ChartElement"
@@ -34,7 +30,6 @@
 		"_class" : "Class",
 		"name" : "Variable",
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
@@ -45,7 +40,6 @@
 		"_class" : "Class",
 		"name" : "Trigger",
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
@@ -64,7 +58,6 @@
 		"abstract" : true,
 		"superTypes" : [ "ChartElement" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "name",
 			"kind" : "attribute",
 			"lowerLimit" : 1,
@@ -81,7 +74,6 @@
 		"name" : "CompositeState",
 		"superTypes" : [ "State" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "chartElements",
 			"kind" : "containment",
 			"upperLimit" : -1,
@@ -92,27 +84,23 @@
 		"name" : "Transition",
 		"superTypes" : [ "ChartElement" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "sourceState",
 			"kind" : "reference",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "State"
 		}, {
-			"_class" : "Feature",
 			"name" : "targetState",
 			"kind" : "reference",
 			"lowerLimit" : 1,
 			"upperLimit" : 1,
 			"type" : "State"
 		}, {
-			"_class" : "Feature",
 			"name" : "triggers",
 			"kind" : "reference",
 			"upperLimit" : -1,
 			"type" : "Trigger"
 		}, {
-			"_class" : "Feature",
 			"name" : "condition",
 			"kind" : "containment",
 			"upperLimit" : 1,
@@ -126,14 +114,12 @@
 		"name" : "AndExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "expr1",
 			"kind" : "containment",
 			"lowerLimit" : 1,
 			"upperLimit" : -1,
 			"type" : "Expression"
 		}, {
-			"_class" : "Feature",
 			"name" : "expr2",
 			"kind" : "containment",
 			"lowerLimit" : 1,
@@ -145,14 +131,12 @@
 		"name" : "OrExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "expr1",
 			"kind" : "containment",
 			"lowerLimit" : 1,
 			"upperLimit" : -1,
 			"type" : "Expression"
 		}, {
-			"_class" : "Feature",
 			"name" : "expr2",
 			"kind" : "containment",
 			"lowerLimit" : 1,
@@ -164,7 +148,6 @@
 		"name" : "NotExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "expr",
 			"kind" : "containment",
 			"lowerLimit" : 1,
@@ -176,7 +159,6 @@
 		"name" : "VarRef",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
-			"_class" : "Feature",
 			"name" : "variable",
 			"kind" : "reference",
 			"lowerLimit" : 1,

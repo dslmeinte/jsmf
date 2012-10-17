@@ -210,7 +210,7 @@ jsmf.meta = new (function() {
 
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
-		jsmf.util.checkProperties(initData, [ "_class", "name", "kind", "type", "lowerLimit", "upperLimit", "annotations" ]);
+		jsmf.util.checkProperties(initData, [ "name", "kind", "type", "lowerLimit", "upperLimit", "annotations" ]);
 		jsmf.util.isStringArrayOrNothing(initData.annotations);
 
 		var feature = new jsmf.meta.Feature();
