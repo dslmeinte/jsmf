@@ -1,20 +1,20 @@
 (function() {
 
 	var metaModelJSON = [ {
-		"_class" : "Datatype",
+		"metaMetaType" : "Datatype",
 		"name" : "String"
 	}, {
-		"_class" : "Datatype",
+		"metaMetaType" : "Datatype",
 		"name" : "Integer"
 	}, {
-		"_class" : "Datatype",
+		"metaMetaType" : "Datatype",
 		"name" : "Boolean"
 	}, {
-		"_class" : "Enum",
+		"metaMetaType" : "Enum",
 		"name" : "FeatureKindType",
 		"literals" : [ "attribute", "reference", "containment" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Classifier",
 		"abstract" : true,
 		"features" : [ {
@@ -25,11 +25,11 @@
 			"type" : "String"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Datatype",
 		"superTypes" : [ "Classifier" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Enum",
 		"superTypes" : [ "Datatype" ],
 		"features" : [ {
@@ -40,7 +40,7 @@
 			"type" : "String"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Class",
 		"superTypes" : [ "Classifier" ],
 		"features" : [ {
@@ -60,7 +60,7 @@
 			"type" : "Boolean"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Feature",
 		"features" : [ {
 			"name" : "name",

@@ -1,10 +1,10 @@
 (function() {
 
 	var metaModelJSON = [ {
-		"_class" : "Datatype",
+		"metaMetaType" : "Datatype",
 		"name" : "String"
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Statemachine",
 		"features" : [ {
 			"name" : "name",
@@ -27,7 +27,7 @@
 		} ],
 		"annotations": [ "_view" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Variable",
 		"features" : [ {
 			"name" : "name",
@@ -37,7 +37,7 @@
 			"type" : "String"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Trigger",
 		"features" : [ {
 			"name" : "name",
@@ -48,12 +48,12 @@
 		} ],
 		"annotations": [ "_view" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "ChartElement",
 		"abstract" : true,
 		"annotations": [ "_view" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "State",
 		"abstract" : true,
 		"superTypes" : [ "ChartElement" ],
@@ -66,11 +66,11 @@
 		} ],
 		"annotations": [ "_view" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "SimpleState",
 		"superTypes" : [ "State" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "CompositeState",
 		"superTypes" : [ "State" ],
 		"features" : [ {
@@ -80,7 +80,7 @@
 			"type" : "ChartElement"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Transition",
 		"superTypes" : [ "ChartElement" ],
 		"features" : [ {
@@ -107,10 +107,10 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Expression"
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "AndExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -127,7 +127,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "OrExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -144,7 +144,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "NotExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -155,7 +155,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "VarRef",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {

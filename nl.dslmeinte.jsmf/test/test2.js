@@ -1,10 +1,10 @@
 (function() {
 
 	var metaModelJSON = [ {
-		"_class" : "Datatype",
+		"metaMetaType" : "Datatype",
 		"name" : "String"
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Statemachine",
 		"features" : [ {
 			"name" : "name",
@@ -26,7 +26,7 @@
 			"type" : "State"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Variable",
 		"features" : [ {
 			"name" : "name",
@@ -36,7 +36,7 @@
 			"type" : "String"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Trigger",
 		"features" : [ {
 			"name" : "name",
@@ -46,7 +46,7 @@
 			"type" : "String"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "State",
 		"abstract" : true,
 		"features" : [ {
@@ -62,11 +62,11 @@
 			"type" : "Transition"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "SimpleState",
 		"superTypes" : [ "State" ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "CompositeState",
 		"superTypes" : [ "State" ],
 		"features" : [ {
@@ -76,7 +76,7 @@
 			"type" : "State"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Transition",
 		"features" : [ {
 			"name" : "targetState",
@@ -96,10 +96,10 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Expression"
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "AndExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -116,7 +116,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "OrExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -133,7 +133,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "NotExpression",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -144,7 +144,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "VarRef",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {

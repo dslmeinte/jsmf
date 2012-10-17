@@ -1,14 +1,14 @@
 (function() {
 
 	var metaModelJSON = [ {
-		"_class" : "Datatype",
+		"metaMetaType" : "Datatype",
 		"name" : "String"
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Expression",
 		"abstract" : true
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Sqrt",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -19,7 +19,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Fraction",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -36,7 +36,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Mult",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -53,7 +53,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Plus",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -70,7 +70,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Neg",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {
@@ -81,7 +81,7 @@
 			"type" : "Expression"
 		} ]
 	}, {
-		"_class" : "Class",
+		"metaMetaType" : "Class",
 		"name" : "Value",
 		"superTypes" : [ "Expression" ],
 		"features" : [ {

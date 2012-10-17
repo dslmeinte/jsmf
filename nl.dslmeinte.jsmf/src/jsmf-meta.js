@@ -11,11 +11,11 @@ jsmf.meta = new (function() {
 	"use strict";
 
 	/**
-	 * An EPackage represents a meta model.
+	 * A MetaModel represents a meta model.
 	 * <p>
 	 * Note that I don't care for meta-circularity all that much, so it's separate from EObject etc.
 	 * 
-	 * @param metaModel - a "standard" representation of the meta model (i.e., Concrete's representation for it - but more restricted)
+	 * @param metaModel - a "standard" JSON representation of the meta model
 	 */
 	this.createMetaModelFromJSON = function(metaModelJSON) {
 
@@ -61,12 +61,12 @@ jsmf.meta = new (function() {
 		jsmf.util.checkName(initData, "classifier name is empty");
 		jsmf.util.checkClass(initData);
 		var classifier = (function() {
-			switch( initData._class ) {
+			switch( initData.metaMetaType ) {
 				case 'Datatype':	return new Datatype(initData);
 				case 'Enum':		return new Enum(initData);
 				case 'Class':		return new Class(initData);
 			}
-			throw new Error("illegal classifier meta type: " + initData._class);
+			throw new Error("illegal classifier meta meta type: " + initData.metaMetaType);
 		})();
 		classifier.name = initData.name;
 		return classifier;
@@ -74,7 +74,7 @@ jsmf.meta = new (function() {
 
 	function Class(initData) {
 
-		jsmf.util.checkProperties(initData, [ "_class", "name", "features", "superTypes", "abstract", "annotations" ]);
+		jsmf.util.checkProperties(initData, [ "metaMetaType", "name", "features", "superTypes", "abstract", "annotations" ]);
 
 		this['abstract'] = !!initData['abstract'];	// note: 'abstract' is a reserved keyword in JS, and e.g. Safari-iPad parses it as such
 		this.superTypes = (function(types) {
@@ -182,15 +182,16 @@ jsmf.meta = new (function() {
 
 
 	function Datatype(initData) {
+		jsmf.util.checkProperties(initData, [ "metaMetaType", "name" ]);
+
 		if( !$.inArray(this.name, [ "String", "Integer", "Float", "Boolean" ]) ) {
 			throw new Error("illegal datatype name: " + initData.name + " (datatype must be named one of [String, Integer, Float, Boolean])");
 		}
-		jsmf.util.checkProperties(initData, [ "_class", "name" ]);
 	}
 
 
 	function Enum(initData) {
-		jsmf.util.checkProperties(initData, [ "_class", "name", "literals" ]);
+		jsmf.util.checkProperties(initData, [ "metaMetaType", "name", "literals" ]);
 
 		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
 			throw new Error("literals of an enumeration '" + initData.name + "' is not an (non-degenerate) array of strings");
