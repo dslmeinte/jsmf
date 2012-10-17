@@ -7,7 +7,7 @@
 
 jsmf.util = new (function() {
 
-	"use strict";
+	"use strict";	// annotation for jsHint
 
 	this.checkName = function(data, message) {
 		this.checkNonEmptyStringAttribute(data, 'name', message);

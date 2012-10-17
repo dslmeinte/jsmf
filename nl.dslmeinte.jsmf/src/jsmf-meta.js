@@ -8,7 +8,7 @@
 
 jsmf.meta = new (function() {
 
-	"use strict";
+	"use strict";	// annotation for jsHint
 
 	/**
 	 * A MetaModel represents a meta model.
@@ -181,23 +181,23 @@ jsmf.meta = new (function() {
 	}
 
 
+	function Enum(initData) {
+		jsmf.util.checkProperties(initData, [ "metaMetaType", "name", "literals" ]);
+		
+		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
+			throw new Error("literals of an enumeration '" + initData.name + "' is not an (non-degenerate) array of strings");
+		}
+		
+		this.literals = initData.literals;
+	}
+
+
 	function Datatype(initData) {
 		jsmf.util.checkProperties(initData, [ "metaMetaType", "name" ]);
 
 		if( !$.inArray(this.name, [ "String", "Integer", "Float", "Boolean" ]) ) {
 			throw new Error("illegal datatype name: " + initData.name + " (datatype must be named one of [String, Integer, Float, Boolean])");
 		}
-	}
-
-
-	function Enum(initData) {
-		jsmf.util.checkProperties(initData, [ "metaMetaType", "name", "literals" ]);
-
-		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
-			throw new Error("literals of an enumeration '" + initData.name + "' is not an (non-degenerate) array of strings");
-		}
-
-		this.literals = initData.literals;
 	}
 
 

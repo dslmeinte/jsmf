@@ -11,6 +11,8 @@
  */
 jsmf.model.MResource = function(metaModel) {
 
+	"use strict";	// annotation for jsHint
+
 	this.metaModel = metaModel;
 	this.contents = new jsmf.model.MList(this, null, null);
 
@@ -62,7 +64,7 @@ jsmf.model.MResource = function(metaModel) {
  */
 jsmf.model.Factory = new (function() {
 
-	"use strict";
+	"use strict";	// annotation for jsHint
 
 	this.createMResource = function(modelJSON, metaModel) {
 

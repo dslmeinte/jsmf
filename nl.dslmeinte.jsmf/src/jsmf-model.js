@@ -6,7 +6,7 @@
 
 jsmf.model = new (function() {
 
-	"use strict";
+	"use strict";	// annotation for jsHint
 
 	var module = this;
 
