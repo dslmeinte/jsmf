@@ -219,7 +219,11 @@ jsmf.model = new (function() {
 		};
 
 		this.find = function(indicator) {
-			$(values).filter(indicator).first();
+			return $(values).filter(indicator).first();
+		};
+
+		this.map = function(mapper) {
+			return $.map(values, mapper);
 		};
 
 		// TODO  add more functions for traversal
