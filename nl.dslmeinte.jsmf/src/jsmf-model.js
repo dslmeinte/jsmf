@@ -229,7 +229,7 @@ jsmf.model = new (function() {
 		// TODO  add more functions for traversal
 
 	};
-	jsmf.util.extend(this.Setting, this.MList);
+	oo.util.extend(this.Setting, this.MList);
 
 
 	this.AttributeSetting = function(feature, value) {
@@ -237,7 +237,7 @@ jsmf.model = new (function() {
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value; };
 	};
-	jsmf.util.extend(this.Setting, this.AttributeSetting);
+	oo.util.extend(this.Setting, this.AttributeSetting);
 
 
 	this.ContainmentSetting = function(feature, value) {
@@ -245,7 +245,7 @@ jsmf.model = new (function() {
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return( value ? value.toJSON() : undefined ); };
 	};
-	jsmf.util.extend(this.Setting, this.ContainmentSetting);
+	oo.util.extend(this.Setting, this.ContainmentSetting);
 
 
 	this.ProxySetting = function(feature, uriString, resource) {
@@ -262,7 +262,7 @@ jsmf.model = new (function() {
 			return uriString;
 		};
 	};
-	jsmf.util.extend(this.Setting, this.ProxySetting);
+	oo.util.extend(this.Setting, this.ProxySetting);
 
 
 	this.ReferenceSetting = function(feature, value) {
@@ -270,7 +270,7 @@ jsmf.model = new (function() {
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value.uri(); };
 	};
-	jsmf.util.extend(this.Setting, this.ReferenceSetting);
+	oo.util.extend(this.Setting, this.ReferenceSetting);
 
 
 	function createSetting(feature, value) {

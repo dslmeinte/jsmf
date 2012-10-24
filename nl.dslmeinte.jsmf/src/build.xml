@@ -15,11 +15,12 @@
 		<fail unless="antversionok" message="ANT version is too old."/>
 		<concat destfile="../dist/jsmf.js" fixlastline="true">
 			<!-- (concatenate in order:) -->
-			<fileset dir="." includes="jsmf-preamble.js"/>
-			<fileset dir="." includes="jsmf-util.js"/>
-			<fileset dir="." includes="jsmf-meta.js"/>
-			<fileset dir="." includes="jsmf-model.js"/>
-			<fileset dir="." includes="jsmf-resource.js"/>
+			<fileset dir="." includes="jsmf-preamble.js" />
+			<fileset dir="." includes="oo-util.js" />
+			<fileset dir="." includes="jsmf-util.js" />
+			<fileset dir="." includes="jsmf-meta.js" />
+			<fileset dir="." includes="jsmf-model.js" />
+			<fileset dir="." includes="jsmf-resource.js" />
 		</concat>
 	</target>
 
