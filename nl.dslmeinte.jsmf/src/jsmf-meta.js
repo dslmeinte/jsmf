@@ -211,7 +211,7 @@ jsmf.meta = new (function() {
 
 		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
-		jsmf.util.checkProperties(initData, [ "name", "kind", "type", "lowerLimit", "upperLimit", "annotations" ]);
+		jsmf.util.checkProperties(initData, [ "name", "kind", "type", "required", "manyValued", "annotations" ]);
 		jsmf.util.isStringArrayOrNothing(initData.annotations);
 
 		var feature = new jsmf.meta.Feature();
@@ -224,13 +224,10 @@ jsmf.meta = new (function() {
 		feature.name = initData.name;
 		feature.containingClass = eClass;
 		feature.type = initData.type;	// overwritten later by true object reference
-
-		feature.lowerLimit = initData.lowerLimit || 0;
-		feature.lowerBound = feature.lowerLimit;	// duplicate to comply with Ecore
-		feature.upperLimit = initData.upperLimit || ( initData.kind === "containment" ? -1 : 1 );
-		feature.upperBound = feature.upperLimit;	// duplicate to comply with Ecore
-
-		feature.annotations = initData.annotations;
+		feature.required = ( initData.required !== undefined ) ? initData.required : false;
+		feature.manyValued = ( initData.manyValued !== undefined ) ? initData.manyValued : ( initData.kind === "containment" );
+			// TODO  come up with better defaulting for previous two lines
+		feature.annotations = initData.annotations || [];
 
 		return feature;
 
@@ -243,12 +240,8 @@ jsmf.meta = new (function() {
 					   this.name === 'name'
 					&& this.kind === 'attribute'
 					&& this.type.name === 'String'
-					&& this.upperLimit === 1
+					&& !this.manyValued
 				);
-		};
-
-		this.manyValued = function() {
-			return( this.upperLimit != 1 );
 		};
 
 		this.toString = function() {

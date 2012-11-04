@@ -9,8 +9,8 @@
 		"features" : [ {
 			"name" : "name",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		}, {
 			"name" : "variables",
@@ -32,8 +32,8 @@
 		"features" : [ {
 			"name" : "name",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		} ]
 	}, {
@@ -42,8 +42,8 @@
 		"features" : [ {
 			"name" : "name",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		} ],
 		"annotations": [ "_view" ]
@@ -60,8 +60,8 @@
 		"features" : [ {
 			"name" : "name",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		} ],
 		"annotations": [ "_view" ]
@@ -76,7 +76,7 @@
 		"features" : [ {
 			"name" : "chartElements",
 			"kind" : "containment",
-			"upperLimit" : -1,
+			"manyValued" : true,
 			"type" : "ChartElement"
 		} ]
 	}, {
@@ -86,24 +86,24 @@
 		"features" : [ {
 			"name" : "sourceState",
 			"kind" : "reference",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "State"
 		}, {
 			"name" : "targetState",
 			"kind" : "reference",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "State"
 		}, {
 			"name" : "triggers",
 			"kind" : "reference",
-			"upperLimit" : -1,
+			"manyValued" : true,
 			"type" : "Trigger"
 		}, {
 			"name" : "condition",
 			"kind" : "containment",
-			"upperLimit" : 1,
+			"manyValued" : false,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -116,14 +116,14 @@
 		"features" : [ {
 			"name" : "expr1",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : -1,
+			"required" : true,
+			"manyValued" : true,
 			"type" : "Expression"
 		}, {
 			"name" : "expr2",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : -1,
+			"required" : true,
+			"manyValued" : true,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -133,14 +133,14 @@
 		"features" : [ {
 			"name" : "expr1",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : -1,
+			"required" : true,
+			"manyValued" : true,
 			"type" : "Expression"
 		}, {
 			"name" : "expr2",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : -1,
+			"required" : true,
+			"manyValued" : true,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -150,8 +150,8 @@
 		"features" : [ {
 			"name" : "expr",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : -1,
+			"required" : true,
+			"manyValued" : true,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -161,8 +161,8 @@
 		"features" : [ {
 			"name" : "variable",
 			"kind" : "reference",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Variable"
 		} ]
 	} ];

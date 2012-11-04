@@ -66,7 +66,11 @@ jsmf.model.Factory = new (function() {
 
 	"use strict";	// annotation for jsHint
 
-	this.createMResource = function(modelJSON, metaModel) {
+	/**
+	 * Given a JSON representation for the model, its meta model in the jsmf.meta.MetaModel format
+	 * and an optional callback for signaling (about) format- and model-level problems.
+	 */
+	this.createMResource = function(modelJSON, metaModel, validationCallback) {
 
 		var _resource = new jsmf.model.MResource(metaModel);	// (have to use _prefix to soothe JS plug-in)
 
@@ -113,7 +117,7 @@ jsmf.model.Factory = new (function() {
 						mObject.name = value;
 					}
 				} else {
-					if( feature.lowerLimit > 0 ) throw new Error("no value given for required feature named '" + featureName + "'");
+					if( feature.required ) throw new Error("no value given for required feature named '" + featureName + "'");
 				}
 				jsmf.util.log("\t(set value of feature named '" + featureName + "')");
 			});
@@ -123,13 +127,13 @@ jsmf.model.Factory = new (function() {
 
 			function createNestedObject(feature, value, creator) {
 				if( $.isArray(value) ) {
-					if( !feature.manyValued() ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
+					if( !feature.manyValued ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
 					return new jsmf.model.MList(_resource, container, feature, $.map(value, function(nestedValue, index) {
 											return creator.apply(this, [ nestedValue, feature.type ]);
 										})
 									);
 				}
-				if( feature.manyValued() ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
+				if( feature.manyValued ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
 				return creator.apply(this, [ value, feature.type ]);
 			}
 

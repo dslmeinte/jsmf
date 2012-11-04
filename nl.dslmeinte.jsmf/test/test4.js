@@ -14,8 +14,8 @@
 		"features" : [ {
 			"name" : "expr",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -25,14 +25,14 @@
 		"features" : [ {
 			"name" : "expr1",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		}, {
 			"name" : "expr2",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -42,14 +42,14 @@
 		"features" : [ {
 			"name" : "expr1",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		}, {
 			"name" : "expr2",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -59,14 +59,14 @@
 		"features" : [ {
 			"name" : "expr1",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		}, {
 			"name" : "expr2",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -76,8 +76,8 @@
 		"features" : [ {
 			"name" : "expr",
 			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Expression"
 		} ]
 	}, {
@@ -87,8 +87,8 @@
 		"features" : [ {
 			"name" : "value",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		} ]
 	} ];

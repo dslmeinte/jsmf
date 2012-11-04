@@ -20,8 +20,8 @@
 		"features" : [ {
 			"name" : "name",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		} ]
 	}, {
@@ -35,8 +35,8 @@
 		"features" : [ {
 			"name" : "literals",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : -1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		} ]
 	}, {
@@ -46,17 +46,17 @@
 		"features" : [ {
 			"name" : "superTypes",
 			"kind" : "reference",
-			"upperLimit" : -1,
+			"manyValued" : true,
 			"type" : "Class"
 		}, {
 			"name" : "features",
 			"kind" : "containment",
-			"upperLimit" : -1,
+			"manyValued" : true,
 			"type" : "Feature"
 		}, {
 			"name" : "abstract",
 			"kind" : "attribute",
-			"upperLimit" : 1,
+			"manyValued" : false,
 			"type" : "Boolean"
 		} ]
 	}, {
@@ -65,30 +65,30 @@
 		"features" : [ {
 			"name" : "name",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "String"
 		}, {
 			"name" : "kind",
 			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "FeatureKindType"
 		}, {
 			"name" : "lowerLimit",
 			"kind" : "attribute",
-			"upperLimit" : 1,
+			"manyValued" : false,
 			"type" : "Integer"
 		}, {
 			"name" : "upperLimit",
 			"kind" : "attribute",
-			"upperLimit" : 1,
+			"manyValued" : false,
 			"type" : "Integer"
 		}, {
 			"name" : "type",
 			"kind" : "reference",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
+			"required" : true,
+			"manyValued" : false,
 			"type" : "Classifier"
 		} ]
 	} ];
