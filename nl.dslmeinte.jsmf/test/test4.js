@@ -135,7 +135,7 @@
 	test("initialising arithmetic expressions meta model and example model (test4.js)", function() {
 			var metaModel = jsmf.meta.createMetaModelFromJSON(metaModelJSON);
 			ok(metaModel, "arithmetic expressions meta model initialised");
-			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel);
+			var modelResource = jsmf.model.Factory.createMResource(modelJSON, metaModel, defaultValidationCallback);
 			ok(modelResource, "example model initialised");
 		});
 

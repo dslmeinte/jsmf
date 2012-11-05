@@ -248,9 +248,9 @@ jsmf.model = new (function() {
 	oo.util.extend(this.Setting, this.ContainmentSetting);
 
 
-	this.ProxySetting = function(feature, uriString, resource) {
+	this.ProxySetting = function(feature, uriString, resource, validationCallback) {
 		module.Setting.call(this, [ feature ]);
-		var computedUri = module.Factory.createUri(uriString);
+		var computedUri = module.Factory.createUri(uriString, validationCallback);
 		this.toJSON = function() {
 			return uriString;
 		};

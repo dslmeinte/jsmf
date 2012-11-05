@@ -117,7 +117,9 @@ jsmf.model.Factory = new (function() {
 						mObject.name = value;
 					}
 				} else {
-					if( feature.required ) throw new Error("no value given for required feature named '" + featureName + "'");
+					if( feature.required && validationCallback ) {
+						validationCallback.reportError("no value given for required feature named '" + featureName + "'");
+					}
 				}
 				jsmf.util.log("\t(set value of feature named '" + featureName + "')");
 			});
@@ -127,13 +129,17 @@ jsmf.model.Factory = new (function() {
 
 			function createNestedObject(feature, value, creator) {
 				if( $.isArray(value) ) {
-					if( !feature.manyValued ) throw new Error('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
+					if( !feature.manyValued && validationCallback ) {
+						validationCallback.reportError('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
+					}
 					return new jsmf.model.MList(_resource, container, feature, $.map(value, function(nestedValue, index) {
 											return creator.apply(this, [ nestedValue, feature.type ]);
 										})
 									);
 				}
-				if( feature.manyValued ) throw new Error('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
+				if( feature.manyValued && validationCallback ) {
+					validationCallback.reportError('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
+				}
 				return creator.apply(this, [ value, feature.type ]);
 			}
 
@@ -154,12 +160,15 @@ jsmf.model.Factory = new (function() {
 	 * All features are optional, since we can just traverse all (many-valued?)
 	 * features of containment type. This is a nod to the current Concrete format -
 	 * in general, I'd like to make the features required.
-	 * 
+	 * <p>
 	 * Note: we need a generic format (such as this one) or we need to implement
 	 * custom resolution for every EPackage - which isn't useful on the M2 level,
 	 * only on the level of the actual, concrete syntax of the language (== M0 + behavior).
+	 * <p>
+	 * The {@code validationCallback} is an optional argument that's called in case
+	 * of problems with resolution of URIs.
 	 */
-	this.createUri = function(uriString) {
+	this.createUri = function(uriString, validationCallback) {
 
 		if( typeof(uriString) !== 'string' ) throw new Error('URI must be a String');
 //		if( !uriRegExp.test(uriString) ) throw new Error('URI must have the correct format: ' + uriString);
@@ -195,7 +204,9 @@ jsmf.model.Factory = new (function() {
 				var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment, before that an MList
 				$(this.fragments).each(function(index) {	// this is a Fragment
 					searchListOrObject = findIn(this, searchListOrObject);
-					if( !searchListOrObject ) throw new Error('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
+					if( !searchListOrObject && validationCallback ) {
+						validationCallback.reportError('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
+					}
 					if( this.featureName ) {
 						searchListOrObject = searchListOrObject.get(this.featureName);
 					}
