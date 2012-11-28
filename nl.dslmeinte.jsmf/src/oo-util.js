@@ -31,22 +31,5 @@ oo.util = new (function() {
 		sub.prototype.constructor = sub;
 	};
 
-	/**
-	 * {@returns} the class name of the argument or {@code undefined} if it's not a valid JavaScript object.
-	 * <p>
-	 * See: http://blog.magnetiq.com/post/514962277/finding-out-class-names-of-javascript-objects
-	 */
-	this.objectClass = function(obj) {
-		if( obj && obj.constructor && obj.constructor.toString ) {
-			var arr = obj.constructor.toString().match(/function\s*(\w+)/m);	// FIXME  regexp doesn't work yet...
-
-	        if( arr && arr.length == 2 ) {
-	        	return arr[1];
-	        }
-	    }
-
-	    return undefined;
-	};
-
 })();
 
