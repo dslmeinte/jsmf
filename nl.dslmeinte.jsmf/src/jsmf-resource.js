@@ -133,14 +133,14 @@ jsmf.model.Factory = new (function() {
 						validationCallback.reportError('cannot load an array into the single-valued feature ' + feature.containingClass.name + '#' + feature.name);
 					}
 					return new jsmf.model.MList(_resource, container, feature, $.map(value, function(nestedValue, index) {
-											return creator.apply(this, [ nestedValue, feature.type ]);
+											return creator.call(this, nestedValue, feature.type);
 										})
 									);
 				}
 				if( feature.manyValued && validationCallback ) {
 					validationCallback.reportError('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
 				}
-				return creator.apply(this, [ value, feature.type ]);
+				return creator.call(this, value, feature.type);
 			}
 
 		}
