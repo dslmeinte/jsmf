@@ -68,7 +68,8 @@ jsmf.model.Factory = new (function() {
 
 	/**
 	 * Given a JSON representation for the model, its meta model in the jsmf.meta.MetaModel format
-	 * and an optional callback for signaling (about) format- and model-level problems.
+	 * and an optional callback object for signaling (about) format- and model-level problems.
+	 * This callback object must have a function with the following signature: <tt>reportError(msg : String)</tt>.
 	 */
 	this.createMResource = function(modelJSON, metaModel, validationCallback) {
 
