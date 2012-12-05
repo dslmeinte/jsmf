@@ -21,7 +21,7 @@ jsmf.model = new (function() {
 		var settings = {};
 
 		/**
-		 * {@returns} The value of the indicated feature.
+		 * {@return} The value of the indicated feature.
 		 * The type of the value is either an MObject, an MList, a String, a Boolean or a Number.
 		 */
 		this.get = function(featureArg) {
@@ -52,7 +52,7 @@ jsmf.model = new (function() {
 		};
 
 		/**
-		 * {@returns} A complete URI string of <b>this</b> MObject or produces an Error.
+		 * {@return} A complete URI string of <b>this</b> MObject or produces an Error.
 		 */
 		this.uri = function() {
 			var objName = this.get('name');
@@ -108,7 +108,7 @@ jsmf.model = new (function() {
 	this.Setting = function(feature) {
 
 		/**
-		 * {@returns} The value of this Setting. It has the same range of types as MObject#get.
+		 * {@return} The value of this Setting. It has the same range of types as MObject#get.
 		 */
 		this.get = function() {
 			throw new Error("Setting#get not implemented!");
