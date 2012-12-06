@@ -103,7 +103,7 @@ jsmf.model = new (function() {
 
 
 	/**
-	* Common, abstract super type for the two concrete sub types of a Setting w.r.t. a reference feature.
+	* Common, abstract super type.
 	*/
 	this.Setting = function(feature) {
 
@@ -145,7 +145,7 @@ jsmf.model = new (function() {
 	 */
 	this.MList = function(resource, container, feature, /* optional with default=[]: */ initialValues) {
 
-		module.Setting.call(this, [ feature ]);
+		module.Setting.call(this, feature);
 
 		/*
 		 * If feature == null, then this MList instance is contained by an MResource as its 'contents' feature.
@@ -233,7 +233,7 @@ jsmf.model = new (function() {
 
 
 	this.AttributeSetting = function(feature, value) {
-		module.Setting.call(this, [ feature ]);
+		module.Setting.call(this, feature);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value; };
 	};
@@ -241,7 +241,7 @@ jsmf.model = new (function() {
 
 
 	this.ContainmentSetting = function(feature, value) {
-		module.Setting.call(this, [ feature ]);
+		module.Setting.call(this, feature);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return( value ? value.toJSON() : undefined ); };
 	};
@@ -249,7 +249,7 @@ jsmf.model = new (function() {
 
 
 	this.ProxySetting = function(feature, uriString, resource, validationCallback) {
-		module.Setting.call(this, [ feature ]);
+		module.Setting.call(this, feature);
 		var computedUri = module.Factory.createUri(uriString, validationCallback);
 		this.toJSON = function() {
 			return uriString;
@@ -266,7 +266,7 @@ jsmf.model = new (function() {
 
 
 	this.ReferenceSetting = function(feature, value) {
-		module.Setting.call(this, [ feature ]);
+		module.Setting.call(this, feature);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value.uri(); };
 	};

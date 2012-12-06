@@ -174,8 +174,12 @@ jsmf.meta = new (function() {
 		};
 
 		this.checkAnnotation = function(annotationName) {
-			if( typeof(annotationArg) === 'string' ) return this.allAnnotations()[annotationName];
-			throw new Error('invalid annotation argument: ' + JSON.stringify(annotationName));
+			if( typeof(annotationName) !== 'string' ) {
+				throw new Error('invalid annotation argument: ' + JSON.stringify(annotationName));
+			}
+			if( !$.inArray(this.allAnnotations(), annotationName) ) {
+				throw new Error("class " + this.name + " doesn't have an annotation named '" + annotationName + "'");
+			}
 		};
 
 	}
@@ -249,7 +253,10 @@ jsmf.meta = new (function() {
 		};
 
 		this.checkAnnotation = function(annotationName) {
-			if( !this.annotations[annotationName] ) {
+			if( typeof(annotationName) !== 'string' ) {
+				throw new Error('invalid annotation argument: ' + JSON.stringify(annotationName));
+			}
+			if( !$.inArray(this.annotations, annotationName) ) {
 				throw new Error("feature " + this.toString() + " doesn't have an annotation named '" + annotationName + "'");
 			}
 		};
