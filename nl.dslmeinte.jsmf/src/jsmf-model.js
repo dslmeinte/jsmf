@@ -6,6 +6,8 @@
 
 jsmf.model = new (function() {
 
+	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
+
 	"use strict";	// annotation for jsHint
 
 	var module = this;
@@ -129,6 +131,10 @@ jsmf.model = new (function() {
 			feature.checkAnnotation(annotationName);
 			annotationSettings[annotationName] = value;
 			return this;	// for chaining
+		};
+
+		this.annotationsToJSON = function() {
+			// TODO  implement!
 		};
 
 	};

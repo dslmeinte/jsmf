@@ -6,7 +6,7 @@
 
 var oo = {};
 
-oo.util = new (function() {
+oo.util = function() {
 
 	/**
 	 * Sets up inheritance on the given base and sub types, including constructors.
@@ -22,14 +22,18 @@ oo.util = new (function() {
 	 * oo.util.extend(SuperClass, SubClass);
 	 * </pre>
 	 */
-	this.extend = function(base, sub) {
+	function extend(base, sub) {
 		function delegateConstructor() { /* do nothing */ }
 		// copy the prototype from the base to setup inheritance:
 		delegateConstructor.prototype = base.prototype;
 		sub.prototype = new delegateConstructor();
 		// fix setting of constructor:
 		sub.prototype.constructor = sub;
+	}
+
+	return {	// (public members)
+		'extend': extend
 	};
 
-})();
+}();
 

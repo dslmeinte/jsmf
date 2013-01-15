@@ -7,6 +7,8 @@
 
 jsmf.util = new (function() {
 
+	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
+
 	"use strict";	// annotation for jsHint
 
 	this.checkName = function(data, message) {
