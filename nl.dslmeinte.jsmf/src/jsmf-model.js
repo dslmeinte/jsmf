@@ -5,7 +5,7 @@
  */
 
 /*global $:false, oo:false */
-jsmf.model = function() {
+jsmf.model = new (function() {
 
 	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
 
@@ -296,5 +296,5 @@ jsmf.model = function() {
 		}
 	}
 
-}();
+})();
 

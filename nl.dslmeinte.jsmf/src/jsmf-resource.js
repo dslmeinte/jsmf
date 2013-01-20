@@ -63,7 +63,7 @@ jsmf.model.MResource = function(metaModel) {
 /**
  * A generic factory object (singleton) for creating MResource-s from JSON.
  */
-jsmf.model.Factory = function() {
+jsmf.model.Factory = new (function() {
 
 	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
 
@@ -235,5 +235,5 @@ jsmf.model.Factory = function() {
 
 	};
 
-}();
+})();
 
