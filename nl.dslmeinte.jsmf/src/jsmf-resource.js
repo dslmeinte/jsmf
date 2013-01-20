@@ -9,6 +9,7 @@
 /**
  * Holds an entire model conforming to the given {@param metaModel}.
  */
+/*global $:false, jsmf:false */
 jsmf.model.MResource = function(metaModel) {
 
 	"use strict";	// annotation for jsHint
@@ -62,7 +63,7 @@ jsmf.model.MResource = function(metaModel) {
 /**
  * A generic factory object (singleton) for creating MResource-s from JSON.
  */
-jsmf.model.Factory = new (function() {
+jsmf.model.Factory = function() {
 
 	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
 
@@ -234,5 +235,5 @@ jsmf.model.Factory = new (function() {
 
 	};
 
-})();
+}();
 

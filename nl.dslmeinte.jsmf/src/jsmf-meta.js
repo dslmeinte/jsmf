@@ -5,8 +5,8 @@
  * (c) 2012 Meinte Boersma
  */
 
-
-jsmf.meta = new (function() {
+/*global $:false, jsmf:false */
+jsmf.meta = function() {
 
 	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
 
@@ -265,5 +265,5 @@ jsmf.meta = new (function() {
 
 	};
 
-})();
+}();
 

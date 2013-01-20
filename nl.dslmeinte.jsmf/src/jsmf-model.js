@@ -4,7 +4,8 @@
  * (c) 2012 Meinte Boersma
  */
 
-jsmf.model = new (function() {
+/*global $:false, oo:false */
+jsmf.model = function() {
 
 	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
 
@@ -75,7 +76,7 @@ jsmf.model = new (function() {
 				var setting = settings[featureName];
 				if( setting ) {
 					var convertedValue = setting.toJSON();
-					if( convertedValue != undefined ) {
+					if( convertedValue !== undefined ) {
 						json[featureName] = convertedValue;
 					}
 				}
@@ -175,7 +176,7 @@ jsmf.model = new (function() {
 		};
 
 		this.add = function(value, /* optional: */ optIndex) {
-			if( optIndex != undefined ) {
+			if( optIndex !== undefined ) {
 				checkIndex(optIndex, true);
 				values.splice(optIndex, 0, value);
 				resource.notifyValueAdded(this, optIndex, value);
@@ -295,5 +296,5 @@ jsmf.model = new (function() {
 		}
 	}
 
-})();
+}();
 

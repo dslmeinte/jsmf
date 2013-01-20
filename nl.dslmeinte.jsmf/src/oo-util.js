@@ -17,7 +17,7 @@ oo.util = function() {
 	 * <pre>
 	 * function SuperClass(initData) {}
 	 * function SubClass(initData) {
-	 * 	SuperClass.call(this, initData);
+	 *	SuperClass.call(this, initData);
 	 * }
 	 * oo.util.extend(SuperClass, SubClass);
 	 * </pre>

@@ -5,7 +5,8 @@
  */
 
 
-jsmf.util = new (function() {
+/*global $:false, jsmf:false, console:false */
+jsmf.util = function() {
 
 	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
 
@@ -76,5 +77,5 @@ jsmf.util = new (function() {
 		}
 	};
 
-})();
+}();
 
