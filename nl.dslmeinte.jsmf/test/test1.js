@@ -198,7 +198,7 @@
 	test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {
 			var metaModel = jsmf.meta.createMetaModelFromJSON(metaModelJSON);
 			ok(metaModel, "meta meta model initialised");
-			equal(jsmf.util.countProperties(metaModel.classifiers), 9, "#meta meta classes correct");
+			equal(jsmf.util.testing.countProperties(metaModel.classifiers), 9, "#meta meta classes correct");
 			var classifierClass = metaModel.classifiers['Classifier'];
 			ok(classifierClass.features['name'], "Class 'Class' knows about its 'name' feature");
 			var datatypeClass = metaModel.classifiers['Datatype'];

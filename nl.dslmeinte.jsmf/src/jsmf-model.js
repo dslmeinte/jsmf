@@ -48,7 +48,7 @@ jsmf.model = new (function() {
 			var oldValue = ( oldSetting ? oldSetting : null );
 			if( oldValue !== newValue ) {
 				// TODO  type checking
-				settings[feature.name] = createSetting(feature, newValue);
+				settings[feature.name] = createSetting(feature, newValue, resource);
 				resource.notifyValueChanged(this, feature, oldValue, newValue);
 			}
 			return this;	// for chaining
@@ -280,7 +280,7 @@ jsmf.model = new (function() {
 	oo.util.extend(this.Setting, this.ReferenceSetting);
 
 
-	function createSetting(feature, value) {
+	function createSetting(feature, value, resource) {
 		switch(feature.kind) {
 			case 'attribute':	return new module.AttributeSetting(feature, value);
 			case 'containment':	return new module.ContainmentSetting(feature, value);

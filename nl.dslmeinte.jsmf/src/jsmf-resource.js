@@ -45,7 +45,7 @@ jsmf.model.MResource = function(metaModel) {
 		});
 	};
 
-	this.notifyListChanged = function(mObject, feature) {
+	this.notifyListChanged = function(mList, index) {
 		$(listeners).each(function() {
 			this.notifyListChanged(mList, index);
 		});
@@ -144,7 +144,7 @@ jsmf.model.Factory = new (function() {
 				if( feature.manyValued && validationCallback ) {
 					validationCallback.reportError('cannot load a single, non-array value into the multi-valued feature ' + feature.containingClass.name + '#' + feature.name);
 				}
-				return creator.call(this, value, feature.type);
+				return creator.call(null, value, feature.type);		// (don't need any this context...)
 			}
 
 		}
