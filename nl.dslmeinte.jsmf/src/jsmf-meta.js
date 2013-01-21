@@ -6,11 +6,10 @@
  */
 
 /*global $:false, jsmf:false */
-jsmf.meta = new (function() {
+/*jshint sub:true */
+jsmf.meta = function() {
 
-	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
-
-	"use strict";	// annotation for jsHint
+	"use strict";	// annotation for ECMAScript5
 
 	/**
 	 * A MetaModel represents a meta model.
@@ -19,7 +18,7 @@ jsmf.meta = new (function() {
 	 * 
 	 * @param metaModel - a "standard" JSON representation of the meta model
 	 */
-	this.createMetaModelFromJSON = function(metaModelJSON) {
+	function createMetaModelFromJSON(metaModelJSON) {
 
 		if( !$.isArray(metaModelJSON) ) throw new Error("meta model JSON is not an array");
 
@@ -46,7 +45,7 @@ jsmf.meta = new (function() {
 
 		return metaModel;
 
-	};
+	}
 
 	function MetaModel() {
 		this.classifiers = {};
@@ -239,8 +238,9 @@ jsmf.meta = new (function() {
 
 	}
 
-	this.Feature = function() {
+	function Feature() {
 
+		/*jshint smarttabs:true, laxbreak:true */
 		this.isNameFeature = function() {
 			return(
 					   this.name === 'name'
@@ -249,6 +249,7 @@ jsmf.meta = new (function() {
 					&& !this.manyValued
 				);
 		};
+		/*jshint laxbreak:false */
 
 		this.toString = function() {
 			return( this.containingClass.name + "." + this.name );
@@ -263,7 +264,12 @@ jsmf.meta = new (function() {
 			}
 		};
 
+	}
+
+	return {
+		'createMetaModelFromJSON':	createMetaModelFromJSON,
+		'Feature':					Feature
 	};
 
-})();
+}();
 

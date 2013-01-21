@@ -12,7 +12,7 @@
 /*global $:false, jsmf:false */
 jsmf.model.MResource = function(metaModel) {
 
-	"use strict";	// annotation for jsHint
+	"use strict";	// annotation for ECMAScript5
 
 	this.metaModel = metaModel;
 	this.contents = new jsmf.model.MList(this, null, null);
@@ -63,18 +63,17 @@ jsmf.model.MResource = function(metaModel) {
 /**
  * A generic factory object (singleton) for creating MResource-s from JSON.
  */
-jsmf.model.Factory = new (function() {
+/*jshint sub:true */
+jsmf.model.Factory = function() {
 
-	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
-
-	"use strict";	// annotation for jsHint
+	"use strict";	// annotation for ECMAScript5
 
 	/**
 	 * Given a JSON representation for the model, its meta model in the jsmf.meta.MetaModel format
 	 * and an optional callback object for signaling (about) format- and model-level problems.
 	 * This callback object must have a function with the following signature: <tt>reportError(msg : String)</tt>.
 	 */
-	this.createMResource = function(modelJSON, metaModel, validationCallback) {
+	function createMResource(modelJSON, metaModel, validationCallback) {
 
 		var _resource = new jsmf.model.MResource(metaModel);	// (have to use _prefix to soothe JS plug-in)
 
@@ -149,7 +148,7 @@ jsmf.model.Factory = new (function() {
 
 		}
 
-	};
+	}
 
 
 	// TODO  fix implementation of regex check:
@@ -172,7 +171,7 @@ jsmf.model.Factory = new (function() {
 	 * The {@code validationCallback} is an optional argument that's called in case
 	 * of problems with resolution of URIs.
 	 */
-	this.createUri = function(uriString, validationCallback) {
+	function createUri(uriString, validationCallback) {
 
 		if( typeof(uriString) !== 'string' ) throw new Error('URI must be a String');
 //		if( !uriRegExp.test(uriString) ) throw new Error('URI must have the correct format: ' + uriString);
@@ -233,7 +232,12 @@ jsmf.model.Factory = new (function() {
 
 		}
 
+	}
+
+	return {
+		'createMResource':	createMResource,
+		'createUri':		createUri
 	};
 
-})();
+}();
 

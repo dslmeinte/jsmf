@@ -4,20 +4,16 @@
  * (c) 2012 Meinte Boersma
  */
 
-/*global $:false, oo:false */
-jsmf.model = new (function() {
+/*global $:false, jsmf:false, oo:false */
+jsmf.model = function() {
 
-	// TODO  switch to "Revealing Module Pattern" -- making the code communicate better for lack of this.*
-
-	"use strict";	// annotation for jsHint
-
-	var module = this;
+	"use strict";	// annotation for ECMAScript5
 
 
 	/**
 	 * A <em>model</em> object.
 	 */
-	this.MObject = function(_class, resource, container, containingFeature) {
+	function MObject(_class, resource, container, containingFeature) {
 
 		this._class = _class;
 
@@ -33,8 +29,8 @@ jsmf.model = new (function() {
 			if( !setting ) return undefined;
 
 			var value = setting.get();
-			if( setting instanceof module.ProxySetting ) {
-				settings[feature.name] = new module.ReferenceSetting(feature, value);	// re-set setting for resolved proxy
+			if( setting instanceof ProxySetting ) {
+				settings[feature.name] = new ReferenceSetting(feature, value);	// re-set setting for resolved proxy
 			}
 			return value;
 		};
@@ -102,13 +98,13 @@ jsmf.model = new (function() {
 			return this;	// for chaining
 		};
 
-	};
+	}
 
 
 	/**
 	* Common, abstract super type.
 	*/
-	this.Setting = function(feature) {
+	function Setting(feature) {
 
 		/**
 		 * {@return} The value of this Setting. It has the same range of types as MObject#get.
@@ -138,7 +134,7 @@ jsmf.model = new (function() {
 			// TODO  implement!
 		};
 
-	};
+	}
 
 
 	/**
@@ -150,9 +146,9 @@ jsmf.model = new (function() {
 	 * <p>
 	 * We also need this to be able to keep track of opposites.
 	 */
-	this.MList = function(resource, container, feature, /* optional with default=[]: */ initialValues) {
+	function MList(resource, container, feature, /* optional with default=[]: */ initialValues) {
 
-		module.Setting.call(this, feature);
+		Setting.call(this, feature);
 
 		/*
 		 * If feature == null, then this MList instance is contained by an MResource as its 'contents' feature.
@@ -235,29 +231,29 @@ jsmf.model = new (function() {
 
 		// TODO  add more functions for traversal
 
-	};
-	oo.util.extend(this.Setting, this.MList);
+	}
+	oo.util.extend(Setting, MList);
 
 
-	this.AttributeSetting = function(feature, value) {
-		module.Setting.call(this, feature);
+	function AttributeSetting(feature, value) {
+		Setting.call(this, feature);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value; };
-	};
-	oo.util.extend(this.Setting, this.AttributeSetting);
+	}
+	oo.util.extend(Setting, AttributeSetting);
 
 
-	this.ContainmentSetting = function(feature, value) {
-		module.Setting.call(this, feature);
+	function ContainmentSetting(feature, value) {
+		Setting.call(this, feature);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return( value ? value.toJSON() : undefined ); };
-	};
-	oo.util.extend(this.Setting, this.ContainmentSetting);
+	}
+	oo.util.extend(Setting, ContainmentSetting);
 
 
-	this.ProxySetting = function(feature, uriString, resource, validationCallback) {
-		module.Setting.call(this, feature);
-		var computedUri = module.Factory.createUri(uriString, validationCallback);
+	function ProxySetting(feature, uriString, resource, validationCallback) {
+		Setting.call(this, feature);
+		var computedUri = jsmf.model.Factory.createUri(uriString, validationCallback);
 		this.toJSON = function() {
 			return uriString;
 		};
@@ -268,33 +264,43 @@ jsmf.model = new (function() {
 		this.uri = function() {
 			return uriString;
 		};
-	};
-	oo.util.extend(this.Setting, this.ProxySetting);
+	}
+	oo.util.extend(Setting, ProxySetting);
 
 
-	this.ReferenceSetting = function(feature, value) {
-		module.Setting.call(this, feature);
+	function ReferenceSetting(feature, value) {
+		Setting.call(this, feature);
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{ return value.uri(); };
-	};
-	oo.util.extend(this.Setting, this.ReferenceSetting);
+	}
+	oo.util.extend(Setting, ReferenceSetting);
 
 
 	function createSetting(feature, value, resource) {
 		switch(feature.kind) {
-			case 'attribute':	return new module.AttributeSetting(feature, value);
-			case 'containment':	return new module.ContainmentSetting(feature, value);
+			case 'attribute':	return new AttributeSetting(feature, value);
+			case 'containment':	return new ContainmentSetting(feature, value);
 			case 'reference': {
 				if( typeof(value) === 'string' ) {
-					return new module.ProxySetting(feature, value, resource);
+					return new ProxySetting(feature, value, resource);
 				}
-				if( value instanceof module.ProxySetting ) {
+				if( value instanceof ProxySetting ) {
 					return value;
 				}
-				return new module.ReferenceSetting(feature, value);
+				return new ReferenceSetting(feature, value);
 			}
 		}
 	}
 
-})();
+	return {
+		'MObject':				MObject,
+		'Setting':				Setting,
+		'MList':				MList,
+		'AttributeSetting':		AttributeSetting,
+		'ContainmentSetting':	ContainmentSetting,
+		'ProxySetting':			ProxySetting,
+		'ReferenceSetting':		ReferenceSetting
+	};
+
+}();
 
