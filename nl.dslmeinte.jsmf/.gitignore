@@ -1,3 +1,6 @@
 # generated from build (scripts):
 dist/
 
+# symlinked from repo root - for easy editor access in Eclipse:
+README.md
+
