@@ -251,18 +251,18 @@ jsmf.model = function() {
 	oo.util.extend(Setting, ContainmentSetting);
 
 
-	function ProxySetting(feature, uriString, resource, validationCallback) {
+	function ProxySetting(feature, refObject, resource, validationCallback) {
 		Setting.call(this, feature);
-		var computedUri = jsmf.model.Factory.createUri(uriString, validationCallback);
+		var computedUri = jsmf.model.Factory.createUri(refObject.hint, validationCallback);
 		this.toJSON = function() {
-			return uriString;
+			return refObject.hint;
 		};
 		this.get = function() {
 			return computedUri.resolveInResource(resource);
 			// TODO  do something with type info as well (e.g., validate)
 		};
 		this.uri = function() {
-			return uriString;
+			return refObject.hint;
 		};
 	}
 	oo.util.extend(Setting, ProxySetting);

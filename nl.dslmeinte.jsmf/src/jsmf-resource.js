@@ -91,23 +91,26 @@ jsmf.model.Factory = function() {
 			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
 			jsmf.util.checkClass(initData);
 
-			var className = initData._class;
-			var _class = metaModel.classifiers[className];
-			if( !_class ) throw new Error("declared object's type '" + className + "' not defined in meta model");
-			if( _class['abstract'] ) throw new Error("class '" + className + "' is abstract and cannot be instantiated");
+			var metaTypeName = initData.metaType;
+			var metaType = metaModel.classifiers[metaTypeName];
+			if( !metaType ) {
+				throw new Error("declared object's type '" + metaTypeName + "' not defined in meta model");
+			}
+			if( metaType['abstract'] ) throw new Error("class '" + metaTypeName + "' is abstract and cannot be instantiated");
 
-			var _allFeatures = _class.allFeatures();
+			var _allFeatures = metaType.allFeatures();
+			var initSettings = initData.settings || [];
+			var initAnnotationSettings = initData['@settings'] || [];
 
-			var validPropertyNames = [ "_class" ].concat(_class.allAnnotations()).concat($.map(_allFeatures, function(value, key) { return key; }));
-			jsmf.util.checkProperties(initData, validPropertyNames);
+			var validPropertyNames = $.map(_allFeatures, function(value, key) { return key; });
 
-			jsmf.util.log( "constructing an instance of '" + className + "' with initialisation data: " + JSON.stringify(initData) );
+			jsmf.util.log( "constructing an instance of '" + metaTypeName + "' with initialisation data: " + JSON.stringify(initData) );
 
-			var mObject = new jsmf.model.MObject(_class, _resource, container, containingFeature);
+			var mObject = new jsmf.model.MObject(metaType, _resource, container, containingFeature);
 
 			// traverse values/settings of features:
 			$.map(_allFeatures, function(feature, featureName) {
-				var value = initData[featureName];
+				var value = initSettings[featureName];
 				jsmf.util.log("\tsetting value of feature named '" + featureName + "' with value: " + JSON.stringify(value));
 				if( value ) {
 					mObject.set(feature, (function() {
@@ -126,6 +129,8 @@ jsmf.model.Factory = function() {
 				}
 				jsmf.util.log("\t(set value of feature named '" + featureName + "')");
 			});
+
+			// TODO  check which properties of the initSettings are not mapped to features
 
 			return mObject;
 
@@ -150,10 +155,6 @@ jsmf.model.Factory = function() {
 
 	}
 
-
-	// TODO  fix implementation of regex check:
-	//var uriRegExp = /^(\/\w+(\.\w+)?)*\/\w+$/g;
-	//uriRegExp.compile();
 
 	/**
 	 * {code path} is a string in the format
