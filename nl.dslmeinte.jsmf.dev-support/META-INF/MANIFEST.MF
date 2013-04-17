@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Xtend development support for JSMF
+Bundle-SymbolicName: nl.dslmeinte.jsmf.dev-support
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: DslConsultancy.com
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.xtend.lib,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib
+
