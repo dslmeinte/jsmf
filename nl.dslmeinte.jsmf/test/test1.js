@@ -94,105 +94,139 @@
 	} ];
 
 	var modelJSON = [ {
-		"_class" : "Datatype",
-		"name" : "String"
+		"metaType" : "Datatype",
+		"settings" : {
+			"name" : "String"
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Expression",
-		"abstract" : true
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Expression",
+			"abstract" : true
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Sqrt",
-		"superTypes" : [ "Expression" ],
-		"features" : [ {
-			"_class" : "Feature",
-			"name" : "expr",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		} ]
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Sqrt",
+			"superTypes" : [ { hint: "Expression" } ],
+			"features" : [ {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			} ]
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Fraction",
-		"superTypes" : [ "Expression" ],
-		"features" : [ {
-			"_class" : "Feature",
-			"name" : "expr1",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		}, {
-			"_class" : "Feature",
-			"name" : "expr2",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		} ]
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Fraction",
+			"superTypes" : [ { hint: "Expression" } ],
+			"features" : [ {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr1",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			}, {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr2",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			} ]
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Mult",
-		"superTypes" : [ "Expression" ],
-		"features" : [ {
-			"_class" : "Feature",
-			"name" : "expr1",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		}, {
-			"_class" : "Feature",
-			"name" : "expr2",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		} ]
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Mult",
+			"superTypes" : [ { hint: "Expression" } ],
+			"features" : [ {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr1",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			}, {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr2",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			} ]
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Plus",
-		"superTypes" : [ "Expression" ],
-		"features" : [ {
-			"_class" : "Feature",
-			"name" : "expr1",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		}, {
-			"_class" : "Feature",
-			"name" : "expr2",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		} ]
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Plus",
+			"superTypes" : [ { hint: "Expression" } ],
+			"features" : [ {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr1",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			}, {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr2",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			} ]
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Neg",
-		"superTypes" : [ "Expression" ],
-		"features" : [ {
-			"_class" : "Feature",
-			"name" : "expr",
-			"kind" : "containment",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "Expression"
-		} ]
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Neg",
+			"superTypes" : [ { hint: "Expression" } ],
+			"features" : [ {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "expr",
+					"kind" : "containment",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "Expression" }
+				}
+			} ]
+		}
 	}, {
-		"_class" : "Class",
-		"name" : "Value",
-		"superTypes" : [ "Expression" ],
-		"features" : [ {
-			"_class" : "Feature",
-			"name" : "value",
-			"kind" : "attribute",
-			"lowerLimit" : 1,
-			"upperLimit" : 1,
-			"type" : "String"
-		} ]
+		"metaType" : "Class",
+		"settings" : {
+			"name" : "Value",
+			"superTypes" : [ { hint: "Expression" } ],
+			"features" : [ {
+				"metaType" : "Feature",
+				"settings" : {
+					"name" : "value",
+					"kind" : "attribute",
+					"lowerLimit" : 1,
+					"upperLimit" : 1,
+					"type" : { hint: "String" }
+				}
+			} ]
+		}
 	} ];
 
 	test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {
