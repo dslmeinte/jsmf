@@ -93,44 +93,52 @@
 		} ]
 	} ];
 
-	var modelJSON = [ {
-		"_class" : "Sqrt",
-		"expr" : {
-			"_class" : "Fraction",
-			"expr1" : {
-				"_class" : "Mult",
-				"expr1" : {
-					"_class" : "Value",
-					"value" : "33"
-				},
-				"expr2" : {
-					"_class" : "Sqrt",
-					"expr" : {
-						"_class" : "Fraction",
-						"expr1" : {
-							"_class" : "Value",
-							"value" : "5"
-						},
-						"expr2" : {
-							"_class" : "Plus",
-							"expr1" : {
-								"_class" : "Value",
-								"value" : "100"
-							},
-							"expr2" : {
-								"_class" : "Value",
-								"value" : "7"
-							}
-						}
-					}
-				}
-			},
-			"expr2" : {
-				"_class" : "Value",
-				"value" : "6"
-			}
-		}
-	} ];
+	var modelJSON = [{
+		  "metaType": "Sqrt",
+		  "settings": {"expr": {
+		    "metaType": "Fraction",
+		    "settings": {
+		      "expr1": {
+		        "metaType": "Mult",
+		        "settings": {
+		          "expr1": {
+		            "metaType": "Value",
+		            "settings": {"value": "33"}
+		          },
+		          "expr2": {
+		            "metaType": "Sqrt",
+		            "settings": {"expr": {
+		              "metaType": "Fraction",
+		              "settings": {
+		                "expr1": {
+		                  "metaType": "Value",
+		                  "settings": {"value": "5"}
+		                },
+		                "expr2": {
+		                  "metaType": "Plus",
+		                  "settings": {
+		                    "expr1": {
+		                      "metaType": "Value",
+		                      "settings": {"value": "100"}
+		                    },
+		                    "expr2": {
+		                      "metaType": "Value",
+		                      "settings": {"value": "7"}
+		                    }
+		                  }
+		                }
+		              }
+		            }}
+		          }
+		        }
+		      },
+		      "expr2": {
+		        "metaType": "Value",
+		        "settings": {"value": "6"}
+		      }
+		    }
+		  }}
+		}];
 
 	test("initialising arithmetic expressions meta model and example model (test4.js)", function() {
 			var metaModel = jsmf.meta.createMetaModelFromJSON(metaModelJSON);

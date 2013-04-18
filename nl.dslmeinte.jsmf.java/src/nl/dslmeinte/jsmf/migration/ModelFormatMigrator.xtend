@@ -26,19 +26,26 @@ class ModelFormatMigrator {
 	def private JSONObject migrateObject(JSONObject o) {
 		if( o.optString('metaType').nullOrEmpty ) {
 			new JSONObject => [
-				fixId(it, o)
+//				fixId(it, o)
 
 				put('metaType', o.metaClass.name)
 	
 				o.remove('_class')
 
 				put('settings', o.transform[ key, s |
-					val feature = metaClass.feature(key)
-					if( feature == null ) {
-						throw new IllegalArgumentException('''no feature «metaClass.name»#«key» found''')
+					if( key != '_view' ) {
+						val feature = metaClass.feature(key)
+						if( feature == null ) {
+							throw new IllegalArgumentException('''no feature «metaClass.name»#«key» found''')
+						}
+						migrateSetting(s, metaClass.feature(key))
 					}
-					migrateSetting(s, metaClass.feature(key))
 				])
+
+				val viewInfo = o.optJSONObject('_view')
+				if( viewInfo != null ) {
+					put('_view', viewInfo)
+				}
 			]
 		} else {
 			o => [ fixId(it) ]

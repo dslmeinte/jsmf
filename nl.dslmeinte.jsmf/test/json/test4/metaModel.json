@@ -1,0 +1,92 @@
+[ {
+	"metaMetaType" : "Datatype",
+	"name" : "String"
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Expression",
+	"abstract" : true
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Sqrt",
+	"superTypes" : [ "Expression" ],
+	"features" : [ {
+		"name" : "expr",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Fraction",
+	"superTypes" : [ "Expression" ],
+	"features" : [ {
+		"name" : "expr1",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	}, {
+		"name" : "expr2",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Mult",
+	"superTypes" : [ "Expression" ],
+	"features" : [ {
+		"name" : "expr1",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	}, {
+		"name" : "expr2",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Plus",
+	"superTypes" : [ "Expression" ],
+	"features" : [ {
+		"name" : "expr1",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	}, {
+		"name" : "expr2",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Neg",
+	"superTypes" : [ "Expression" ],
+	"features" : [ {
+		"name" : "expr",
+		"kind" : "containment",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Expression"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Value",
+	"superTypes" : [ "Expression" ],
+	"features" : [ {
+		"name" : "value",
+		"kind" : "attribute",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "String"
+	} ]
+} ]

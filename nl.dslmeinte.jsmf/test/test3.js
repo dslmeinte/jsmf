@@ -167,127 +167,142 @@
 		} ]
 	} ];
 
-	var modelJSON = [ {
-		"_class" : "Statemachine",
-		"name" : "AC",
-		"triggers" : [ {
-			"_class" : "Trigger",
-			"_view" : {
-				"collapsed" : false
-			},
-			"name" : "OnButton"
-		}, {
-			"_class" : "Trigger",
-			"_view" : {
-				"collapsed" : false
-			},
-			"name" : "ModeButton"
-		} ],
-		"_view" : {
-			"container-size" : {
-				"chartElements" : {
-					"width" : "1553px",
-					"height" : "211px"
-				}
-			}
-		},
-		"chartElements" : [ {
-			"_class" : "SimpleState",
-			"_view" : {
-				"collapsed" : false,
-				"position" : {
-					"left" : "15px",
-					"top" : "46px"
-				}
-			},
-			"name" : "Off"
-		}, {
-			"_class" : "CompositeState",
-			"_view" : {
-				"collapsed" : false,
-				"position" : {
-					"left" : "397px",
-					"top" : "-30px"
-				},
-				"container-size" : {
-					"chartElements" : {
-						"width" : "596px",
-						"height" : "144px"
-					}
-				}
-			},
-			"name" : "On",
-			"chartElements" : [ {
-				"_class" : "SimpleState",
-				"_view" : {
-					"collapsed" : false,
-					"position" : {
-						"left" : "45px",
-						"top" : "54px"
-					}
-				},
-				"name" : "Heating"
-			}, {
-				"_class" : "SimpleState",
-				"_view" : {
-					"collapsed" : false,
-					"position" : {
-						"left" : "442px",
-						"top" : "66px"
-					}
-				},
-				"name" : "Cooling"
-			}, {
-				"_class" : "Transition",
-				"_view" : {
-					"position" : {
-						"left" : "236px",
-						"top" : "4px"
-					},
-					"variant" : 1
-				},
-				"sourceState" : "/AC/On/Heating",
-				"targetState" : "/AC/On/Cooling",
-				"triggers" : [ "/AC/ModeButton" ]
-			}, {
-				"_class" : "Transition",
-				"_view" : {
-					"position" : {
-						"left" : "235px",
-						"top" : "82px"
-					},
-					"variant" : 2
-				},
-				"sourceState" : "/AC/On/Cooling",
-				"targetState" : "/AC/On/Heating",
-				"triggers" : [ "/AC/ModeButton" ]
-			} ]
-		}, {
-			"_class" : "Transition",
-			"_view" : {
-				"position" : {
-					"left" : "214px",
-					"top" : "93px"
-				},
-				"variant" : 1
-			},
-			"sourceState" : "/AC/Off",
-			"targetState" : "/AC/On/Heating",
-			"triggers" : [ "/AC/OnButton" ]
-		}, {
-			"_class" : "Transition",
-			"_view" : {
-				"position" : {
-					"left" : "212px",
-					"top" : "-19px"
-				},
-				"variant" : 2
-			},
-			"sourceState" : "/AC/On",
-			"targetState" : "/AC/Off",
-			"triggers" : [ "/AC/OnButton" ]
-		} ]
-	} ];
+	var modelJSON = [{
+		  "metaType": "Statemachine",
+		  "settings": {
+		    "name": "AC",
+		    "triggers": [
+		      {
+		        "metaType": "Trigger",
+		        "settings": {"name": "OnButton"},
+		        "_view": {"collapsed": false}
+		      },
+		      {
+		        "metaType": "Trigger",
+		        "settings": {"name": "ModeButton"},
+		        "_view": {"collapsed": false}
+		      }
+		    ],
+		    "chartElements": [
+		      {
+		        "metaType": "SimpleState",
+		        "settings": {"name": "Off"},
+		        "_view": {
+		          "collapsed": false,
+		          "position": {
+		            "left": "15px",
+		            "top": "46px"
+		          }
+		        }
+		      },
+		      {
+		        "metaType": "CompositeState",
+		        "settings": {
+		          "name": "On",
+		          "chartElements": [
+		            {
+		              "metaType": "SimpleState",
+		              "settings": {"name": "Heating"},
+		              "_view": {
+		                "collapsed": false,
+		                "position": {
+		                  "left": "45px",
+		                  "top": "54px"
+		                }
+		              }
+		            },
+		            {
+		              "metaType": "SimpleState",
+		              "settings": {"name": "Cooling"},
+		              "_view": {
+		                "collapsed": false,
+		                "position": {
+		                  "left": "442px",
+		                  "top": "66px"
+		                }
+		              }
+		            },
+		            {
+		              "metaType": "Transition",
+		              "settings": {
+		                "sourceState": {"hint": "/AC/On/Heating"},
+		                "targetState": {"hint": "/AC/On/Cooling"},
+		                "triggers": [{"hint": "/AC/ModeButton"}]
+		              },
+		              "_view": {
+		                "position": {
+		                  "left": "236px",
+		                  "top": "4px"
+		                },
+		                "variant": 1
+		              }
+		            },
+		            {
+		              "metaType": "Transition",
+		              "settings": {
+		                "sourceState": {"hint": "/AC/On/Cooling"},
+		                "targetState": {"hint": "/AC/On/Heating"},
+		                "triggers": [{"hint": "/AC/ModeButton"}]
+		              },
+		              "_view": {
+		                "position": {
+		                  "left": "235px",
+		                  "top": "82px"
+		                },
+		                "variant": 2
+		              }
+		            }
+		          ]
+		        },
+		        "_view": {
+		          "collapsed": false,
+		          "position": {
+		            "left": "397px",
+		            "top": "-30px"
+		          },
+		          "container-size": {"chartElements": {
+		            "width": "596px",
+		            "height": "144px"
+		          }}
+		        }
+		      },
+		      {
+		        "metaType": "Transition",
+		        "settings": {
+		          "sourceState": {"hint": "/AC/Off"},
+		          "targetState": {"hint": "/AC/On/Heating"},
+		          "triggers": [{"hint": "/AC/OnButton"}]
+		        },
+		        "_view": {
+		          "position": {
+		            "left": "214px",
+		            "top": "93px"
+		          },
+		          "variant": 1
+		        }
+		      },
+		      {
+		        "metaType": "Transition",
+		        "settings": {
+		          "sourceState": {"hint": "/AC/On"},
+		          "targetState": {"hint": "/AC/Off"},
+		          "triggers": [{"hint": "/AC/OnButton"}]
+		        },
+		        "_view": {
+		          "position": {
+		            "left": "212px",
+		            "top": "-19px"
+		          },
+		          "variant": 2
+		        }
+		      }
+		    ]
+		  },
+		  "_view": {"container-size": {"chartElements": {
+		    "width": "1553px",
+		    "height": "211px"
+		  }}}
+		}];
 
 	test("initialising statemachine meta model and example model (test3.js) - with view info", function() {
 			var metaModel = jsmf.meta.createMetaModelFromJSON(metaModelJSON);

@@ -12,6 +12,8 @@ class MigrationRunner {
 	def static void main(String[] args) {
 		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test1/")
 		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test2/")
+		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test3/")
+		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test4/")
 	}
 
 	def private migrate(String path) {

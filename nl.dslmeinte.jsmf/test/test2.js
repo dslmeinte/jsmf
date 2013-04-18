@@ -156,51 +156,78 @@
 		} ]
 	} ];
 
-	var modelJSON = [ {
-		"_class" : "Statemachine",
-		"name" : "AC",
-		"triggers" : [ {
-			"_class" : "Trigger",
-			"name" : "OnButton"
-		}, {
-			"_class" : "Trigger",
-			"name" : "ModeButton"
-		} ],
-		"states" : [ {
-			"_class" : "SimpleState",
-			"name" : "Off",
-			"transitions" : [ {
-				"_class" : "Transition",
-				"targetState" : "/AC.states/On",
-				"triggers" : [ "/AC.triggers/OnButton" ]
-			} ]
-		}, {
-			"_class" : "CompositeState",
-			"name" : "On",
-			"subStates" : [ {
-				"_class" : "SimpleState",
-				"name" : "Heating",
-				"transitions" : [ {
-					"_class" : "Transition",
-					"targetState" : "/AC.states/On.subStates/Cooling",
-					"triggers" : [ "/AC.triggers/ModeButton" ]
-				} ]
-			}, {
-				"_class" : "SimpleState",
-				"name" : "Cooling",
-				"transitions" : [ {
-					"_class" : "Transition",
-					"targetState" : "/AC.states/On.subStates/Heating",
-					"triggers" : [ "/AC.triggers/ModeButton" ]
-				} ]
-			} ],
-			"transitions" : [ {
-				"_class" : "Transition",
-				"targetState" : "/AC.states/Off",
-				"triggers" : [ "/AC.triggers/OnButton" ]
-			} ]
-		} ]
-	} ];
+	var modelJSON = [{
+		  "metaType": "Statemachine",
+		  "settings": {
+		    "name": "AC",
+		    "triggers": [
+		      {
+		        "metaType": "Trigger",
+		        "settings": {"name": "OnButton"}
+		      },
+		      {
+		        "metaType": "Trigger",
+		        "settings": {"name": "ModeButton"}
+		      }
+		    ],
+		    "states": [
+		      {
+		        "metaType": "SimpleState",
+		        "settings": {
+		          "name": "Off",
+		          "transitions": [{
+		            "metaType": "Transition",
+		            "settings": {
+		              "targetState": {"hint": "/AC.states/On"},
+		              "triggers": [{"hint": "/AC.triggers/OnButton"}]
+		            }
+		          }]
+		        }
+		      },
+		      {
+		        "metaType": "CompositeState",
+		        "settings": {
+		          "name": "On",
+		          "subStates": [
+		            {
+		              "metaType": "SimpleState",
+		              "settings": {
+		                "name": "Heating",
+		                "transitions": [{
+		                  "metaType": "Transition",
+		                  "settings": {
+		                    "targetState": {"hint": "/AC.states/On.subStates/Cooling"},
+		                    "triggers": [{"hint": "/AC.triggers/ModeButton"}]
+		                  }
+		                }]
+		              }
+		            },
+		            {
+		              "metaType": "SimpleState",
+		              "settings": {
+		                "name": "Cooling",
+		                "transitions": [{
+		                  "metaType": "Transition",
+		                  "settings": {
+		                    "targetState": {"hint": "/AC.states/On.subStates/Heating"},
+		                    "triggers": [{"hint": "/AC.triggers/ModeButton"}]
+		                  }
+		                }]
+		              }
+		            }
+		          ],
+		          "transitions": [{
+		            "metaType": "Transition",
+		            "settings": {
+		              "targetState": {"hint": "/AC.states/Off"},
+		              "triggers": [{"hint": "/AC.triggers/OnButton"}]
+		            }
+		          }]
+		        }
+		      }
+		    ]
+		  }
+		}];
 
 	var modelJSONWithoutShortcuts = [ {
 		"_class" : "Statemachine",
@@ -261,7 +288,7 @@
 			var referencedState = transition0.get("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
-			deepEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");
+			strictEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");
 		});
 
 })();
