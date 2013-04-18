@@ -1,13 +1,11 @@
 package nl.dslmeinte.jsmf.meta
 
-import java.io.InputStream
 import java.util.List
 import java.util.Map
 import java.util.Set
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
 import org.json.JSONArray
 import org.json.JSONObject
-import org.json.JSONTokener
 
 class MetaModel {
 
@@ -19,8 +17,7 @@ class MetaModel {
 		typesMap.get(name)
 	}
 
-	new(InputStream inputStream) {
-		val typesAsJSON = new JSONArray(new JSONTokener(inputStream))
+	new(JSONArray typesAsJSON) {
 		val types = <MetaType>newArrayList
 		for( i : 0..(typesAsJSON.length -1) ) {
 			types += typesAsJSON.getJSONObject(i).unmarshalType
@@ -72,7 +69,7 @@ class MetaModel {
 		var result = allSuperTypesMap.get(metaClass)
 
 		if( result == null ) {
-			result.addAll(metaClass.allSuperTypesInternal)
+			result = metaClass.allSuperTypesInternal
 			allSuperTypesMap.put(metaClass, result)
 		}
 
@@ -82,7 +79,7 @@ class MetaModel {
 	def Set<MetaClass> allSuperTypesInternal(MetaClass it) {
 		val result = <MetaClass>newLinkedHashSet
 		result.addAll(superTypes)
-		result.addAll(superTypes.map[allSuperTypes])
+		result.addAll(superTypes.map[allSuperTypes].flatten)
 		result
 	}
 
@@ -101,7 +98,7 @@ class MetaModel {
 	}
 
 	def private List<MetaFeature> allFeaturesInternal(MetaClass it) {
-		(allSuperTypes.map[features].flatten.toList + features).toList
+		(allSuperTypes.map[features].flatten + features).toList
 	}
 
 
