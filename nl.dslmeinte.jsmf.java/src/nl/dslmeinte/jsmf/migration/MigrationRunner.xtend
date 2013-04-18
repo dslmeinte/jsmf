@@ -10,6 +10,7 @@ import org.json.JSONTokener
 class MigrationRunner {
 
 	def static void main(String[] args) {
+		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test1/")
 		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test2/")
 	}
 
@@ -17,6 +18,7 @@ class MigrationRunner {
 		val metaModel = new MetaModel((path + "metaModel.json").fileAsJSONArray)
 		val migrator = new ModelFormatMigrator(metaModel, (path + "model.json").fileAsJSONArray)
 		FileUtils::write(new File(path + "migratedModel.json"), migrator.migratedModel.toString(2))
+		println("migrated model located in: " + path)
 	}
 
 	def private fileAsJSONArray(String path) {
