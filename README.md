@@ -44,9 +44,9 @@ Example:
 Each object has the following descriptive structure:
 ```
 {
-	(metaModelId: '',)
+	(assetId: 'a globally-unique id',)
 	metaType: 'some meta type name',
-	(id: 'some-id',)
+	(localId: 'a locally-unique id',)
 	settings: {
 		'name': 'whatever',
 		...
@@ -56,13 +56,28 @@ Each object has the following descriptive structure:
 	}
 }
 ```
-
 This structure is a little more verbose than a direct dictionary but also less brittle and it allows explicit inclusion of annotation settings.
+
+The model overall has the following serializaton (currently only partly implemented):
+```
+{
+
+	assetId: 'a globally-unique id',
+	metaModelId: 'asset-id of the meta model',
+	( /* version info? */ ),
+	rootElement: {
+		...
+	}
+
+}
+```
+There's really no reason to not have a single (potentially unnamed) root element, instead of a collection of them.
+Also, having a single root element makes rendering and validation at that level completely analogous to other levels.
 
 
 #### References
 
-Model elements are referenced by an GUID.
+Model elements are referenced by an GUID which is composed from a local ID and a asset ID.
 The thinking (design decision) behind this is that lookup based on names and/or locations is quite brittle since names and locations (e.g. index in a list) change.
 That lookup is also potentially expensive since we need to traverse the structure upwards to compute (qualified) names or URI strings etc.
 
@@ -72,7 +87,8 @@ A reference within a model is a JS object of the following form:
 
 ```
 {
-	refId: 'a referred id'
+	localId: 'a referred id'
+	(, assetId: 'id of an asset')
 	(, hint: 'a hint for resolution e.g. a (qualified) name or URI string or whatever')
 }
 ```

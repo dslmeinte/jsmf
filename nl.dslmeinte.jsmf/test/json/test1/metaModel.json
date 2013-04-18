@@ -1,0 +1,92 @@
+[ {
+	"metaMetaType" : "Datatype",
+	"name" : "String"
+}, {
+	"metaMetaType" : "Datatype",
+	"name" : "Integer"
+}, {
+	"metaMetaType" : "Datatype",
+	"name" : "Boolean"
+}, {
+	"metaMetaType" : "Enum",
+	"name" : "FeatureKindType",
+	"literals" : [ "attribute", "reference", "containment" ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Classifier",
+	"abstract" : true,
+	"features" : [ {
+		"name" : "name",
+		"kind" : "attribute",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "String"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Datatype",
+	"superTypes" : [ "Classifier" ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Enum",
+	"superTypes" : [ "Datatype" ],
+	"features" : [ {
+		"name" : "literals",
+		"kind" : "attribute",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "String"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Class",
+	"superTypes" : [ "Classifier" ],
+	"features" : [ {
+		"name" : "superTypes",
+		"kind" : "reference",
+		"manyValued" : true,
+		"type" : "Class"
+	}, {
+		"name" : "features",
+		"kind" : "containment",
+		"manyValued" : true,
+		"type" : "Feature"
+	}, {
+		"name" : "abstract",
+		"kind" : "attribute",
+		"manyValued" : false,
+		"type" : "Boolean"
+	} ]
+}, {
+	"metaMetaType" : "Class",
+	"name" : "Feature",
+	"features" : [ {
+		"name" : "name",
+		"kind" : "attribute",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "String"
+	}, {
+		"name" : "kind",
+		"kind" : "attribute",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "FeatureKindType"
+	}, {
+		"name" : "lowerLimit",
+		"kind" : "attribute",
+		"manyValued" : false,
+		"type" : "Integer"
+	}, {
+		"name" : "upperLimit",
+		"kind" : "attribute",
+		"manyValued" : false,
+		"type" : "Integer"
+	}, {
+		"name" : "type",
+		"kind" : "reference",
+		"required" : true,
+		"manyValued" : false,
+		"type" : "Classifier"
+	} ]
+} ]

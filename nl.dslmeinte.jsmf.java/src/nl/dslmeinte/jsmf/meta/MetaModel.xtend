@@ -15,7 +15,7 @@ class MetaModel {
 
 	val Map<String, MetaType> typesMap = newHashMap
 
-	def private lookupType(String name) {
+	def lookupType(String name) {
 		typesMap.get(name)
 	}
 
@@ -66,22 +66,47 @@ class MetaModel {
 	}
 
 
-	val allSuperTypesMap = <MetaClass, Set<MetaClass>> newHashMap
+	val allSuperTypesMap = <MetaClass, Set<MetaClass>>newHashMap
 
-	def Set<MetaClass> allSuperTypes(MetaClass it) {
-		var result = allSuperTypesMap.get(it)
+	def Set<MetaClass> allSuperTypes(MetaClass metaClass) {
+		var result = allSuperTypesMap.get(metaClass)
 
 		if( result == null ) {
-			result = <MetaClass>newLinkedHashSet
-			result.addAll(superTypes)
-			result.addAll(superTypes.map[allSuperTypes])
+			result.addAll(metaClass.allSuperTypesInternal)
+			allSuperTypesMap.put(metaClass, result)
 		}
 
 		return result
 	}
 
-	def List<MetaFeature> allFeatures(MetaClass it) {
+	def Set<MetaClass> allSuperTypesInternal(MetaClass it) {
+		val result = <MetaClass>newLinkedHashSet
+		result.addAll(superTypes)
+		result.addAll(superTypes.map[allSuperTypes])
+		result
+	}
+
+
+	val allFeaturesMap = <MetaClass, List<MetaFeature>>newHashMap
+
+	def List<MetaFeature> allFeatures(MetaClass metaClass) {
+		var result = allFeaturesMap.get(metaClass)
+
+		if( result == null ) {
+			result = metaClass.allFeaturesInternal
+			allFeaturesMap.put(metaClass, result)
+		}
+
+		return result
+	}
+
+	def private List<MetaFeature> allFeaturesInternal(MetaClass it) {
 		(allSuperTypes.map[features].flatten.toList + features).toList
+	}
+
+
+	def MetaFeature feature(MetaClass it, String name) {
+		allFeatures.findFirst[ f | f.name == name ]
 	}
 
 }
