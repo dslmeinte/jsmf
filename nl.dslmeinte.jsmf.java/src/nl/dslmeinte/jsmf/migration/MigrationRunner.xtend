@@ -10,17 +10,29 @@ import org.json.JSONTokener
 class MigrationRunner {
 
 	def static void main(String[] args) {
-		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test1/")
-		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test2/")
-		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test3/")
-		new MigrationRunner().migrate("../nl.dslmeinte.jsmf/test/json/test4/")
+		new MigrationRunner().run
 	}
 
-	def private migrate(String path) {
-		val metaModel = new MetaModel((path + "metaModel.json").fileAsJSONArray)
-		val migrator = new ModelFormatMigrator(metaModel, (path + "model.json").fileAsJSONArray)
-		FileUtils::write(new File(path + "migratedModel.json"), migrator.migratedModel.toString(2))
-		println("migrated model located in: " + path)
+	def run() {
+		(1..4).forEach[migrateTest]
+	}
+
+	val testJSONPath = "../nl.dslmeinte.jsmf/test/json/"
+
+	def private testPath(int n)					{ testJSONPath + "test" + n + "/" }
+	def private testMetaModelPath(int n)		{ n.testPath + "metaModel.json" }
+	def private testModelPath(int n)			{ n.testPath + "model.json" }
+	def private testMigratedModelPath(int n)	{ n.testPath + "migratedModel.json" }
+
+	def private migrateTest(int n) {
+		migrate(n.testMetaModelPath, n.testModelPath, n.testMigratedModelPath)
+	}
+
+	def private migrate(String metaModelFile, String modelFile, String migratedModelFile) {
+		val metaModel = new MetaModel(metaModelFile.fileAsJSONArray)
+		val migrator = new ModelFormatMigrator(metaModel, modelFile.fileAsJSONArray)
+		FileUtils::write(new File(migratedModelFile), migrator.migratedModel.toString(2))
+		println("migrated model in file: " + modelFile)
 	}
 
 	def private fileAsJSONArray(String path) {

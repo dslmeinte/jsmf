@@ -5,5 +5,5 @@ dist/
 README.md
 
 # no temporary objects:
-test/json/**/migratedModel.json
+test/json/**/migrated*Model.json
 

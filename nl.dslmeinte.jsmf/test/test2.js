@@ -229,52 +229,6 @@
 		  }
 		}];
 
-	var modelJSONWithoutShortcuts = [ {
-		"_class" : "Statemachine",
-		"name" : "AC",
-		"triggers" : [ {
-			"_class" : "Trigger",
-			"name" : "OnButton"
-		}, {
-			"_class" : "Trigger",
-			"name" : "ModeButton"
-		} ],
-		"states" : [ {
-			"_class" : "SimpleState",
-			"name" : "Off",
-			"transitions" : [ {
-				"_class" : "Transition",
-				"targetState" : "/AC.states/On",
-				"triggers" : [ "/AC.triggers/OnButton" ]
-			} ]
-		}, {
-			"_class" : "CompositeState",
-			"name" : "On",
-			"subStates" : [ {
-				"_class" : "SimpleState",
-				"name" : "Heating",
-				"transitions" : [ {
-					"_class" : "Transition",
-					"targetState" : "/AC.states/On.subStates/Cooling",
-					"triggers" : [ "/AC.triggers/ModeButton" ]
-				} ]
-			}, {
-				"_class" : "SimpleState",
-				"name" : "Cooling",
-				"transitions" : [ {
-					"_class" : "Transition",
-					"targetState" : "/AC.states/On.subStates/Heating",
-					"triggers" : [ "/AC.triggers/ModeButton" ]
-				} ]
-			} ],
-			"transitions" : [ {
-				"_class" : "Transition",
-				"targetState" : "/AC.states/Off",
-				"triggers" : [ "/AC.triggers/OnButton" ]
-			} ]
-		} ]
-	} ];
-
 	test("initialising statemachine meta model and example model (test2.js)", function() {
 			var metaModel = jsmf.meta.createMetaModelFromJSON(metaModelJSON);
 			ok(metaModel, "statemachine meta model initialised");
@@ -288,7 +242,7 @@
 			var referencedState = transition0.get("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
-			strictEqual(json, modelJSONWithoutShortcuts, "serialized model equals sanitized original JSON");
+			strictEqual(json, modelJSON, "serialized model equals sanitized original JSON");
 		});
 
 })();
