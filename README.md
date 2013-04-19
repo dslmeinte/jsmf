@@ -31,6 +31,7 @@ Include the built <tt>jsmf.js</tt> and <tt>jquery-1.8.1.js</tt> files into your 
 ## Formats
 
 JSMF uses two JSON formats for interchange of meta models and models.
+They are described below, but neither the description nor their implementation is currently complete.
 
 ### Meta model format
 
@@ -44,7 +45,6 @@ Example:
 Each object has the following descriptive structure:
 ```
 {
-	(assetId: 'a globally-unique id',)
 	metaType: 'some meta type name',
 	(localId: 'a locally-unique id',)
 	settings: {
@@ -62,9 +62,10 @@ The model overall has the following serializaton (currently only partly implemen
 ```
 {
 
-	assetId: 'a globally-unique id',
+	modelId: 'a globally-unique id',
 	metaModelId: 'asset-id of the meta model',
 	( /* version info? */ ),
+	( /* includes? */
 	rootElement: {
 		...
 	}
@@ -77,23 +78,21 @@ Also, having a single root element makes rendering and validation at that level 
 
 #### References
 
-Model elements are referenced by an GUID which is composed from a local ID and a asset ID.
+Model elements are referenced by an GUID which is composed from a local ID and a asset ID (as a pure pair - no concatenation!).
 The thinking (design decision) behind this is that lookup based on names and/or locations is quite brittle since names and locations (e.g. index in a list) change.
 That lookup is also potentially expensive since we need to traverse the structure upwards to compute (qualified) names or URI strings etc.
-
-At load-time, id's are optional in which case JSMF will come up with id's (that are hopefully globally unique). This is mainly in
 
 A reference within a model is a JS object of the following form:
 
 ```
 {
 	localId: 'a referred id'
-	(, assetId: 'id of an asset')
+	(, modelId: 'id of a the model containing the referenced local ID')
 	(, hint: 'a hint for resolution e.g. a (qualified) name or URI string or whatever')
 }
 ```
 
-The hint is non-normative and non-authorative, and should only be used for testing and such.
+The hint is non-authorative and should only be used for testing and such.
 It's only meant as a more semantic way of expressing the reference without requiring the mechanism to be completely implemented (or even implementable).
 It can also be used as the base for an alternative resolution strategy.
 

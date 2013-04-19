@@ -13,9 +13,9 @@ jsmf.model = function() {
 	/**
 	 * A <em>model</em> object.
 	 */
-	function MObject(_class, resource, container, containingFeature) {
+	function MObject(metaType, resource, container, containingFeature) {
 
-		this._class = _class;
+		this.metaType = metaType;
 
 		var settings = {};
 
@@ -24,7 +24,7 @@ jsmf.model = function() {
 		 * The type of the value is either an MObject, an MList, a String, a Boolean or a Number.
 		 */
 		this.get = function(featureArg) {
-			var feature = this._class.getFeature(featureArg);
+			var feature = this.metaType.getFeature(featureArg);
 			var setting = settings[feature.name];
 			if( !setting ) return undefined;
 
@@ -39,7 +39,7 @@ jsmf.model = function() {
 		 * Sets the value of the indicated feature to the given {@code new value}.
 		 */
 		this.set = function(featureArg, newValue) {
-			var feature = this._class.getFeature(featureArg);
+			var feature = this.metaType.getFeature(featureArg);
 			var oldSetting = settings[feature.name];
 			var oldValue = ( oldSetting ? oldSetting : null );
 			if( oldValue !== newValue ) {
@@ -65,19 +65,21 @@ jsmf.model = function() {
 
 		this.toJSON = function() {
 			var json = {};
-			json._class = this._class.name;
+			json.metaType = this.metaType.name;
+			json.settings = {};
 
-			var _self = this;
-			$.map(this._class.allFeatures(), function(feature, featureName) {
+			$.map(this.metaType.allFeatures(), function(feature, featureName) {
 				var setting = settings[featureName];
 				if( setting ) {
 					var convertedValue = setting.toJSON();
 					if( convertedValue !== undefined ) {
-						json[featureName] = convertedValue;
+						json.settings[featureName] = convertedValue;
 					}
 				}
 			});
-			$.map(this._class.allAnnotations(), function(annotationName) {
+
+			var _self = this;
+			$.map(this.metaType.allAnnotations(), function(annotationName) {
 				json[annotationName] = _self.getAnnotation(annotationName);
 			});
 
@@ -88,12 +90,12 @@ jsmf.model = function() {
 		var annotationSettings = {};
 
 		this.getAnnotation = function(annotationName) {
-			this._class.checkAnnotation(annotationName);
+			this.metaType.checkAnnotation(annotationName);
 			return annotationSettings[annotationName];
 		};
 
 		this.setAnnotation = function(annotationName, value) {
-			this._class.checkAnnotation(annotationName);
+			this.metaType.checkAnnotation(annotationName);
 			annotationSettings[annotationName] = value;
 			return this;	// for chaining
 		};
@@ -255,7 +257,7 @@ jsmf.model = function() {
 		Setting.call(this, feature);
 		var computedUri = jsmf.model.Factory.createUri(refObject.hint, validationCallback);
 		this.toJSON = function() {
-			return refObject.hint;
+			return { 'hint': refObject.hint };
 		};
 		this.get = function() {
 			return computedUri.resolveInResource(resource);
@@ -271,7 +273,13 @@ jsmf.model = function() {
 	function ReferenceSetting(feature, value) {
 		Setting.call(this, feature);
 		this.get = function()		{ return value; };
-		this.toJSON = function()	{ return value.uri(); };
+		this.toJSON = function()	{
+			if( feature.manyValued ) {
+				return value.map(function(memberValue) { return { 'hint': memberValue.uri() }; });
+			} else {
+				return { 'hint': value.uri() };
+			}
+		};
 	}
 	oo.util.extend(Setting, ReferenceSetting);
 
