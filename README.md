@@ -20,7 +20,7 @@ Run the <tt>build.xml</tt> ANT in the <tt>pre-build/</tt> folder to concatenate 
 
 ## Testing
 
-Open the <tt>test/test.html</tt> file in a(ny) browser.
+Open the <tt>test/test-deserialization.html</tt> file in a(ny) browser.
 
 ## Usage
 
@@ -31,7 +31,10 @@ Include the built <tt>jsmf.js</tt> and <tt>jquery-1.8.1.js</tt> files into your 
 ## Formats
 
 JSMF uses two JSON formats for interchange of meta models and models.
-They are described below, but neither the description nor their implementation is currently complete.
+These are solely intended for transport so they offer nothing in the way of human-readability (such as autogeneration of IDs) and deserialization fails early (and hard) on syntax errors, i.e. JSON not adhering to the format's schema.
+However, the model format offers a certain level of fail-soft behavior in the sense that data that's syntactically correct, but does not adhere to the meta model is stored in the model in a way that allows retrieval.
+The formats are described below, but neither the description nor their implementation is currently complete.
+
 
 ### Meta model format
 
@@ -86,11 +89,16 @@ A reference within a model is a JS object of the following form:
 
 ```
 {
-	localId: 'a referred id'
-	(, modelId: 'id of a the model containing the referenced local ID')
+	localId:	'a referred id' //, or
+	remoteId:	'a GUID, separate from localId?'
+	/* or:
+		{ modelId: 'id of a the model containing the referenced local ID', 'localId': 'ID of referenced element with the specified model' }
+	 */
 	(, hint: 'a hint for resolution e.g. a (qualified) name or URI string or whatever')
 }
 ```
+
+**Note to self** Explicit mention of modelId prevents location-Refactoring across models!
 
 The hint is non-authorative and should only be used for testing and such.
 It's only meant as a more semantic way of expressing the reference without requiring the mechanism to be completely implemented (or even implementable).
