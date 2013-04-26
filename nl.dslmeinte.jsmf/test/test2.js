@@ -243,6 +243,7 @@
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
 			strictEqual(json, modelJSON, "serialized model equals sanitized original JSON");
+//			console.log(JSON.stringify(json));
 		});
 
 })();
