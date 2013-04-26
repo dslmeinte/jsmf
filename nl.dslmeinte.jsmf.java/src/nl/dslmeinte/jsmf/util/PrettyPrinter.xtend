@@ -1,4 +1,4 @@
-package nl.dslmeinte.jsmf.test
+package nl.dslmeinte.jsmf.util
 
 import org.json.JSONArray
 import org.json.JSONTokener
