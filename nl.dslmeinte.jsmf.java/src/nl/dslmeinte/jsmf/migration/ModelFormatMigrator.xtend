@@ -4,9 +4,11 @@ import nl.dslmeinte.jsmf.meta.FeatureKind
 import nl.dslmeinte.jsmf.meta.MetaClass
 import nl.dslmeinte.jsmf.meta.MetaFeature
 import nl.dslmeinte.jsmf.meta.MetaModel
+import nl.dslmeinte.jsmf.model.ModelTraversal
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
 import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONType
 
 class ModelFormatMigrator {
 
@@ -16,17 +18,33 @@ class ModelFormatMigrator {
 
 	new(MetaModel metaModel, JSONArray model) {
 		this.metaModel = metaModel
+		println('''migrating model''')
 		this.migratedModel = new JSONArray(model.map[migrateObject])
+		new ModelTraversal[resolveReference].handleAndRecurse(this.migratedModel)
+		println('''...done''')
 	}
 
 	var localId = 0
 
-	val simpleNameMap = <String, Integer>newHashMap
+
+	val simpleNameMap = <Integer, String>newHashMap
+
+	def idBySimpleName(String name) {
+		simpleNameMap.entrySet.findFirst[ name == value ]?.key
+	}
+
+
+	val qualifiedNameMap = <String, Integer>newHashMap
+
+	def qualifiedNameMap() {
+		qualifiedNameMap.unmodifiableView
+	}
+
 
 	def private JSONObject migrateObject(JSONObject o) {
 		if( o.optString('metaType').nullOrEmpty ) {
 			new JSONObject => [
-//				fixId(it, o)
+				fixId(it, o)
 
 				put('metaType', o.metaClass.name)
 	
@@ -52,7 +70,7 @@ class ModelFormatMigrator {
 		}
 	}
 
-	def private fixId(JSONObject newO, JSONObject oldO) {
+	def private void fixId(JSONObject newO, JSONObject oldO) {
 		var effectiveLocalId = oldO.optInt('localId')
 		if( effectiveLocalId == 0 ) {
 			localId = localId + 1
@@ -60,9 +78,12 @@ class ModelFormatMigrator {
 		}
 		newO.put('localId', effectiveLocalId)
 
-		val name = oldO.optString('name')
+		val name = oldO.name
 		if( !name.nullOrEmpty ) {
-			simpleNameMap.put(name, effectiveLocalId)
+			simpleNameMap.put(effectiveLocalId, name)
+			val qName = oldO.qualifiedName
+			qualifiedNameMap.put(qName, effectiveLocalId)
+			println('''	«effectiveLocalId» -> «name» | «qName»''')
 		}
 	}
 
@@ -101,10 +122,6 @@ class ModelFormatMigrator {
 
 	def private migrateSingleReference(String refName) {
 		new JSONObject => [
-			val refId = simpleNameMap.get(refName)
-			if( refId != null ) {
-				put('localRefId', refId)
-			}
 			put('hint', refName)
 		]
 	}
@@ -116,6 +133,53 @@ class ModelFormatMigrator {
 
 	extension LightWeightJSONUtil = new LightWeightJSONUtil
 
-	// TODO  use a qualified name-strategy...
+
+	def private name(JSONObject it) {
+		switch name_: optString('name') {
+			case name_.nullOrEmpty:	{
+				switch settings: optJSONObject('settings') {
+					case null:		null
+					default:		settings.optString('name')
+				}
+			}
+			default:				name_
+		}
+	}
+
+	def private qualifiedName(JSONObject it) {
+		var JSONType current = it
+		var qName = prefixedOptionalName
+		while( current.container != null ) {
+			current = current.container		// != null
+			switch current {
+				JSONObject:	qName = current.prefixedOptionalName + qName
+				default:	{ /* do nothing */ }
+			}
+		}
+		qName
+	}
+
+	def private prefixedOptionalName(JSONObject it) {
+		switch optName: name {
+			case optName.nullOrEmpty:	""
+			default:					"/" + optName
+		}
+	}
+
+
+	def private void resolveReference(JSONObject it) {
+		if( optInt('localRefId') == 0 ) {
+			val refName = optString('hint')
+			if( !refName.nullOrEmpty && optString('metaType').nullOrEmpty ) {	// it's a reference
+				val refId = qualifiedNameMap.get(refName) ?: idBySimpleName(refName)
+				if( refId == null ) {
+					println('''	couldn't install reference: «refName»''')
+				} else {
+					put('localRefId', refId)
+					println('''	installed local ref-id «refId» -> «refName»''')
+				}
+			}
+		}
+	}
 
 }

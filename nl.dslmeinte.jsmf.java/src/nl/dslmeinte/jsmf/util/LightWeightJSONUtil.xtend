@@ -16,6 +16,12 @@ class LightWeightJSONUtil {
 		result as List<V>
 	}
 
+	def <U> void forEach(JSONArray it, (U)=>void function) {
+		for( i : 0..(length-1) ) {
+			function.apply(get(i) as U)
+		}
+	}
+
 	def transform(JSONObject it, (Object)=>Object function) {
 		val result = new JSONObject
 

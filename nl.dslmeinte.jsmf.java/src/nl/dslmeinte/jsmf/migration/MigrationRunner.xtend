@@ -33,6 +33,7 @@ class MigrationRunner {
 		val migrator = new ModelFormatMigrator(metaModel, modelFile.fileAsJSONArray)
 		FileUtils::write(new File(migratedModelFile), migrator.migratedModel.toString(2))
 		println("migrated model in file: " + modelFile)
+		println
 	}
 
 	def private fileAsJSONArray(String path) {
