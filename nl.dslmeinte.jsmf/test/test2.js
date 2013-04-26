@@ -242,8 +242,7 @@
 			var referencedState = transition0.get("targetState");
 			ok( referencedState === onState, "reference to On state resolved correctly");
 			var json = modelResource.toJSON();
-			strictEqual(json, modelJSON, "serialized model equals sanitized original JSON");
-//			console.log(JSON.stringify(json));
+			deepEqual(json, modelJSON, "serialized model equals sanitized original JSON");
 		});
 
 })();
