@@ -61,7 +61,7 @@ Each object has the following descriptive structure:
 ```
 This structure is a little more verbose than a direct dictionary but also less brittle and it allows explicit inclusion of annotation settings.
 
-The model overall has the following serializaton (currently only partly implemented):
+The model overall has the following serialization (currently only partly implemented):
 ```
 {
 
@@ -82,6 +82,7 @@ Also, having a single root element makes rendering and validation at that level 
 #### References
 
 Model elements are referenced by an GUID which is composed from a local ID and a asset ID (as a pure pair - no concatenation!).
+
 The thinking (design decision) behind this is that lookup based on names and/or locations is quite brittle since names and locations (e.g. index in a list) change.
 That lookup is also potentially expensive since we need to traverse the structure upwards to compute (qualified) names or URI strings etc.
 
@@ -98,9 +99,14 @@ A reference within a model is a JS object of the following form:
 }
 ```
 
-**Note to self** Explicit mention of modelId prevents location-Refactoring across models!
+**Note** Because the GUID is composed of a local-ID + a model-ID, a non-local reference is dependent on the actual location of the target!
+This means e.g. that a Refactoring which involves moving a model element over assets requires work.
+The reasons for choosing for a local-ID + model-ID are:
+# a GUID is difficult to get right (really! - generically speaking), while a hierarchical ID "shields" local references from pollution/ambiguity from elsewhere
+# most references are local so a simpler local-ID generation scheme suffices there and might even benefit performance (hash calculation tends to be somewhat expensive)
+# a global Refactoring typically involves a bit of work anyway and is not automagically semantically correct; also, one could think of using an _indirection table_ where old GUIDs are mapped to their new versions for gradual migration
 
 The hint is non-authorative and should only be used for testing and such.
 It's only meant as a more semantic way of expressing the reference without requiring the mechanism to be completely implemented (or even implementable).
-It can also be used as the base for an alternative resolution strategy.
+It can also be used as the base for an alternative resolution strategy, in case the ID-based one doesn't manage.
 
