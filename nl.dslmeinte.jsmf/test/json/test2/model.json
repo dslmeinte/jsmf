@@ -13,8 +13,8 @@
 		"name" : "Off",
 		"transitions" : [ {
 			"_class" : "Transition",
-			"targetState" : "/AC.states/On",
-			"triggers" : [ "/AC.triggers/OnButton" ]
+			"targetState" : "/AC/On",
+			"triggers" : [ "/AC/OnButton" ]
 		} ]
 	}, {
 		"_class" : "CompositeState",
@@ -24,22 +24,22 @@
 			"name" : "Heating",
 			"transitions" : [ {
 				"_class" : "Transition",
-				"targetState" : "/AC.states/On.subStates/Cooling",
-				"triggers" : [ "/AC.triggers/ModeButton" ]
+				"targetState" : "/AC/On/Cooling",
+				"triggers" : [ "/AC/ModeButton" ]
 			} ]
 		}, {
 			"_class" : "SimpleState",
 			"name" : "Cooling",
 			"transitions" : [ {
 				"_class" : "Transition",
-				"targetState" : "/AC.states/On.subStates/Heating",
-				"triggers" : [ "/AC.triggers/ModeButton" ]
+				"targetState" : "/AC/On/Heating",
+				"triggers" : [ "/AC/ModeButton" ]
 			} ]
 		} ],
 		"transitions" : [ {
 			"_class" : "Transition",
-			"targetState" : "/AC.states/Off",
-			"triggers" : [ "/AC.triggers/OnButton" ]
+			"targetState" : "/AC/Off",
+			"triggers" : [ "/AC/OnButton" ]
 		} ]
 	} ]
 } ]
