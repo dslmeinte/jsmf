@@ -60,7 +60,7 @@ jsmf.meta = function() {
 
 	function createClassifier(initData) {
 		jsmf.util.checkName(initData, "classifier name is empty");
-		jsmf.util.checkClass(initData);
+		jsmf.util.checkMetaType(initData);
 		var classifier = (function() {
 			switch( initData.metaMetaType ) {
 				case 'Datatype':	return new Datatype(initData);

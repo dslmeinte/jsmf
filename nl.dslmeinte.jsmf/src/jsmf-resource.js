@@ -89,7 +89,7 @@ jsmf.model.Factory = function() {
 		function createMObject(initData, container, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
 
 			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
-			jsmf.util.checkClass(initData);
+			jsmf.util.checkMetaType(initData);
 
 			var metaTypeName = initData.metaType;
 			var metaType = metaModel.classifiers[metaTypeName];
