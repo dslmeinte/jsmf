@@ -32,11 +32,6 @@ jsmf.meta = function() {
 		});
 		// post condition: all names in metaModelJSON are non-empty strings, or ("fatal") Error would have been thrown
 
-		if( !metaModel.classifiers['String'] ) {
-			metaModel.classifiers['String'] = new Datatype( { name: 'String' } );
-		}
-		// TODO  consider just adding (by reference to singletons) all standard data types, including some behavior (=> do this in MetaModel constructor)
-
 		$.map(metaModel.classifiers, function(eClassifier, name) {
 			if( eClassifier instanceof Class) {
 				eClassifier.resolveTypes(metaModel);
@@ -87,7 +82,6 @@ jsmf.meta = function() {
 			throw new Error("superTypes spec. of class " + initData.name + " is not an array of names");
 		})(initData.superTypes);
 
-
 		if( initData.annotations ) {
 			if( !jsmf.util.isNonDegenerateStringArray(initData.annotations) ) {
 				throw new Error("annotations must be a non-empty array of non-empty strings");
@@ -128,7 +122,7 @@ jsmf.meta = function() {
 			$.map(this.features, function(feature, featureName) {
 				var refType = metaModel.classifiers[feature.type];
 				if( !refType ) throw new Error("could not resolve target type '" + feature.type + "' in " + _self.name + "." + featureName);
-				feature.type = refType;
+				feature.type = refType;	// note: the string value is overwritten by an actual object reference
 			});
 
 			typesResolved = true;
@@ -188,21 +182,17 @@ jsmf.meta = function() {
 
 	function Enum(initData) {
 		jsmf.util.checkProperties(initData, [ "metaMetaType", "name", "literals" ]);
-		
+
 		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
 			throw new Error("literals of an enumeration '" + initData.name + "' is not an (non-degenerate) array of strings");
 		}
-		
+
 		this.literals = initData.literals;
 	}
 
 
 	function Datatype(initData) {
 		jsmf.util.checkProperties(initData, [ "metaMetaType", "name" ]);
-
-		if( !$.inArray(this.name, [ "String", "Integer", "Float", "Boolean" ]) ) {
-			throw new Error("illegal datatype name: " + initData.name + " (datatype must be named one of [String, Integer, Float, Boolean])");
-		}
 	}
 
 
@@ -212,9 +202,9 @@ jsmf.meta = function() {
 	 * +------------------+
 	 */
 
-	function createFeature(initData, eClass) {
+	function createFeature(initData, metaType) {
 
-		jsmf.util.checkName(initData, "feature name is empty in class ' " + eClass.name + "'");
+		jsmf.util.checkName(initData, "feature name is empty in meta type ' " + metaType.name + "'");
 		jsmf.util.checkNonEmptyStringAttribute(initData, 'kind', "(meta_)kind attribute not defined");
 		jsmf.util.checkProperties(initData, [ "name", "kind", "type", "required", "manyValued", "annotations" ]);
 		jsmf.util.isStringArrayOrNothing(initData.annotations);
@@ -227,7 +217,7 @@ jsmf.meta = function() {
 		feature.kind = kind;
 
 		feature.name = initData.name;
-		feature.containingClass = eClass;
+		feature.containingClass = metaType;
 		feature.type = initData.type;	// overwritten later by true object reference
 		feature.required = ( initData.required !== undefined ) ? initData.required : false;
 		feature.manyValued = ( initData.manyValued !== undefined ) ? initData.manyValued : ( initData.kind === "containment" );
@@ -249,7 +239,7 @@ jsmf.meta = function() {
 					&& !this.manyValued
 				);
 		};
-		/*jshint laxbreak:false */
+		/*jshint smarttabs:false, laxbreak:false */
 
 		this.toString = function() {
 			return( this.containingClass.name + "." + this.name );

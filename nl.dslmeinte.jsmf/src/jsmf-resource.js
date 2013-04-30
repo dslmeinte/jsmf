@@ -123,6 +123,7 @@ jsmf.model.Factory = function() {
 			}
 
 			// traverse values/settings of features:
+			var setFeatureNames = {};
 			$.map(_allFeatures, function(feature, featureName) {
 				var value = initSettings[featureName];
 				jsmf.util.log("\tsetting value of feature named '" + featureName + "' with value: " + JSON.stringify(value));
@@ -132,10 +133,9 @@ jsmf.model.Factory = function() {
 							case 'attribute':	return value;
 							case 'containment':	return createNestedObject(feature, value, function(_value, type) { return createMObject(_value, mObject, feature); });
 							case 'reference':	return createNestedObject(feature, value, function(_value, type) { return new jsmf.model.ProxySetting(feature, _value, _resource); });
-						}})());
-					if( feature.isNameFeature() ) {
-						mObject.name = value;
-					}
+						}})()
+					);
+					setFeatureNames[featureName] = true;
 				} else {
 					if( feature.required && validationCallback ) {
 						validationCallback.reportError("no value given for required feature named '" + featureName + "'");
@@ -144,7 +144,13 @@ jsmf.model.Factory = function() {
 				jsmf.util.log("\t(set value of feature named '" + featureName + "')");
 			});
 
-			// TODO  check which properties of the initSettings are not mapped to features
+			// check which properties of the initSettings are not mapped to features:
+			$.map(initSettings, function(setting, settingName) {
+				if( !setFeatureNames[settingName] ) {
+					jsmf.util.log("\tencountered a setting without feature: " + settingName + " -> " + JSON.stringify(setting));
+					// TODO  add them into the MObject instance anyway
+				}
+			});
 
 			return mObject;
 
