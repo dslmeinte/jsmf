@@ -17,7 +17,7 @@ class MigrationRunner {
 		(1..4).forEach[migrateTest]
 	}
 
-	val testJSONPath = "../nl.dslmeinte.jsmf/test/json/"
+	val testJSONPath = "../nl.dslmeinte.jsmf/test/"
 
 	def private testPath(int n)					{ testJSONPath + "test" + n + "/" }
 	def private testMetaModelPath(int n)		{ n.testPath + "metaModel.json" }
