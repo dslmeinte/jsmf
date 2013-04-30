@@ -106,3 +106,10 @@ The reasons for choosing for a local-ID + model-ID are:
 # most references are local so a simpler local-ID generation scheme suffices there and might even benefit performance (hash calculation tends to be somewhat expensive)
 # a global Refactoring typically involves a bit of work anyway and is not automagically semantically correct; also, one could think of using an _indirection table_ where old GUIDs are mapped to their new versions for gradual migration
 
+
+## Testing
+
+For ease of use, the JSON data is stored as files and read in using AJAX.
+This requires a Web server which is started by running the ```lib/start-fileserver.sh``` script.
+After that, the tests are available through http://localhost:9080/test/test-deserialization.html
+
