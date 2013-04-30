@@ -1,4 +1,4 @@
-package nl.dslmeinte.jsmf.util
+package nl.dslmeinte.annotations
 
 import com.google.common.annotations.Beta
 import com.google.inject.Injector
