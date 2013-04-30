@@ -16,10 +16,7 @@
     "metaType": "Class",
     "settings": {
       "name": "Sqrt",
-      "superTypes": [{
-        "hint": "Expression",
-        "localRefId": 2
-      }],
+      "superTypes": [{"localRefId": 2}],
       "features": [{
         "metaType": "Feature",
         "settings": {
@@ -27,10 +24,7 @@
           "kind": "containment",
           "lowerLimit": 1,
           "upperLimit": 1,
-          "type": {
-            "hint": "Expression",
-            "localRefId": 2
-          }
+          "type": {"localRefId": 2}
         }
       }]
     },
@@ -40,10 +34,7 @@
     "metaType": "Class",
     "settings": {
       "name": "Fraction",
-      "superTypes": [{
-        "hint": "Expression",
-        "localRefId": 2
-      }],
+      "superTypes": [{"localRefId": 2}],
       "features": [
         {
           "metaType": "Feature",
@@ -52,10 +43,7 @@
             "kind": "containment",
             "lowerLimit": 1,
             "upperLimit": 1,
-            "type": {
-              "hint": "Expression",
-              "localRefId": 2
-            }
+            "type": {"localRefId": 2}
           }
         },
         {
@@ -65,10 +53,7 @@
             "kind": "containment",
             "lowerLimit": 1,
             "upperLimit": 1,
-            "type": {
-              "hint": "Expression",
-              "localRefId": 2
-            }
+            "type": {"localRefId": 2}
           }
         }
       ]
@@ -79,10 +64,7 @@
     "metaType": "Class",
     "settings": {
       "name": "Mult",
-      "superTypes": [{
-        "hint": "Expression",
-        "localRefId": 2
-      }],
+      "superTypes": [{"localRefId": 2}],
       "features": [
         {
           "metaType": "Feature",
@@ -91,10 +73,7 @@
             "kind": "containment",
             "lowerLimit": 1,
             "upperLimit": 1,
-            "type": {
-              "hint": "Expression",
-              "localRefId": 2
-            }
+            "type": {"localRefId": 2}
           }
         },
         {
@@ -104,10 +83,7 @@
             "kind": "containment",
             "lowerLimit": 1,
             "upperLimit": 1,
-            "type": {
-              "hint": "Expression",
-              "localRefId": 2
-            }
+            "type": {"localRefId": 2}
           }
         }
       ]
@@ -118,10 +94,7 @@
     "metaType": "Class",
     "settings": {
       "name": "Plus",
-      "superTypes": [{
-        "hint": "Expression",
-        "localRefId": 2
-      }],
+      "superTypes": [{"localRefId": 2}],
       "features": [
         {
           "metaType": "Feature",
@@ -130,10 +103,7 @@
             "kind": "containment",
             "lowerLimit": 1,
             "upperLimit": 1,
-            "type": {
-              "hint": "Expression",
-              "localRefId": 2
-            }
+            "type": {"localRefId": 2}
           }
         },
         {
@@ -143,10 +113,7 @@
             "kind": "containment",
             "lowerLimit": 1,
             "upperLimit": 1,
-            "type": {
-              "hint": "Expression",
-              "localRefId": 2
-            }
+            "type": {"localRefId": 2}
           }
         }
       ]
@@ -157,10 +124,7 @@
     "metaType": "Class",
     "settings": {
       "name": "Neg",
-      "superTypes": [{
-        "hint": "Expression",
-        "localRefId": 2
-      }],
+      "superTypes": [{"localRefId": 2}],
       "features": [{
         "metaType": "Feature",
         "settings": {
@@ -168,10 +132,7 @@
           "kind": "containment",
           "lowerLimit": 1,
           "upperLimit": 1,
-          "type": {
-            "hint": "Expression",
-            "localRefId": 2
-          }
+          "type": {"localRefId": 2}
         }
       }]
     },
@@ -181,10 +142,7 @@
     "metaType": "Class",
     "settings": {
       "name": "Value",
-      "superTypes": [{
-        "hint": "Expression",
-        "localRefId": 2
-      }],
+      "superTypes": [{"localRefId": 2}],
       "features": [{
         "metaType": "Feature",
         "settings": {
@@ -192,10 +150,7 @@
           "kind": "attribute",
           "lowerLimit": 1,
           "upperLimit": 1,
-          "type": {
-            "hint": "String",
-            "localRefId": 1
-          }
+          "type": {"localRefId": 1}
         }
       }]
     },

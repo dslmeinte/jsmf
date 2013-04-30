@@ -176,6 +176,7 @@ class ModelFormatMigrator {
 					println('''	couldn't install reference: «refName»''')
 				} else {
 					put('localRefId', refId)
+					remove('hint')
 					println('''	installed local ref-id «refId» -> «refName»''')
 				}
 			}

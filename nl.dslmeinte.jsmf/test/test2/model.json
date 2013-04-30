@@ -25,14 +25,8 @@
             "localId": 5,
             "metaType": "Transition",
             "settings": {
-              "targetState": {
-                "hint": "/AC/On",
-                "localRefId": 6
-              },
-              "triggers": [{
-                "hint": "/AC/OnButton",
-                "localRefId": 2
-              }]
+              "targetState": {"localRefId": 6},
+              "triggers": [{"localRefId": 2}]
             }
           }]
         }
@@ -52,14 +46,8 @@
                   "localId": 8,
                   "metaType": "Transition",
                   "settings": {
-                    "targetState": {
-                      "hint": "/AC/On/Cooling",
-                      "localRefId": 9
-                    },
-                    "triggers": [{
-                      "hint": "/AC/ModeButton",
-                      "localRefId": 3
-                    }]
+                    "targetState": {"localRefId": 9},
+                    "triggers": [{"localRefId": 3}]
                   }
                 }]
               }
@@ -73,14 +61,8 @@
                   "localId": 10,
                   "metaType": "Transition",
                   "settings": {
-                    "targetState": {
-                      "hint": "/AC/On/Heating",
-                      "localRefId": 7
-                    },
-                    "triggers": [{
-                      "hint": "/AC/ModeButton",
-                      "localRefId": 3
-                    }]
+                    "targetState": {"localRefId": 7},
+                    "triggers": [{"localRefId": 3}]
                   }
                 }]
               }
@@ -90,14 +72,8 @@
             "localId": 11,
             "metaType": "Transition",
             "settings": {
-              "targetState": {
-                "hint": "/AC/Off",
-                "localRefId": 4
-              },
-              "triggers": [{
-                "hint": "/AC/OnButton",
-                "localRefId": 2
-              }]
+              "targetState": {"localRefId": 4},
+              "triggers": [{"localRefId": 2}]
             }
           }]
         }

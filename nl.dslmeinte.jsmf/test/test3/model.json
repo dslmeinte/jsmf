@@ -64,18 +64,9 @@
               "localId": 8,
               "metaType": "Transition",
               "settings": {
-                "sourceState": {
-                  "hint": "/AC/On/Heating",
-                  "localRefId": 6
-                },
-                "targetState": {
-                  "hint": "/AC/On/Cooling",
-                  "localRefId": 7
-                },
-                "triggers": [{
-                  "hint": "/AC/ModeButton",
-                  "localRefId": 3
-                }]
+                "sourceState": {"localRefId": 6},
+                "targetState": {"localRefId": 7},
+                "triggers": [{"localRefId": 3}]
               },
               "@settings": {"_view": {
                 "position": {
@@ -89,18 +80,9 @@
               "localId": 9,
               "metaType": "Transition",
               "settings": {
-                "sourceState": {
-                  "hint": "/AC/On/Cooling",
-                  "localRefId": 7
-                },
-                "targetState": {
-                  "hint": "/AC/On/Heating",
-                  "localRefId": 6
-                },
-                "triggers": [{
-                  "hint": "/AC/ModeButton",
-                  "localRefId": 3
-                }]
+                "sourceState": {"localRefId": 7},
+                "targetState": {"localRefId": 6},
+                "triggers": [{"localRefId": 3}]
               },
               "@settings": {"_view": {
                 "position": {
@@ -128,18 +110,9 @@
         "localId": 10,
         "metaType": "Transition",
         "settings": {
-          "sourceState": {
-            "hint": "/AC/Off",
-            "localRefId": 4
-          },
-          "targetState": {
-            "hint": "/AC/On/Heating",
-            "localRefId": 6
-          },
-          "triggers": [{
-            "hint": "/AC/OnButton",
-            "localRefId": 2
-          }]
+          "sourceState": {"localRefId": 4},
+          "targetState": {"localRefId": 6},
+          "triggers": [{"localRefId": 2}]
         },
         "@settings": {"_view": {
           "position": {
@@ -153,18 +126,9 @@
         "localId": 11,
         "metaType": "Transition",
         "settings": {
-          "sourceState": {
-            "hint": "/AC/On",
-            "localRefId": 5
-          },
-          "targetState": {
-            "hint": "/AC/Off",
-            "localRefId": 4
-          },
-          "triggers": [{
-            "hint": "/AC/OnButton",
-            "localRefId": 2
-          }]
+          "sourceState": {"localRefId": 5},
+          "targetState": {"localRefId": 4},
+          "triggers": [{"localRefId": 2}]
         },
         "@settings": {"_view": {
           "position": {
