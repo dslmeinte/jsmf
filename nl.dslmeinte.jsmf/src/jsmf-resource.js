@@ -10,7 +10,7 @@
  * Holds an entire model conforming to the given {@param metaModel}.
  */
 /*global $:false, jsmf:false */
-jsmf.model.MResource = function(metaModel) {
+jsmf.model.MResource = function(metaModel, localIdMap) {
 
 	"use strict";	// annotation for ECMAScript5
 
@@ -57,6 +57,10 @@ jsmf.model.MResource = function(metaModel) {
 		});
 	};
 
+	this.resolveById = function(localId) {
+		return localIdMap[localId];
+	};
+
 };
 
 
@@ -75,7 +79,9 @@ jsmf.model.Factory = function() {
 	 */
 	function createMResource(modelJSON, metaModel, validationCallback) {
 
-		var _resource = new jsmf.model.MResource(metaModel);	// (have to use _prefix to soothe JS plug-in)
+		var localIdMap = {};
+
+		var _resource = new jsmf.model.MResource(metaModel, localIdMap);	// (have to use _prefix to soothe JS plug-in)
 
 		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
 		$(modelJSON).each(function(index) {
@@ -101,12 +107,20 @@ jsmf.model.Factory = function() {
 			var _allFeatures = metaType.allFeatures();
 			var initSettings = initData.settings || [];
 			var initAnnotationSettings = initData['@settings'] || [];
+			var localId = initData.localId;
 
 			var validPropertyNames = $.map(_allFeatures, function(value, key) { return key; });
 
 			jsmf.util.log( "constructing an instance of '" + metaTypeName + "' with initialisation data: " + JSON.stringify(initData) );
 
-			var mObject = new jsmf.model.MObject(metaType, _resource, container, containingFeature);
+			var mObject = new jsmf.model.MObject(metaType, localId, _resource, container, containingFeature);
+
+			if( localId !== undefined ) {
+				if( localIdMap[localId] ) {
+					throw new Error('duplicate local-id encountered: ' + localId);
+				}
+				localIdMap[localId] = mObject;
+			}
 
 			// traverse values/settings of features:
 			$.map(_allFeatures, function(feature, featureName) {
@@ -155,89 +169,8 @@ jsmf.model.Factory = function() {
 
 	}
 
-
-	/**
-	 * {code path} is a string in the format
-	 *		"/name1(.feature1)?/name2(.feature2)?/.../name$n$"
-	 * indicating the path from the EResource's root to the target.
-	 * (feature$n$ is missing since we don't descend into a feature anymore)
-	 * All features are optional, since we can just traverse all (many-valued?)
-	 * features of containment type. This is a nod to the current Concrete format -
-	 * in general, I'd like to make the features required.
-	 * <p>
-	 * Note: we need a generic format (such as this one) or we need to implement
-	 * custom resolution for every EPackage - which isn't useful on the M2 level,
-	 * only on the level of the actual, concrete syntax of the language (== M0 + behavior).
-	 * <p>
-	 * The {@code validationCallback} is an optional argument that's called in case
-	 * of problems with resolution of URIs.
-	 */
-	function createUri(uriString, validationCallback) {
-
-		if( typeof(uriString) !== 'string' ) throw new Error('URI must be a String');
-//		if( !uriRegExp.test(uriString) ) throw new Error('URI must have the correct format: ' + uriString);
-		var _fragments = uriString.slice(1).split('/');
-		var uri = new Uri(uriString);
-		$(_fragments).each(function(i) {		// this is a String
-			var splitFragment = this.split('.');
-			uri.fragments[i] = new uri.Fragment(splitFragment[0], ( splitFragment.length === 1 ? null : splitFragment[1] ));
-		});
-		return uri;
-
-
-		function Uri(uriString) {
-
-			this.toString = function() {
-				return uriString;
-			};
-
-			this.fragments = [];
-
-			this.Fragment = function(_name, _featureName) {
-
-				this.name = _name;
-				this.featureName = _featureName;	// may be null/undefined
-
-				this.toString = function() {
-					return( this.name + ( this.featureName ? ( '.' + this.featureName ) : '' ) );
-				};
-
-			};
-
-			this.resolveInResource = function(resource) {
-				var searchListOrObject = resource.contents;	// should only be an MObject _after_ last fragment, before that an MList
-				$(this.fragments).each(function(index) {	// this is a Fragment
-					searchListOrObject = findIn(this, searchListOrObject);
-					if( !searchListOrObject && validationCallback ) {
-						validationCallback.reportError('could not resolve reference to object with fragment=' + this.toString() + ' (index=' + index + ')' );
-					}
-					if( this.featureName ) {
-						searchListOrObject = searchListOrObject.get(this.featureName);
-					}
-				});
-
-				return searchListOrObject;
-
-				function findIn(fragment, mList) {
-					// TODO  rephrase in a functional style
-					var match = null;
-					mList.each(function(i) {
-						if( this.name && this.name === fragment.name ) {
-							match = this;
-						}
-					});
-					return match;
-				}
-
-			};
-
-		}
-
-	}
-
 	return {
-		'createMResource':	createMResource,
-		'createUri':		createUri
+		'createMResource':	createMResource
 	};
 
 }();

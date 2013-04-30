@@ -13,9 +13,11 @@ jsmf.model = function() {
 	/**
 	 * A <em>model</em> object.
 	 */
-	function MObject(metaType, resource, container, containingFeature) {
+	function MObject(metaType, localId, resource, container, containingFeature) {
 
 		this.metaType = metaType;
+
+		this.localId = localId;
 
 		var settings = {};
 
@@ -50,22 +52,10 @@ jsmf.model = function() {
 			return this;	// for chaining
 		};
 
-		/**
-		 * {@return} A complete URI string of <b>this</b> MObject or produces an Error.
-		 */
-		this.uri = function() {
-			var objName = this.get('name');
-			if( container === null ) {
-				if( !objName ) throw new Error("cannot compute URI for object due to missing name");
-					// TODO  switch to a count-based system for name-less things
-				return '/' + objName;
-			}
-			return container.uri() + '.' + containingFeature.name + '/' + objName;
-		};
-
 		this.toJSON = function() {
 			var json = {};
 			json.metaType = this.metaType.name;
+			json.localId = this.localId;
 			json.settings = {};
 
 			$.map(this.metaType.allFeatures(), function(feature, featureName) {
@@ -211,13 +201,6 @@ jsmf.model = function() {
 			});
 		};
 
-		this.uri = function() {
-			return $.map(values, function(value) {
-				if( !value.uri ) throw new Error();
-				return value.uri().toString();
-			});
-		};
-
 		this.each = function(iterator) {
 			$(values).each(iterator);
 		};
@@ -254,16 +237,9 @@ jsmf.model = function() {
 
 	function ProxySetting(feature, refObject, resource, validationCallback) {
 		Setting.call(this, feature);
-		var computedUri = jsmf.model.Factory.createUri(refObject.hint, validationCallback);
-		this.toJSON = function() {
-			return { 'hint': refObject.hint };
-		};
+		this.toJSON = function() { return createReferenceJSON(this); };
 		this.get = function() {
-			return computedUri.resolveInResource(resource);
-			// TODO  do something with type info as well (e.g., validate)
-		};
-		this.uri = function() {
-			return refObject.hint;
+			return resource.resolveById(refObject.localRefId);
 		};
 	}
 	oo.util.extend(Setting, ProxySetting);
@@ -274,9 +250,9 @@ jsmf.model = function() {
 		this.get = function()		{ return value; };
 		this.toJSON = function()	{
 			if( feature.manyValued ) {
-				return value.map(function(memberValue) { return { 'hint': memberValue.uri() }; });
+				return value.map(function(memberValue) { return createReferenceJSON(memberValue); });
 			} else {
-				return { 'hint': value.uri() };
+				return createReferenceJSON(this);
 			}
 		};
 	}
@@ -298,6 +274,12 @@ jsmf.model = function() {
 			}
 		}
 	}
+
+
+	function createReferenceJSON(setting) {
+		return { 'localRefId':	setting.get().localId };
+	}
+
 
 	return {
 		'MObject':				MObject,
