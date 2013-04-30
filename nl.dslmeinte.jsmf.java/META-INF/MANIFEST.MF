@@ -7,5 +7,6 @@ Bundle-Vendor: DslConsultancy.com
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.xtend.lib,
  com.google.guava,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ Xtend-util;bundle-version="1.0.0"
 

@@ -12,13 +12,22 @@ class MetaDatatype extends MetaType {}
 
 class MetaClass extends MetaType {
 
-	private boolean abstract_
+	public val MetaModel metaModel
+
+	new(MetaModel metaModel) {
+		this.metaModel = metaModel
+	}
+
+
+	boolean abstract_ = false
 	def isAbstract()				{ abstract_ }
 	def setAbstract(boolean value)	{ abstract_ = value}
 
 	public List<String> superTypeNames
 
-	public List<MetaFeature> features
+	public List<Feature> features
+
+	public List<String> annotationNames
 
 }
 
@@ -29,7 +38,7 @@ class MetaEnum extends MetaType {
 }
 
 
-class MetaFeature {
+class Feature {
 
 	public String name
 
@@ -40,6 +49,8 @@ class MetaFeature {
 	public boolean manyValued
 
 	public String typeName
+
+	public List<String> annotationNames
 
 }
 

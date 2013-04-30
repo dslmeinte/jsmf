@@ -1,8 +1,8 @@
 package nl.dslmeinte.jsmf.migration
 
+import nl.dslmeinte.jsmf.meta.Feature
 import nl.dslmeinte.jsmf.meta.FeatureKind
 import nl.dslmeinte.jsmf.meta.MetaClass
-import nl.dslmeinte.jsmf.meta.MetaFeature
 import nl.dslmeinte.jsmf.meta.MetaModel
 import nl.dslmeinte.jsmf.model.ModelTraversal
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
@@ -95,7 +95,7 @@ class ModelFormatMigrator {
 		metaTypeName.lookupType as MetaClass
 	}
 
-	def private migrateSetting(Object it, MetaFeature feature) {
+	def private migrateSetting(Object it, Feature feature) {
 		if( feature.kind == FeatureKind::reference ) {
 			switch it {
 				JSONArray:	map[(it as String).migrateSingleReference]

@@ -31,7 +31,7 @@ class MetaModel {
 			case 'Enum':		new MetaEnum => [
 									literals = json.getJSONArray('literals').map[it as String]
 								]
-			case 'Class':		new MetaClass => [
+			case 'Class':		new MetaClass(this) => [
 									abstract = json.optBoolean('abstract')
 									superTypeNames = json.optJSONArray('superTypes')?.map[it as String] ?: emptyList
 									features = json.optJSONArray('features')?.map[unmarshalFeature] ?: emptyList
@@ -43,7 +43,7 @@ class MetaModel {
 	}
 
 	def private unmarshalFeature(JSONObject json) {
-		new MetaFeature => [
+		new Feature => [
 			name = json.getString('name')
 			kind = FeatureKind::valueOf(json.getString('kind'))
 			required = json.optBoolean('required')
@@ -58,7 +58,7 @@ class MetaModel {
 		superTypeNames.map[lookupType as MetaClass].toList
 	}
 
-	def type(MetaFeature it) {
+	def type(Feature it) {
 		typeName.lookupType
 	}
 
@@ -77,16 +77,16 @@ class MetaModel {
 	}
 
 	def Set<MetaClass> allSuperTypesInternal(MetaClass it) {
-		val result = <MetaClass>newLinkedHashSet
+		val result = <MetaClass>newLinkedHashSet	// store in a LinkedHashSet to preserve (somewhat)
 		result.addAll(superTypes)
 		result.addAll(superTypes.map[allSuperTypes].flatten)
 		result
 	}
 
 
-	val allFeaturesMap = <MetaClass, List<MetaFeature>>newHashMap
+	val allFeaturesMap = <MetaClass, List<Feature>>newHashMap
 
-	def List<MetaFeature> allFeatures(MetaClass metaClass) {
+	def List<Feature> allFeatures(MetaClass metaClass) {
 		var result = allFeaturesMap.get(metaClass)
 
 		if( result == null ) {
@@ -97,13 +97,31 @@ class MetaModel {
 		return result
 	}
 
-	def private List<MetaFeature> allFeaturesInternal(MetaClass it) {
+	def private List<Feature> allFeaturesInternal(MetaClass it) {
 		(allSuperTypes.map[features].flatten + features).toList
 	}
 
 
-	def MetaFeature feature(MetaClass it, String name) {
+	def Feature feature(MetaClass it, String name) {
 		allFeatures.findFirst[ f | f.name == name ]
+	}
+
+
+	val allAnnotationsMap = <MetaClass, Set<String>>newHashMap
+
+	def Set<String> allAnnotations(MetaClass metaClass) {
+		var result = allAnnotationsMap.get(metaClass)
+
+		if( result == null ) {
+			result = metaClass.allAnnotationsInternal
+			allAnnotationsMap.put(metaClass, result)
+		}
+
+		return result
+	}
+
+	def private allAnnotationsInternal(MetaClass it) {
+		(allSuperTypes.map[annotationNames].flatten + annotationNames).toSet
 	}
 
 }
