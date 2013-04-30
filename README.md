@@ -102,9 +102,9 @@ A reference within a model is a JS object of the following form:
 **Note** Because the GUID is composed of a local-ID + a model-ID, a non-local reference is dependent on the actual location of the target!
 This means e.g. that a Refactoring which involves moving a model element over assets requires work.
 The reasons for choosing for a local-ID + model-ID are:
-# a GUID is difficult to get right (really! - generically speaking), while a hierarchical ID "shields" local references from pollution/ambiguity from elsewhere
-# most references are local so a simpler local-ID generation scheme suffices there and might even benefit performance (hash calculation tends to be somewhat expensive)
-# a global Refactoring typically involves a bit of work anyway and is not automagically semantically correct; also, one could think of using an _indirection table_ where old GUIDs are mapped to their new versions for gradual migration
+- a GUID is difficult to get right (really! - generically speaking), while a hierarchical ID "shields" local references from pollution/ambiguity from elsewhere
+- most references are local so a simpler local-ID generation scheme suffices there and might even benefit performance (hash calculation tends to be somewhat expensive)
+- a global Refactoring typically involves a bit of work anyway and is not automagically semantically correct; also, one could think of using an _indirection table_ where old GUIDs are mapped to their new versions for gradual migration
 
 
 ## Testing
