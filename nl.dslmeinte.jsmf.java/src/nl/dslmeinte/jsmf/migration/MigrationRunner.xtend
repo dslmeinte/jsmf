@@ -21,8 +21,8 @@ class MigrationRunner {
 
 	def private testPath(int n)					{ testJSONPath + "test" + n + "/" }
 	def private testMetaModelPath(int n)		{ n.testPath + "metaModel.json" }
-	def private testModelPath(int n)			{ n.testPath + "model.json" }
-	def private testMigratedModelPath(int n)	{ n.testPath + "migratedModel.json" }
+	def private testModelPath(int n)			{ n.testPath + "originalModel.json" }
+	def private testMigratedModelPath(int n)	{ n.testPath + "model.json" }
 
 	def private migrateTest(int n) {
 		migrate(n.testMetaModelPath, n.testModelPath, n.testMigratedModelPath)

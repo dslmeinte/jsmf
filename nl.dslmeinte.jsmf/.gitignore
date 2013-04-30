@@ -4,6 +4,3 @@ dist/
 # symlinked from repo root - for easy editor access in Eclipse:
 README.md
 
-# no temporary objects:
-test/json/**/migrated*Model.json
-

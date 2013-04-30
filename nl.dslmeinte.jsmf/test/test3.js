@@ -3,7 +3,7 @@ $(document).ready( function() {
 	$.get("json/test3/metaModel.json", function(metaModelText, status) {
 		var metaModelJSON = $.parseJSON(metaModelText);
 
-		$.get("json/test3/migratedModel.json", function(modelText, status) {
+		$.get("json/test3/model.json", function(modelText, status) {
 			var modelJSON = $.parseJSON(modelText);
 
 			test("initialising statemachine meta model and example model (test3.js) - with view info", function() {

@@ -1,135 +1,204 @@
-[ {
-	"metaType" : "Datatype",
-	"settings" : {
-		"name" : "String"
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Expression",
-		"abstract" : true
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Sqrt",
-		"superTypes" : [ { hint: "Expression" } ],
-		"features" : [ {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		} ]
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Fraction",
-		"superTypes" : [ { hint: "Expression" } ],
-		"features" : [ {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr1",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		}, {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr2",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		} ]
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Mult",
-		"superTypes" : [ { hint: "Expression" } ],
-		"features" : [ {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr1",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		}, {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr2",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		} ]
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Plus",
-		"superTypes" : [ { hint: "Expression" } ],
-		"features" : [ {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr1",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		}, {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr2",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		} ]
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Neg",
-		"superTypes" : [ { hint: "Expression" } ],
-		"features" : [ {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "expr",
-				"kind" : "containment",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "Expression" }
-			}
-		} ]
-	}
-}, {
-	"metaType" : "Class",
-	"settings" : {
-		"name" : "Value",
-		"superTypes" : [ { hint: "Expression" } ],
-		"features" : [ {
-			"metaType" : "Feature",
-			"settings" : {
-				"name" : "value",
-				"kind" : "attribute",
-				"lowerLimit" : 1,
-				"upperLimit" : 1,
-				"type" : { hint: "String" }
-			}
-		} ]
-	}
-} ]
+[
+  {
+    "metaType": "Datatype",
+    "settings": {"name": "String"},
+    "localId": 1
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Expression",
+      "abstract": true
+    },
+    "localId": 2
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Sqrt",
+      "superTypes": [{
+        "hint": "Expression",
+        "localRefId": 2
+      }],
+      "features": [{
+        "metaType": "Feature",
+        "settings": {
+          "name": "expr",
+          "kind": "containment",
+          "lowerLimit": 1,
+          "upperLimit": 1,
+          "type": {
+            "hint": "Expression",
+            "localRefId": 2
+          }
+        }
+      }]
+    },
+    "localId": 3
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Fraction",
+      "superTypes": [{
+        "hint": "Expression",
+        "localRefId": 2
+      }],
+      "features": [
+        {
+          "metaType": "Feature",
+          "settings": {
+            "name": "expr1",
+            "kind": "containment",
+            "lowerLimit": 1,
+            "upperLimit": 1,
+            "type": {
+              "hint": "Expression",
+              "localRefId": 2
+            }
+          }
+        },
+        {
+          "metaType": "Feature",
+          "settings": {
+            "name": "expr2",
+            "kind": "containment",
+            "lowerLimit": 1,
+            "upperLimit": 1,
+            "type": {
+              "hint": "Expression",
+              "localRefId": 2
+            }
+          }
+        }
+      ]
+    },
+    "localId": 4
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Mult",
+      "superTypes": [{
+        "hint": "Expression",
+        "localRefId": 2
+      }],
+      "features": [
+        {
+          "metaType": "Feature",
+          "settings": {
+            "name": "expr1",
+            "kind": "containment",
+            "lowerLimit": 1,
+            "upperLimit": 1,
+            "type": {
+              "hint": "Expression",
+              "localRefId": 2
+            }
+          }
+        },
+        {
+          "metaType": "Feature",
+          "settings": {
+            "name": "expr2",
+            "kind": "containment",
+            "lowerLimit": 1,
+            "upperLimit": 1,
+            "type": {
+              "hint": "Expression",
+              "localRefId": 2
+            }
+          }
+        }
+      ]
+    },
+    "localId": 5
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Plus",
+      "superTypes": [{
+        "hint": "Expression",
+        "localRefId": 2
+      }],
+      "features": [
+        {
+          "metaType": "Feature",
+          "settings": {
+            "name": "expr1",
+            "kind": "containment",
+            "lowerLimit": 1,
+            "upperLimit": 1,
+            "type": {
+              "hint": "Expression",
+              "localRefId": 2
+            }
+          }
+        },
+        {
+          "metaType": "Feature",
+          "settings": {
+            "name": "expr2",
+            "kind": "containment",
+            "lowerLimit": 1,
+            "upperLimit": 1,
+            "type": {
+              "hint": "Expression",
+              "localRefId": 2
+            }
+          }
+        }
+      ]
+    },
+    "localId": 6
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Neg",
+      "superTypes": [{
+        "hint": "Expression",
+        "localRefId": 2
+      }],
+      "features": [{
+        "metaType": "Feature",
+        "settings": {
+          "name": "expr",
+          "kind": "containment",
+          "lowerLimit": 1,
+          "upperLimit": 1,
+          "type": {
+            "hint": "Expression",
+            "localRefId": 2
+          }
+        }
+      }]
+    },
+    "localId": 7
+  },
+  {
+    "metaType": "Class",
+    "settings": {
+      "name": "Value",
+      "superTypes": [{
+        "hint": "Expression",
+        "localRefId": 2
+      }],
+      "features": [{
+        "metaType": "Feature",
+        "settings": {
+          "name": "value",
+          "kind": "attribute",
+          "lowerLimit": 1,
+          "upperLimit": 1,
+          "type": {
+            "hint": "String",
+            "localRefId": 1
+          }
+        }
+      }]
+    },
+    "localId": 8
+  }
+]

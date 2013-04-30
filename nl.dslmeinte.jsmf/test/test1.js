@@ -3,7 +3,7 @@ $(document).ready( function() {
 	$.get("json/test1/metaModel.json", function(metaModelText, status) {
 		var metaModelJSON = $.parseJSON(metaModelText);
 
-		$.get("json/test1/migratedModel.json", function(modelText, status) {
+		$.get("json/test1/model.json", function(modelText, status) {
 			var modelJSON = $.parseJSON(modelText);
 
 			test("initialising Concrete meta meta model and arithmetic expressions meta model (test1.js)", function() {

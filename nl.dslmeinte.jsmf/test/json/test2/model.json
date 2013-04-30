@@ -1,45 +1,107 @@
-[ {
-	"_class" : "Statemachine",
-	"name" : "AC",
-	"triggers" : [ {
-		"_class" : "Trigger",
-		"name" : "OnButton"
-	}, {
-		"_class" : "Trigger",
-		"name" : "ModeButton"
-	} ],
-	"states" : [ {
-		"_class" : "SimpleState",
-		"name" : "Off",
-		"transitions" : [ {
-			"_class" : "Transition",
-			"targetState" : "/AC/On",
-			"triggers" : [ "/AC/OnButton" ]
-		} ]
-	}, {
-		"_class" : "CompositeState",
-		"name" : "On",
-		"subStates" : [ {
-			"_class" : "SimpleState",
-			"name" : "Heating",
-			"transitions" : [ {
-				"_class" : "Transition",
-				"targetState" : "/AC/On/Cooling",
-				"triggers" : [ "/AC/ModeButton" ]
-			} ]
-		}, {
-			"_class" : "SimpleState",
-			"name" : "Cooling",
-			"transitions" : [ {
-				"_class" : "Transition",
-				"targetState" : "/AC/On/Heating",
-				"triggers" : [ "/AC/ModeButton" ]
-			} ]
-		} ],
-		"transitions" : [ {
-			"_class" : "Transition",
-			"targetState" : "/AC/Off",
-			"triggers" : [ "/AC/OnButton" ]
-		} ]
-	} ]
-} ]
+[{
+  "localId": 1,
+  "metaType": "Statemachine",
+  "settings": {
+    "name": "AC",
+    "triggers": [
+      {
+        "localId": 2,
+        "metaType": "Trigger",
+        "settings": {"name": "OnButton"}
+      },
+      {
+        "localId": 3,
+        "metaType": "Trigger",
+        "settings": {"name": "ModeButton"}
+      }
+    ],
+    "states": [
+      {
+        "localId": 4,
+        "metaType": "SimpleState",
+        "settings": {
+          "name": "Off",
+          "transitions": [{
+            "localId": 5,
+            "metaType": "Transition",
+            "settings": {
+              "targetState": {
+                "hint": "/AC/On",
+                "localRefId": 6
+              },
+              "triggers": [{
+                "hint": "/AC/OnButton",
+                "localRefId": 2
+              }]
+            }
+          }]
+        }
+      },
+      {
+        "localId": 6,
+        "metaType": "CompositeState",
+        "settings": {
+          "name": "On",
+          "subStates": [
+            {
+              "localId": 7,
+              "metaType": "SimpleState",
+              "settings": {
+                "name": "Heating",
+                "transitions": [{
+                  "localId": 8,
+                  "metaType": "Transition",
+                  "settings": {
+                    "targetState": {
+                      "hint": "/AC/On/Cooling",
+                      "localRefId": 9
+                    },
+                    "triggers": [{
+                      "hint": "/AC/ModeButton",
+                      "localRefId": 3
+                    }]
+                  }
+                }]
+              }
+            },
+            {
+              "localId": 9,
+              "metaType": "SimpleState",
+              "settings": {
+                "name": "Cooling",
+                "transitions": [{
+                  "localId": 10,
+                  "metaType": "Transition",
+                  "settings": {
+                    "targetState": {
+                      "hint": "/AC/On/Heating",
+                      "localRefId": 7
+                    },
+                    "triggers": [{
+                      "hint": "/AC/ModeButton",
+                      "localRefId": 3
+                    }]
+                  }
+                }]
+              }
+            }
+          ],
+          "transitions": [{
+            "localId": 11,
+            "metaType": "Transition",
+            "settings": {
+              "targetState": {
+                "hint": "/AC/Off",
+                "localRefId": 4
+              },
+              "triggers": [{
+                "hint": "/AC/OnButton",
+                "localRefId": 2
+              }]
+            }
+          }]
+        }
+      }
+    ]
+  }
+}]

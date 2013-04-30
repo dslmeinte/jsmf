@@ -1,38 +1,57 @@
-[ {
-	"_class" : "Sqrt",
-	"expr" : {
-		"_class" : "Fraction",
-		"expr1" : {
-			"_class" : "Mult",
-			"expr1" : {
-				"_class" : "Value",
-				"value" : "33"
-			},
-			"expr2" : {
-				"_class" : "Sqrt",
-				"expr" : {
-					"_class" : "Fraction",
-					"expr1" : {
-						"_class" : "Value",
-						"value" : "5"
-					},
-					"expr2" : {
-						"_class" : "Plus",
-						"expr1" : {
-							"_class" : "Value",
-							"value" : "100"
-						},
-						"expr2" : {
-							"_class" : "Value",
-							"value" : "7"
-						}
-					}
-				}
-			}
-		},
-		"expr2" : {
-			"_class" : "Value",
-			"value" : "6"
-		}
-	}
-} ]
+[{
+  "localId": 1,
+  "metaType": "Sqrt",
+  "settings": {"expr": {
+    "localId": 2,
+    "metaType": "Fraction",
+    "settings": {
+      "expr1": {
+        "localId": 3,
+        "metaType": "Mult",
+        "settings": {
+          "expr1": {
+            "localId": 4,
+            "metaType": "Value",
+            "settings": {"value": "33"}
+          },
+          "expr2": {
+            "localId": 5,
+            "metaType": "Sqrt",
+            "settings": {"expr": {
+              "localId": 6,
+              "metaType": "Fraction",
+              "settings": {
+                "expr1": {
+                  "localId": 7,
+                  "metaType": "Value",
+                  "settings": {"value": "5"}
+                },
+                "expr2": {
+                  "localId": 8,
+                  "metaType": "Plus",
+                  "settings": {
+                    "expr1": {
+                      "localId": 9,
+                      "metaType": "Value",
+                      "settings": {"value": "100"}
+                    },
+                    "expr2": {
+                      "localId": 10,
+                      "metaType": "Value",
+                      "settings": {"value": "7"}
+                    }
+                  }
+                }
+              }
+            }}
+          }
+        }
+      },
+      "expr2": {
+        "localId": 11,
+        "metaType": "Value",
+        "settings": {"value": "6"}
+      }
+    }
+  }}
+}]

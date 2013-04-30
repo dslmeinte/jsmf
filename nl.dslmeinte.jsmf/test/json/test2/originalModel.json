@@ -1,0 +1,45 @@
+[ {
+	"_class" : "Statemachine",
+	"name" : "AC",
+	"triggers" : [ {
+		"_class" : "Trigger",
+		"name" : "OnButton"
+	}, {
+		"_class" : "Trigger",
+		"name" : "ModeButton"
+	} ],
+	"states" : [ {
+		"_class" : "SimpleState",
+		"name" : "Off",
+		"transitions" : [ {
+			"_class" : "Transition",
+			"targetState" : "/AC/On",
+			"triggers" : [ "/AC/OnButton" ]
+		} ]
+	}, {
+		"_class" : "CompositeState",
+		"name" : "On",
+		"subStates" : [ {
+			"_class" : "SimpleState",
+			"name" : "Heating",
+			"transitions" : [ {
+				"_class" : "Transition",
+				"targetState" : "/AC/On/Cooling",
+				"triggers" : [ "/AC/ModeButton" ]
+			} ]
+		}, {
+			"_class" : "SimpleState",
+			"name" : "Cooling",
+			"transitions" : [ {
+				"_class" : "Transition",
+				"targetState" : "/AC/On/Heating",
+				"triggers" : [ "/AC/ModeButton" ]
+			} ]
+		} ],
+		"transitions" : [ {
+			"_class" : "Transition",
+			"targetState" : "/AC/Off",
+			"triggers" : [ "/AC/OnButton" ]
+		} ]
+	} ]
+} ]
