@@ -43,7 +43,7 @@ jsmf.model = function() {
 		this.set = function(featureArg, newValue) {
 			var feature = this.metaType.getFeature(featureArg);
 			var oldSetting = settings[feature.name];
-			var oldValue = ( oldSetting ? oldSetting : null );
+			var oldValue = ( oldSetting ? oldSetting.get() : null );
 			if( oldValue !== newValue ) {
 				// TODO  type checking
 				settings[feature.name] = createSetting(feature, newValue, resource);
