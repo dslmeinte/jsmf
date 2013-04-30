@@ -111,5 +111,6 @@ The reasons for choosing for a local-ID + model-ID are:
 
 For ease of use, the JSON data is stored as files and read in using AJAX.
 This requires a Web server which is started by running the ```lib/start-fileserver.sh``` script.
-After that, the tests are available through http://localhost:9080/test/test-deserialization.html
+After that, the tests are available through [this local link](http://localhost:9080/test/test-deserialization.html).
+(Unfortunately, this also means that the extra test switches provided by QUnit don't work.)
 
