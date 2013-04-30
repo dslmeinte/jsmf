@@ -78,9 +78,8 @@ jsmf.model = function() {
 				}
 			});
 
-			var _self = this;
 			$.map(this.metaType.allAnnotations(), function(annotationName) {
-				json[annotationName] = _self.getAnnotation(annotationName);
+				json['@settings'][annotationName] = annotationSettings[annotationName];
 			});
 
 			return json;

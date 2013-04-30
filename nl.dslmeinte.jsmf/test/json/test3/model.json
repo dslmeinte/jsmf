@@ -8,13 +8,13 @@
         "localId": 2,
         "metaType": "Trigger",
         "settings": {"name": "OnButton"},
-        "_view": {"collapsed": false}
+        "@settings": {"_view": {"collapsed": false}}
       },
       {
         "localId": 3,
         "metaType": "Trigger",
         "settings": {"name": "ModeButton"},
-        "_view": {"collapsed": false}
+        "@settings": {"_view": {"collapsed": false}}
       }
     ],
     "chartElements": [
@@ -22,13 +22,13 @@
         "localId": 4,
         "metaType": "SimpleState",
         "settings": {"name": "Off"},
-        "_view": {
+        "@settings": {"_view": {
           "collapsed": false,
           "position": {
             "left": "15px",
             "top": "46px"
           }
-        }
+        }}
       },
       {
         "localId": 5,
@@ -40,25 +40,25 @@
               "localId": 6,
               "metaType": "SimpleState",
               "settings": {"name": "Heating"},
-              "_view": {
+              "@settings": {"_view": {
                 "collapsed": false,
                 "position": {
                   "left": "45px",
                   "top": "54px"
                 }
-              }
+              }}
             },
             {
               "localId": 7,
               "metaType": "SimpleState",
               "settings": {"name": "Cooling"},
-              "_view": {
+              "@settings": {"_view": {
                 "collapsed": false,
                 "position": {
                   "left": "442px",
                   "top": "66px"
                 }
-              }
+              }}
             },
             {
               "localId": 8,
@@ -77,13 +77,13 @@
                   "localRefId": 3
                 }]
               },
-              "_view": {
+              "@settings": {"_view": {
                 "position": {
                   "left": "236px",
                   "top": "4px"
                 },
                 "variant": 1
-              }
+              }}
             },
             {
               "localId": 9,
@@ -102,17 +102,17 @@
                   "localRefId": 3
                 }]
               },
-              "_view": {
+              "@settings": {"_view": {
                 "position": {
                   "left": "235px",
                   "top": "82px"
                 },
                 "variant": 2
-              }
+              }}
             }
           ]
         },
-        "_view": {
+        "@settings": {"_view": {
           "collapsed": false,
           "position": {
             "left": "397px",
@@ -122,7 +122,7 @@
             "width": "596px",
             "height": "144px"
           }}
-        }
+        }}
       },
       {
         "localId": 10,
@@ -141,13 +141,13 @@
             "localRefId": 2
           }]
         },
-        "_view": {
+        "@settings": {"_view": {
           "position": {
             "left": "214px",
             "top": "93px"
           },
           "variant": 1
-        }
+        }}
       },
       {
         "localId": 11,
@@ -166,18 +166,18 @@
             "localRefId": 2
           }]
         },
-        "_view": {
+        "@settings": {"_view": {
           "position": {
             "left": "212px",
             "top": "-19px"
           },
           "variant": 2
-        }
+        }}
       }
     ]
   },
-  "_view": {"container-size": {"chartElements": {
+  "@settings": {"_view": {"container-size": {"chartElements": {
     "width": "1553px",
     "height": "211px"
-  }}}
+  }}}}
 }]

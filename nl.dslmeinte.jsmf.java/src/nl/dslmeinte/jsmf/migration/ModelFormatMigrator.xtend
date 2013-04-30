@@ -62,7 +62,7 @@ class ModelFormatMigrator {
 
 				val viewInfo = o.optJSONObject('_view')
 				if( viewInfo != null ) {
-					put('_view', viewInfo)
+					put('@settings', new JSONObject => [ put('_view', viewInfo) ])
 				}
 			]
 		} else {
