@@ -77,6 +77,7 @@ The model overall has the following serialization (currently only partly impleme
 ```
 There's really no reason to not have a single (potentially unnamed) root element, instead of a collection of them.
 Also, having a single root element makes rendering and validation at that level completely analogous to other levels.
+*Note* that the code currently reflects the multiple roots-situation without the extra data.
 
 
 #### References
@@ -95,7 +96,6 @@ A reference within a model is a JS object of the following form:
 	/* or:
 		{ modelId: 'id of a the model containing the referenced local ID', 'localId': 'ID of referenced element with the specified model' }
 	 */
-	(, hint: 'a hint for resolution e.g. a (qualified) name or URI string or whatever')
 }
 ```
 
@@ -105,8 +105,4 @@ The reasons for choosing for a local-ID + model-ID are:
 # a GUID is difficult to get right (really! - generically speaking), while a hierarchical ID "shields" local references from pollution/ambiguity from elsewhere
 # most references are local so a simpler local-ID generation scheme suffices there and might even benefit performance (hash calculation tends to be somewhat expensive)
 # a global Refactoring typically involves a bit of work anyway and is not automagically semantically correct; also, one could think of using an _indirection table_ where old GUIDs are mapped to their new versions for gradual migration
-
-The hint is non-authorative and should only be used for testing and such.
-It's only meant as a more semantic way of expressing the reference without requiring the mechanism to be completely implemented (or even implementable).
-It can also be used as the base for an alternative resolution strategy, in case the ID-based one doesn't manage.
 
