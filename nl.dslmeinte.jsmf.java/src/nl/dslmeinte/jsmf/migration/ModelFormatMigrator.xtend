@@ -4,7 +4,6 @@ import nl.dslmeinte.jsmf.meta.Feature
 import nl.dslmeinte.jsmf.meta.FeatureKind
 import nl.dslmeinte.jsmf.meta.MetaClass
 import nl.dslmeinte.jsmf.meta.MetaModel
-import nl.dslmeinte.jsmf.model.ModelTraversal
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
 import org.json.JSONArray
 import org.json.JSONObject

@@ -4,14 +4,22 @@ import java.util.Map
 import nl.dslmeinte.jsmf.meta.Feature
 import nl.dslmeinte.jsmf.meta.MetaClassReference
 import nl.dslmeinte.jsmf.meta.TrueReference
+import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONType
 
-@Data
-class MObject {
+import static nl.dslmeinte.jsmf.meta.FeatureKind.*
 
-	@Property MetaClassReference metaClassReference
-	@Property long localId
-	@Property MResource resource
+class MObject extends MElement {
+
+	public val MetaClassReference metaClassReference
+	public val long localId
+
+	new(MetaClassReference metaClassReference, long localId, MResource resource, MObject container) {
+		super(resource, container)
+		this.metaClassReference = metaClassReference
+		this.localId = localId
+	}
 
 	def private feature(String featureName) {
 		switch metaClassReference {
@@ -23,22 +31,16 @@ class MObject {
 		}
 	}
 
-	private val Map<Feature, Setting<?>> settings = newHashMap
-	private val Map<String, Object> faultySettings = newHashMap
+	val Map<Feature, Object> settings = newHashMap
+	val Map<String, Object> faultySettings = newHashMap
 
 	def <T extends MObject> get(String featureName) {
 		switch feature: feature(featureName) {
 			case null:	faultySettings.get(featureName)
 			default: {
-				switch setting: settings.get(feature) {
-					case null:	null
-					default: {
-						setting.get => [
-							switch setting {
-								ProxySetting<T>: settings.put(feature, new ReferenceSetting<T>(it as T) as Setting<?>)
-							}
-						]
-					}
+				switch value: settings.get(feature) {
+					MProxy:		settings.put(feature, value.get)
+					default:	value
 				}
 			}
 		}
@@ -48,14 +50,28 @@ class MObject {
 		switch feature: featureName.feature {
 			case null:	faultySettings.put(featureName, newValue)
 			default: {
-				val oldSetting = settings.get(feature)
-				val oldValue = oldSetting.get
+				val oldValue = settings.get(feature)
 				if( oldValue != newValue ) {
-					settings.put(feature, resource.createSetting(feature, newValue) as Setting<?>)
+					settings.put(feature, createSetting(feature, newValue))
 				}
 			}
 		}
 		this	// for chaining
+	}
+
+	def <T> createSetting(Feature feature, T value) {
+		switch feature.kind {
+			// TODO  implement MList coercion for many-valued, type checking and requiredness checking
+			case attribute:		value
+			case containment:	value
+			case reference: {
+				switch value {
+					Long:		new MProxy(null, resource)
+					MProxy:		value.get
+					default:	value
+				}
+			}
+		}
 	}
 
 
@@ -71,7 +87,7 @@ class MObject {
 	}
 
 
-	def toJSON() {
+	def JSONType toJSON() {
 		new JSONObject => [
 			put('localId', localId)
 			put('metaType', metaClassReference.name)
@@ -80,24 +96,36 @@ class MObject {
 					val metaClass = (metaClassReference as TrueReference).metaClass
 					put('settings', new JSONObject => [
 						metaClass.metaModel.allFeatures(metaClass).forEach[ f |
-							val setting = settings.get(f)
-							if( setting != null ) {
-								val convertedValue = setting.toJSON
-								if( convertedValue != null ) {
-									put(f.name, convertedValue)
-								}
+							val value = settings.get(f)
+							if( value != null ) {
+								put(f.name, value.toJSON_)
 							}
 						]
+						faultySettings.forEach[ key, value | put(key, value) ]
 					])
 				}
 			}
-			put('@settings', annotationSettings.toJSON)
-			put('faultySettings', faultySettings.toJSON)
+			put('@settings', new JSONObject => [ annotationSettings.forEach[ key, value | put(key, value) ] ])
 		]
 	}
 
-	def private toJSON(Map<String, Object> map) {
-		new JSONObject => [ map.forEach[ key, value | put(key, value) ] ]
+
+	def private toJSON_(Object it) {
+		switch it {
+			JSONType:	it
+			MObject:	toJSON
+			MList<?>:	new JSONArray => [ a | list.forEach[ i | a.put(i)] ]
+			default:	it
+		}
+	}
+
+	override hashCode() { localId.hashCode }
+	
+	override equals(Object that) {
+		switch that {
+			MObject:	localId == that.localId
+			default:	false
+		}
 	}
 
 }

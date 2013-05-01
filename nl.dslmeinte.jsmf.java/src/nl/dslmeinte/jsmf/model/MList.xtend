@@ -1,16 +1,14 @@
 package nl.dslmeinte.jsmf.model
 
 import java.util.List
-import nl.dslmeinte.jsmf.meta.Feature
 
-@Data
-class MList<T> {
+class MList<T> extends MElement {
 
-	@Property MResource resource
-	@Property MObject container
-	@Property Feature feature
+	new(MResource resource, MObject container) {
+		super(resource, container)
+	}
 
-	val List<T> list = newArrayList
+	public val List<T> list = newArrayList
 
 	def get() {
 		list.unmodifiableView
@@ -19,5 +17,7 @@ class MList<T> {
 	def toJSON() {
 		throw new UnsupportedOperationException("TODO  auto-generated method stub")
 	}
+
+	// TODO  implement everything
 
 }

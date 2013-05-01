@@ -1,34 +1,24 @@
 package nl.dslmeinte.jsmf.model
 
-import com.google.inject.Inject
 import java.util.Map
 import nl.dslmeinte.jsmf.exceptions.GeneralException
-import nl.dslmeinte.jsmf.meta.Feature
 import nl.dslmeinte.jsmf.meta.MetaModel
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
-import nl.dslmeinte.xtend.annotations.ClassParameter
-import nl.dslmeinte.xtend.annotations.Getter
-import nl.dslmeinte.xtend.annotations.Initialisation
-import nl.dslmeinte.xtend.annotations.ParametrizedInjected
 import org.json.JSONArray
 import org.json.JSONObject
 
-import static nl.dslmeinte.jsmf.meta.FeatureKind.*
-
-@ParametrizedInjected
 class MResource {
 
-	@ClassParameter @Getter MetaModel metaModel
-	@ClassParameter JSONArray modelJson
+	val MetaModel metaModel
 
-	@Inject extension LightWeightJSONUtil
+	extension LightWeightJSONUtil = new LightWeightJSONUtil
 
-	@Initialisation
-	def initialise() {
-		modelJson.map[createMObject]
+	new(MetaModel metaModel, JSONArray modelJSON) {
+		this.metaModel = metaModel
+		contents.list.addAll( modelJSON.map[createMObject(null)] )
 	}
 
-	@Getter val MList<MObject> contents = new MList<MObject>(this, null, null)
+	public val MList<MObject> contents = new MList<MObject>(this, null)
 
 	val Map<Long, MObject> idMap = newHashMap
 
@@ -39,22 +29,7 @@ class MResource {
 		return idMap.get(id) as T
 	}
 
-	def <T> createSetting(Feature feature, T value) {
-		switch feature.kind {
-			case attribute:		new AttributeSetting(value)
-			case containment:	new ContainmentSetting(value as MObject)
-			case reference: {
-				switch value {
-					Long:					new ProxySetting(new Reference(value), this)
-					ProxySetting<MObject>:	value
-					default:				new ReferenceSetting(value as MObject)
-				}
-			}
-		}
-	}
-
-
-	def private dispatch createMObject(JSONObject it) {
+	def private dispatch createMObject(JSONObject it, MObject container) {
 		val metaTypeName = optString('metaType')
 		if( metaTypeName.nullOrEmpty ) {
 			throw GeneralException::format('''object has no declared meta type''')
@@ -65,17 +40,32 @@ class MResource {
 		}
 		val metaClassReference = metaModel.metaClassReference(metaTypeName)
 
-		val mObject = new MObject(metaClassReference, localId, this)
+		val mObject = new MObject(metaClassReference, localId, this, container)
 
 		if( idMap.containsKey(localId) ) {
 			throw GeneralException::format('''duplicate local id encountered: «localId»''')
 		}
 		idMap.put(localId, mObject)
 		contents.list.add(mObject)
+
+		getJSONObject('settings').forEach[ key, value | mObject.set(key, value) ]
+		optJSONObject('@settings')?.forEach[ key, value | mObject.setAnnotation(key, value) ]
+
+		mObject
 	}
 
-	def private dispatch createMObject(Object it) {
+	def private dispatch /* declare as: */ MObject /* (otherwise inferred as Object) */ createMObject(Object it, MObject container) {
 		throw GeneralException::format("cannot create an MObject from a non-(JSON)Object")
 	}
 
 }
+
+
+@Data
+abstract class MElement {
+
+	@Property MResource resource
+	@Property MObject container
+
+}
+

@@ -22,6 +22,10 @@ class LightWeightJSONUtil {
 		}
 	}
 
+	def <U, V> void forEach(JSONObject it, (String, U)=>V function) {
+		keys.forEach[ key | function.apply(key, get(key) as U) ]
+	}
+
 	def transform(JSONObject it, (String, Object)=>Object function) {
 		val result = new JSONObject
 

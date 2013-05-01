@@ -1,4 +1,4 @@
-package nl.dslmeinte.jsmf.model
+package nl.dslmeinte.jsmf.migration
 
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
 import org.json.JSONArray
