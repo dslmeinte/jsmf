@@ -25,7 +25,8 @@
           "lowerLimit": 1,
           "upperLimit": 1,
           "type": {"localRefId": 2}
-        }
+        },
+        "localId": 4
       }]
     },
     "localId": 3
@@ -44,7 +45,8 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          }
+          },
+          "localId": 6
         },
         {
           "metaType": "Feature",
@@ -54,11 +56,12 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          }
+          },
+          "localId": 7
         }
       ]
     },
-    "localId": 4
+    "localId": 5
   },
   {
     "metaType": "Class",
@@ -74,7 +77,8 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          }
+          },
+          "localId": 9
         },
         {
           "metaType": "Feature",
@@ -84,11 +88,12 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          }
+          },
+          "localId": 10
         }
       ]
     },
-    "localId": 5
+    "localId": 8
   },
   {
     "metaType": "Class",
@@ -104,7 +109,8 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          }
+          },
+          "localId": 12
         },
         {
           "metaType": "Feature",
@@ -114,11 +120,12 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          }
+          },
+          "localId": 13
         }
       ]
     },
-    "localId": 6
+    "localId": 11
   },
   {
     "metaType": "Class",
@@ -133,10 +140,11 @@
           "lowerLimit": 1,
           "upperLimit": 1,
           "type": {"localRefId": 2}
-        }
+        },
+        "localId": 15
       }]
     },
-    "localId": 7
+    "localId": 14
   },
   {
     "metaType": "Class",
@@ -151,9 +159,10 @@
           "lowerLimit": 1,
           "upperLimit": 1,
           "type": {"localRefId": 1}
-        }
+        },
+        "localId": 17
       }]
     },
-    "localId": 8
+    "localId": 16
   }
 ]

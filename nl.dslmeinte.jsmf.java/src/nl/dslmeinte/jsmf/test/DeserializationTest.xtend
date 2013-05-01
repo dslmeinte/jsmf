@@ -23,8 +23,11 @@ class DeserializationTest {
 
 		val model = new MResource(metaModel, 1.testMigratedModelPath.fileAsJSONArray)
 		val clazz = model.lookup(3) as MObject
-		val features = clazz.get("features") as MList<MObject>
-		val typeRef = features.list.head.get("type")
+		val features = clazz.get("features") as MList
+		val typeRef = (features.list.head as MObject).get("type")
+		println(typeRef)
+
+		model.toJSON.jsonToFile(1.testSerializedModelPath)
 	}
 
 }

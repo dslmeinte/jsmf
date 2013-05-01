@@ -22,7 +22,7 @@ class LightWeightJSONUtil {
 		}
 	}
 
-	def <U, V> void forEach(JSONObject it, (String, U)=>V function) {
+	def <U> void forEach(JSONObject it, (String, U)=>void function) {
 		keys.forEach[ key | function.apply(key, get(key) as U) ]
 	}
 

@@ -28,6 +28,7 @@ class MetaModel {
 
 	new(JSONArray typesAsJSON) {
 		this.types = typesAsJSON.map[ JSONObject it | unmarshalType ].unmodifiableView
+		// TODO  implement some validation
 	}
 
 	def private unmarshalType(JSONObject json) {

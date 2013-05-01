@@ -6,7 +6,7 @@ class MProxy {
 	@Property Reference reference
 	@Property MResource resource
 
-	def get() {
+	def resolve() {
 		resource.lookup(reference.localId)
 	}
 

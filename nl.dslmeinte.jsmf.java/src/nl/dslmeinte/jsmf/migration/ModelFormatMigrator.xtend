@@ -51,11 +51,7 @@ class ModelFormatMigrator {
 
 				put('settings', o.transform[ key, s |
 					if( key != '_view' ) {
-						val feature = metaClass.feature(key)
-						if( feature == null ) {
-							throw new IllegalArgumentException('''no feature «metaClass.name»#«key» found''')
-						}
-						migrateSetting(s, metaClass.feature(key))
+						migrateSetting(s, key)
 					}
 				])
 
@@ -65,8 +61,19 @@ class ModelFormatMigrator {
 				}
 			]
 		} else {
-			o => [ fixId(it) ]
+			o => [
+				fixId(it)
+				getJSONObject('settings').forEach[ key, s | migrateSetting(s, key) ]
+			]
 		}
+	}
+
+	def private migrateSetting(JSONObject it, Object setting, String featureName) {
+		val feature = metaClass.feature(featureName)
+		if( feature == null ) {
+			throw new IllegalArgumentException('''no feature «metaClass.name»#«featureName» found''')
+		}
+		migrateSetting(setting, feature)
 	}
 
 	def private void fixId(JSONObject newO, JSONObject oldO) {
@@ -97,17 +104,18 @@ class ModelFormatMigrator {
 	def private migrateSetting(Object it, Feature feature) {
 		if( feature.kind == FeatureKind::reference ) {
 			switch it {
-				JSONArray:	map[(it as String).migrateSingleReference]
+				JSONArray:	map[
+								switch it {
+									String:		migrateSingleReference
+									default:	it
+								}
+							]
 				JSONObject:	migrateSingleReference
 				String:		migrateSingleReference
 				default:	throw new IllegalArgumentException('''cannot migrate the following as a reference #«feature.name»: «toString»''')
 			}
 		} else {
-			switch it {
-				JSONArray:	map[migrate]
-				JSONObject:	migrateObject
-				default:	it
-			}
+			migrate
 		}
 	}
 

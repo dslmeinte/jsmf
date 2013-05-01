@@ -4,3 +4,6 @@ dist/
 # symlinked from repo root - for easy editor access in Eclipse:
 README.md
 
+# generated stuff:
+test/**/serializedModel.json
+

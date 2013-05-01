@@ -15,10 +15,10 @@ class MResource {
 
 	new(MetaModel metaModel, JSONArray modelJSON) {
 		this.metaModel = metaModel
-		contents.list.addAll( modelJSON.map[createMObject(null)] )
+		contents.list += modelJSON.map[unmarshal(null)]
 	}
 
-	public val MList<MObject> contents = new MList<MObject>(this, null)
+	public val MList contents = new MList(this, null)
 
 	val Map<Long, MObject> idMap = newHashMap
 
@@ -29,14 +29,32 @@ class MResource {
 		return idMap.get(id) as T
 	}
 
-	def private dispatch createMObject(JSONObject it, MObject container) {
-		val metaTypeName = optString('metaType')
-		if( metaTypeName.nullOrEmpty ) {
-			throw GeneralException::format('''object has no declared meta type''')
+
+	def private dispatch Object unmarshal(JSONObject it, MObject container) {
+		if( opt('metaType') != null ) {
+			unmarshalMObject(container)
+		} else if( opt('localRefId') != null ) {
+			unmarshalMProxy
+		} else {
+			GeneralException::format("don't know how to unmarshal the following JSONObject: " + toString(2))
 		}
+	}
+
+	def private dispatch Object unmarshal(JSONArray it, MObject container) {
+		map[unmarshal(container)]
+	}
+
+	def private dispatch Object unmarshal(Object it, MObject container) {
+		it
+	}
+
+
+	def private unmarshalMObject(JSONObject it, MObject container) {
+		val metaTypeName = optString('metaType')
+
 		val localId = optLong('localId')
 		if( localId == 0 ) {
-			throw GeneralException::format('''object has no declared local id''')
+			throw GeneralException::format('''object has no declared local id: «toString(2)»''')
 		}
 		val metaClassReference = metaModel.metaClassReference(metaTypeName)
 
@@ -46,16 +64,20 @@ class MResource {
 			throw GeneralException::format('''duplicate local id encountered: «localId»''')
 		}
 		idMap.put(localId, mObject)
-		contents.list.add(mObject)
 
-		getJSONObject('settings').forEach[ key, value | mObject.set(key, value) ]
-		optJSONObject('@settings')?.forEach[ key, value | mObject.setAnnotation(key, value) ]
+		getJSONObject('settings').forEach[ fName, value | mObject.set(fName, value.unmarshal(mObject)) ]
+		optJSONObject('@settings')?.forEach[ fName, value | mObject.setAnnotation(fName, value) ]
 
 		mObject
 	}
 
-	def private dispatch /* declare as: */ MObject /* (otherwise inferred as Object) */ createMObject(Object it, MObject container) {
-		throw GeneralException::format("cannot create an MObject from a non-(JSON)Object")
+	def private unmarshalMProxy(JSONObject it) {
+		new MProxy(new Reference(getLong('localRefId')), this)
+	}
+
+
+	def toJSON() {
+		new JSONArray( contents.list.map[(it as MObject).toJSON] )
 	}
 
 }
@@ -66,6 +88,7 @@ abstract class MElement {
 
 	@Property MResource resource
 	@Property MObject container
+		// TODO  container can also be an MList, in which case a reference to that + an index is more productive
 
 }
 
