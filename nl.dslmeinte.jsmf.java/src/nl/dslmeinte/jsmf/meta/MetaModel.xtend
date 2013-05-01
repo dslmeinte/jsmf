@@ -3,13 +3,14 @@ package nl.dslmeinte.jsmf.meta
 import java.util.List
 import java.util.Map
 import java.util.Set
+import nl.dslmeinte.jsmf.exceptions.GeneralException
 import nl.dslmeinte.jsmf.util.LightWeightJSONUtil
 import org.json.JSONArray
 import org.json.JSONObject
 
 class MetaModel {
 
-	public List<MetaType> types
+	public val List<MetaType> types
 
 	val Map<String, MetaType> typesMap = newHashMap
 
@@ -17,16 +18,20 @@ class MetaModel {
 		typesMap.get(name)
 	}
 
-	new(JSONArray typesAsJSON) {
-		val types = <MetaType>newArrayList
-		for( i : 0..(typesAsJSON.length -1) ) {
-			types += typesAsJSON.getJSONObject(i).unmarshalType
+	def metaClassReference(String name) {
+		switch type: typesMap.get(name) {
+			case null:	new NameReference(name)
+			MetaClass:	new TrueReference(type)
+			default:	throw GeneralException::typing('''"«name»" is not a meta class''')
 		}
-		this.types = types.unmodifiableView
+	}
+
+	new(JSONArray typesAsJSON) {
+		this.types = typesAsJSON.map[ JSONObject it | unmarshalType ].unmodifiableView
 	}
 
 	def private unmarshalType(JSONObject json) {
-		switch json.getString('metaMetaType') {
+		switch json.optString('metaMetaType') {
 			case 'Datatype':	new MetaDatatype
 			case 'Enum':		new MetaEnum => [
 									literals = json.getJSONArray('literals').map[it as String]

@@ -1,21 +1,22 @@
 package nl.dslmeinte.jsmf.model
 
 import java.util.List
+import nl.dslmeinte.jsmf.meta.Feature
 
 @Data
-class MList<T> extends Setting<List<T>> {
+class MList<T> {
 
-	@Property List<T> list
+	@Property MResource resource
+	@Property MObject container
+	@Property Feature feature
 
-	override get() {
+	val List<T> list = newArrayList
+
+	def get() {
 		list.unmodifiableView
 	}
 
-	override set(List<T> value) {
-		throw new UnsupportedOperationException("TODO  auto-generated method stub")
-	}
-
-	override toJSON() {
+	def toJSON() {
 		throw new UnsupportedOperationException("TODO  auto-generated method stub")
 	}
 

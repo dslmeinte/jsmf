@@ -14,7 +14,6 @@ abstract class Setting<T> {
 
 	protected val Map<String, ?> annotationSettings = newHashMap
 
-	
 }
 
 @Data
@@ -29,7 +28,7 @@ class AttributeSetting<T> extends Setting<T> {
 	override set(T value) {
 		throw new UnsupportedOperationException("TODO  auto-generated method stub")
 	}
-	
+
 	override toJSON() {
 		value
 	}

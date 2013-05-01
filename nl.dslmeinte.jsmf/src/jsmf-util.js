@@ -15,7 +15,7 @@ jsmf.util = function() {
 	}
 
 	function checkMetaType(data) {
-		checkNonEmptyStringAttribute(data, 'metaType', "(meta_)class attribute is not defined");
+		checkNonEmptyStringAttribute(data, 'metaType', 'object has no declared meta type');
 	}
 
 	function isNonEmptyString(o) {

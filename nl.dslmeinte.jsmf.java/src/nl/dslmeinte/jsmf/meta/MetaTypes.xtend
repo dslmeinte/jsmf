@@ -2,11 +2,7 @@ package nl.dslmeinte.jsmf.meta
 
 import java.util.List
 
-class MetaType {
-
-	public String name
-
-}
+class MetaType extends Named {}
 
 class MetaDatatype extends MetaType {}
 
@@ -38,9 +34,7 @@ class MetaEnum extends MetaType {
 }
 
 
-class Feature {
-
-	public String name
+class Feature extends Named {
 
 	public FeatureKind kind
 
@@ -51,6 +45,13 @@ class Feature {
 	public String typeName
 
 	public List<String> annotationNames
+
+}
+
+
+abstract class Named {
+
+	public String name
 
 }
 
