@@ -8,12 +8,30 @@ class MList extends MElement {
 		super(resource, container)
 	}
 
-	public val List<Object> list = newArrayList
+	val List<Object> list = newArrayList
 
 	def get() {
 		list.unmodifiableView
 	}
 
-	// TODO  implement everything
+	def at(int index) {
+		list.get(index)
+	}
+
+	def void add(Object value) {
+		list += value
+	}
+
+	def void addAll(Iterable<Object> values) {
+		list += values
+	}
+
+	def void removeValue(int index) {
+		list.remove(index)
+	}
+
+	def <T> T first() {
+		list.get(0) as T
+	}
 
 }

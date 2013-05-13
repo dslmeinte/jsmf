@@ -61,6 +61,7 @@ class ModelFormatMigrator {
 				}
 			]
 		} else {
+			// TODO  make a deep copy with the localId at the first position instead of fixing the id
 			o => [
 				fixId(it)
 				getJSONObject('settings').forEach[ key, s | migrateSetting(s, key) ]

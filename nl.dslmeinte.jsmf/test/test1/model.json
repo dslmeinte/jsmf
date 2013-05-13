@@ -1,23 +1,25 @@
 [
   {
+    "localId": 1,
     "metaType": "Datatype",
-    "settings": {"name": "String"},
-    "localId": 1
+    "settings": {"name": "String"}
   },
   {
+    "localId": 2,
     "metaType": "Class",
     "settings": {
       "name": "Expression",
       "abstract": true
-    },
-    "localId": 2
+    }
   },
   {
+    "localId": 3,
     "metaType": "Class",
     "settings": {
       "name": "Sqrt",
       "superTypes": [{"localRefId": 2}],
       "features": [{
+        "localId": 4,
         "metaType": "Feature",
         "settings": {
           "name": "expr",
@@ -25,19 +27,19 @@
           "lowerLimit": 1,
           "upperLimit": 1,
           "type": {"localRefId": 2}
-        },
-        "localId": 4
+        }
       }]
-    },
-    "localId": 3
+    }
   },
   {
+    "localId": 5,
     "metaType": "Class",
     "settings": {
       "name": "Fraction",
       "superTypes": [{"localRefId": 2}],
       "features": [
         {
+          "localId": 6,
           "metaType": "Feature",
           "settings": {
             "name": "expr1",
@@ -45,10 +47,10 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          },
-          "localId": 6
+          }
         },
         {
+          "localId": 7,
           "metaType": "Feature",
           "settings": {
             "name": "expr2",
@@ -56,20 +58,20 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          },
-          "localId": 7
+          }
         }
       ]
-    },
-    "localId": 5
+    }
   },
   {
+    "localId": 8,
     "metaType": "Class",
     "settings": {
       "name": "Mult",
       "superTypes": [{"localRefId": 2}],
       "features": [
         {
+          "localId": 9,
           "metaType": "Feature",
           "settings": {
             "name": "expr1",
@@ -77,10 +79,10 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          },
-          "localId": 9
+          }
         },
         {
+          "localId": 10,
           "metaType": "Feature",
           "settings": {
             "name": "expr2",
@@ -88,20 +90,20 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          },
-          "localId": 10
+          }
         }
       ]
-    },
-    "localId": 8
+    }
   },
   {
+    "localId": 11,
     "metaType": "Class",
     "settings": {
       "name": "Plus",
       "superTypes": [{"localRefId": 2}],
       "features": [
         {
+          "localId": 12,
           "metaType": "Feature",
           "settings": {
             "name": "expr1",
@@ -109,10 +111,10 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          },
-          "localId": 12
+          }
         },
         {
+          "localId": 13,
           "metaType": "Feature",
           "settings": {
             "name": "expr2",
@@ -120,19 +122,19 @@
             "lowerLimit": 1,
             "upperLimit": 1,
             "type": {"localRefId": 2}
-          },
-          "localId": 13
+          }
         }
       ]
-    },
-    "localId": 11
+    }
   },
   {
+    "localId": 14,
     "metaType": "Class",
     "settings": {
       "name": "Neg",
       "superTypes": [{"localRefId": 2}],
       "features": [{
+        "localId": 15,
         "metaType": "Feature",
         "settings": {
           "name": "expr",
@@ -140,18 +142,18 @@
           "lowerLimit": 1,
           "upperLimit": 1,
           "type": {"localRefId": 2}
-        },
-        "localId": 15
+        }
       }]
-    },
-    "localId": 14
+    }
   },
   {
+    "localId": 16,
     "metaType": "Class",
     "settings": {
       "name": "Value",
       "superTypes": [{"localRefId": 2}],
       "features": [{
+        "localId": 17,
         "metaType": "Feature",
         "settings": {
           "name": "value",
@@ -159,10 +161,8 @@
           "lowerLimit": 1,
           "upperLimit": 1,
           "type": {"localRefId": 1}
-        },
-        "localId": 17
+        }
       }]
-    },
-    "localId": 16
+    }
   }
 ]

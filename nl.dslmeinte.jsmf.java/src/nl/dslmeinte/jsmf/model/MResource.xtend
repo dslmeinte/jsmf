@@ -15,7 +15,7 @@ class MResource {
 
 	new(MetaModel metaModel, JSONArray modelJSON) {
 		this.metaModel = metaModel
-		contents.list += modelJSON.map[unmarshal(null)]
+		contents.addAll(modelJSON.map[unmarshal(null)])
 	}
 
 	public val MList contents = new MList(this, null)
@@ -77,7 +77,7 @@ class MResource {
 
 
 	def toJSON() {
-		new JSONArray( contents.list.map[(it as MObject).toJSON] )
+		new JSONArray( contents.get.map[(it as MObject).toJSON] )
 	}
 
 }
@@ -89,6 +89,7 @@ abstract class MElement {
 	@Property MResource resource
 	@Property MObject container
 		// TODO  container can also be an MList, in which case a reference to that + an index is more productive
+		// TODO  reference to a feature is also helpful, but need to take invalid data-scenario into account
 
 }
 

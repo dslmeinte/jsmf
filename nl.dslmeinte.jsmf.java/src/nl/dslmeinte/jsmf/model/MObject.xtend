@@ -62,8 +62,8 @@ class MObject extends MElement {
 						if( feature.manyValued ) {
 							switch newValue {
 								MList:				newValue
-								JSONArray:			new MList(resource, this) => [ list += newValue.map[createSingleValuedSetting(feature, it)] ]
-								Iterable<Object>:	new MList(resource, this) => [ list += newValue.map[createSingleValuedSetting(feature, it)] ]
+								JSONArray:			new MList(resource, this) => [ addAll(newValue.map[createSingleValuedSetting(feature, it)]) ]
+								Iterable<Object>:	new MList(resource, this) => [ addAll(newValue.map[createSingleValuedSetting(feature, it)]) ]
 								default:			throw GeneralException::typing('''cannot set feature ''')
 							}
 						} else {
@@ -155,7 +155,7 @@ class MObject extends MElement {
 					o.toJSON
 				} 
 			}
-			MList:		new JSONArray => [ a | o.list.forEach[ i | a.put(i.toJSON_(isReference))] ]
+			MList:		new JSONArray => [ a | o.get.forEach[ i | a.put(i.toJSON_(isReference))] ]
 			default:	o
 		}
 	}
