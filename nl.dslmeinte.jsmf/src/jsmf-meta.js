@@ -121,8 +121,9 @@ jsmf.meta = function() {
 			// resolve type references in Feature.type:
 			$.map(this.features, function(feature, featureName) {
 				var refType = metaModel.classifiers[feature.type];
-				if( !refType ) throw new Error("could not resolve target type '" + feature.type + "' in " + _self.name + "." + featureName);
-				feature.type = refType;	// note: the string value is overwritten by an actual object reference
+				if( refType ) {
+					feature.type = refType;	// (the string value is overwritten by an actual object reference)
+				}
 			});
 
 			typesResolved = true;
