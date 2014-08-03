@@ -18,7 +18,7 @@ class DeserializationTest {
 		val metaModel = new MetaModel(1.testMetaModelPath.fileAsJSONArray)
 		assertEquals(9, metaModel.types.size)
 		val classifierMetaType = metaModel.lookupType("Classifier")
-		assertTrue(classifierMetaType != null)
+		assertTrue(classifierMetaType !== null)
 		assertTrue(classifierMetaType instanceof MetaClass)
 
 		val model = new MResource(metaModel, 1.testMigratedModelPath.fileAsJSONArray)

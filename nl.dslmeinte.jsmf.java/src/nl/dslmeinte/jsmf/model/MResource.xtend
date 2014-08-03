@@ -31,9 +31,9 @@ class MResource {
 
 
 	def private dispatch Object unmarshal(JSONObject it, MObject container) {
-		if( opt('metaType') != null ) {
+		if( opt('metaType') !== null ) {
 			unmarshalMObject(container)
-		} else if( opt('localRefId') != null ) {
+		} else if( opt('localRefId') !== null ) {
 			unmarshalMProxy
 		} else {
 			GeneralException::format("don't know how to unmarshal the following JSONObject: " + toString(2))

@@ -74,7 +74,7 @@ class MetaModel {
 	def Set<MetaClass> allSuperTypes(MetaClass metaClass) {
 		var result = allSuperTypesMap.get(metaClass)
 
-		if( result == null ) {
+		if( result === null ) {
 			result = metaClass.allSuperTypesInternal
 			allSuperTypesMap.put(metaClass, result)
 		}
@@ -95,7 +95,7 @@ class MetaModel {
 	def List<Feature> allFeatures(MetaClass metaClass) {
 		var result = allFeaturesMap.get(metaClass)
 
-		if( result == null ) {
+		if( result === null ) {
 			result = metaClass.allFeaturesInternal
 			allFeaturesMap.put(metaClass, result)
 		}
@@ -118,7 +118,7 @@ class MetaModel {
 	def Set<String> allAnnotations(MetaClass metaClass) {
 		var result = allAnnotationsMap.get(metaClass)
 
-		if( result == null ) {
+		if( result === null ) {
 			result = metaClass.allAnnotationsInternal
 			allAnnotationsMap.put(metaClass, result)
 		}

@@ -21,7 +21,7 @@ class ModelTraversal {
 			JSONObject: {
 				objectFunction.apply(it)
 				val settings = optJSONObject('settings')
-				if( settings != null ) {
+				if( settings !== null ) {
 //					println('''			«settings.keys.toList»''')
 					settings => [
 						keys.forEach[ key | get(key).handleAndRecurse ]

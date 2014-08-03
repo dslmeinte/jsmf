@@ -56,7 +56,7 @@ class ModelFormatMigrator {
 				])
 
 				val viewInfo = o.optJSONObject('_view')
-				if( viewInfo != null ) {
+				if( viewInfo !== null ) {
 					put('@settings', new JSONObject => [ put('_view', viewInfo) ])
 				}
 			]
@@ -71,7 +71,7 @@ class ModelFormatMigrator {
 
 	def private migrateSetting(JSONObject it, Object setting, String featureName) {
 		val feature = metaClass.feature(featureName)
-		if( feature == null ) {
+		if( feature === null ) {
 			throw new IllegalArgumentException('''no feature «metaClass.name»#«featureName» found''')
 		}
 		migrateSetting(setting, feature)
@@ -157,7 +157,7 @@ class ModelFormatMigrator {
 	def private qualifiedName(JSONObject it) {
 		var JSONType current = it
 		var qName = prefixedOptionalName
-		while( current.container != null ) {
+		while( current.container !== null ) {
 			current = current.container		// != null
 			switch current {
 				JSONObject:	qName = current.prefixedOptionalName + qName
@@ -180,7 +180,7 @@ class ModelFormatMigrator {
 			val refName = optString('hint')
 			if( !refName.nullOrEmpty && optString('metaType').nullOrEmpty ) {	// it's a reference
 				val refId = qualifiedNameMap.get(refName) ?: idBySimpleName(refName)
-				if( refId == null ) {
+				if( refId === null ) {
 					println('''	couldn't install reference: «refName»''')
 				} else {
 					put('localRefId', refId)

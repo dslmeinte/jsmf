@@ -27,7 +27,7 @@ class MObject extends MElement {
 	def private feature(String featureName) {
 		switch metaClassReference {
 			TrueReference: {
-				val metaClass = (metaClassReference as TrueReference).metaClass
+				val metaClass = metaClassReference.metaClass
 				metaClass.metaModel.feature(metaClass, featureName)
 			}
 			default: null
@@ -126,11 +126,11 @@ class MObject extends MElement {
 			put('metaType', metaClassReference.name)
 			switch metaClassReference {
 				TrueReference: {
-					val metaClass = (metaClassReference as TrueReference).metaClass
+					val metaClass = metaClassReference.metaClass
 					put('settings', new JSONObject => [
 						metaClass.metaModel.allFeatures(metaClass).forEach[ f |
 							val value = settings.get(f)
-							if( value != null ) {
+							if( value !== null ) {
 								put(f.name, value.toJSON_(f.kind == FeatureKind::reference))
 							}
 						]
