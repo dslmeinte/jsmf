@@ -32,17 +32,17 @@ jsmf.util = function() {
 
 	function checkNonEmptyStringAttribute(data, attributeName, message) {
 		var attributeValue = data[attributeName];
-		if( isNonEmptyString(attributeValue) ) throw new Error(message);
+		if( isNonEmptyString(attributeValue) ) throw message;
 	}
 
 	function checkProperties(object, validPropertyNames) {
 		if( !isNonDegenerateStringArray(validPropertyNames) ) {
-			throw new Error('illegal 2nd argument validPropertyNames: must be a non-empty array of non-empty string');
+			throw 'illegal 2nd argument validPropertyNames: must be a non-empty array of non-empty string';
 		}
 
 		for( var propertyName in object ) {
 			if( $.inArray(propertyName, validPropertyNames) < 0 ) {
-				throw new Error("illegal poperty named '" + propertyName + "' in object: " + JSON.stringify(object));
+				throw "illegal poperty named '" + propertyName + "' in object: " + JSON.stringify(object);
 			}
 		}
 	}
@@ -53,7 +53,7 @@ jsmf.util = function() {
 
 	/* (mainly for unit testing purposes) */
 	function keys(object) {
-		if( typeof(object) !== 'object' ) throw new Error('cannot compute keys of a non-Object');
+		if( typeof(object) !== 'object' ) throw 'cannot compute keys of a non-Object';
 		return $.map(object, function(value, key) { return key; });
 	}
 

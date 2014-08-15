@@ -83,9 +83,9 @@ jsmf.model.Factory = function() {
 
 		var _resource = new jsmf.model.MResource(metaModel, localIdMap);	// (have to use _prefix to soothe JS plug-in)
 
-		if( !$.isArray(modelJSON) ) throw new Error('model JSON is not an array of objects');
+		if( !$.isArray(modelJSON) ) throw 'model JSON is not an array of objects';
 		$(modelJSON).each(function(index) {
-			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within model JSON array: index=' + index);
+			if( typeof(this) !== 'object' ) throw 'non-Object encountered within model JSON array: index=' + index;
 			_resource.contents.add(createMObject(this, null, null));
 		});
 
@@ -94,15 +94,15 @@ jsmf.model.Factory = function() {
 
 		function createMObject(initData, container, containingFeature) {	/* analogous to org.eclipse.emf.ecore.EObject (or org.eclipse.emf.ecore.impl.EObjectImpl / DynamicEObjectImpl) */
 
-			if( typeof(initData) !== 'object' ) throw new Error('MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData) );
+			if( typeof(initData) !== 'object' ) throw 'MObject constructor called with non-Object initialisation data: ' + JSON.stringify(initData);
 			jsmf.util.checkMetaType(initData);
 
 			var metaTypeName = initData.metaType;
 			var metaType = metaModel.classifiers[metaTypeName];
 			if( !metaType ) {
-				throw new Error("declared object's type '" + metaTypeName + "' not defined in meta model");
+				throw "declared object's type '" + metaTypeName + "' not defined in meta model";
 			}
-			if( metaType['abstract'] ) throw new Error("class '" + metaTypeName + "' is abstract and cannot be instantiated");
+			if( metaType['abstract'] ) throw "class '" + metaTypeName + "' is abstract and cannot be instantiated";
 
 			var _allFeatures = metaType.allFeatures();
 			var initSettings = initData.settings || [];
@@ -117,7 +117,7 @@ jsmf.model.Factory = function() {
 
 			if( localId !== undefined ) {
 				if( localIdMap[localId] ) {
-					throw new Error('duplicate local-id encountered: ' + localId);
+					throw 'duplicate local-id encountered: ' + localId;
 				}
 				localIdMap[localId] = mObject;
 			}

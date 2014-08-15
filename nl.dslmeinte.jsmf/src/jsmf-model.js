@@ -52,6 +52,8 @@ jsmf.model = function() {
 			return this;	// for chaining
 		};
 
+		var annotationSettings = {};
+
 		this.toJSON = function() {
 			var json = {};
 			json.metaType = this.metaType.name;
@@ -76,8 +78,6 @@ jsmf.model = function() {
 		};
 
 
-		var annotationSettings = {};
-
 		this.getAnnotation = function(annotationName) {
 			this.metaType.checkAnnotation(annotationName);
 			return annotationSettings[annotationName];
@@ -101,11 +101,11 @@ jsmf.model = function() {
 		 * {@return} The value of this Setting. It has the same range of types as MObject#get.
 		 */
 		this.get = function() {
-			throw new Error("Setting#get not implemented!");
+			throw "Setting#get not implemented!";
 		};
 
 		this.toJSON = function() {
-			throw new Error("Setting#toJSON not implemented!");
+			throw "Setting#toJSON not implemented!";
 		};
 
 		var annotationSettings = {};
@@ -183,14 +183,14 @@ jsmf.model = function() {
 
 		function checkIndex(index, /* optional with default=false: */ adding) {
 			if( typeof(index) !== 'number' ) {
-				throw new Error("list index must be a number");
+				throw "list index must be a number";
 			}
 			if( index < 0 ) {
-				throw new Error("list index must be non-negative");
+				throw "list index must be non-negative";
 			}
 			if( index >= values.length ) {
 				if( !(adding && index === values.length) ) {
-					throw new Error("list index out of bounds");
+					throw "list index out of bounds";
 				}
 			}
 		}

@@ -20,14 +20,14 @@ jsmf.meta = function() {
 	 */
 	function createMetaModelFromJSON(metaModelJSON) {
 
-		if( !$.isArray(metaModelJSON) ) throw new Error("meta model JSON is not an array");
+		if( !$.isArray(metaModelJSON) ) throw "meta model JSON is not an array";
 
 		var metaModel = new MetaModel();
 
 		$(metaModelJSON).each(function(index) {
-			if( typeof(this) !== 'object' ) throw new Error('non-Object encountered within meta model JSON array: index=' + index);
+			if( typeof(this) !== 'object' ) throw 'non-Object encountered within meta model JSON array: index=' + index;
 			jsmf.util.checkName(this, "classifier name is empty");
-			if( metaModel.classifiers[this.name] ) throw new Error("classifier name '" + this.name + "' not unique");
+			if( metaModel.classifiers[this.name] ) throw "classifier name '" + this.name + "' not unique";
 			metaModel.classifiers[this.name] = createClassifier(this);
 		});
 		// post condition: all names in metaModelJSON are non-empty strings, or ("fatal") Error would have been thrown
@@ -62,7 +62,7 @@ jsmf.meta = function() {
 				case 'Enum':		return new Enum(initData);
 				case 'Class':		return new Class(initData);
 			}
-			throw new Error("illegal classifier meta meta type: " + initData.metaMetaType);
+			throw "illegal classifier meta meta type: " + initData.metaMetaType;
 		})();
 		classifier.name = initData.name;
 		return classifier;
@@ -79,12 +79,12 @@ jsmf.meta = function() {
 			if( jsmf.util.isNonDegenerateStringArray(types) ) {
 				return types;
 			}
-			throw new Error("superTypes spec. of class " + initData.name + " is not an array of names");
+			throw "superTypes spec. of class " + initData.name + " is not an array of names";
 		})(initData.superTypes);
 
 		if( initData.annotations ) {
 			if( !jsmf.util.isNonDegenerateStringArray(initData.annotations) ) {
-				throw new Error("annotations must be a non-empty array of non-empty strings");
+				throw "annotations must be a non-empty array of non-empty strings";
 			}
 			this.annotations = initData.annotations;
 		} else {
@@ -95,25 +95,25 @@ jsmf.meta = function() {
 
 		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 		if( initData.features ) {
-			if( !$.isArray(initData.features) ) throw new Error('feature spec. is not an array (of features) in class: ' + initData.name);
+			if( !$.isArray(initData.features) ) throw 'feature spec. is not an array (of features in class: ' + initData.name;
 			$(initData.features).each(function(index) {
 				jsmf.util.checkName(this, "feature name is empty");
-				if( _self.features[this.name] ) throw new Error("feature name '" + this.name + "' is not unique in class: " + initData.name);
+				if( _self.features[this.name] ) throw "feature name '" + this.name + "' is not unique in class: " + initData.name;
 				_self.features[this.name] = createFeature(this, _self);
 			});
 		}
 
 		var typesResolved = false;
 		this.resolveTypes = function(metaModel) {
-			if( typesResolved ) throw new Error('Class#resolve called twice');
+			if( typesResolved ) throw 'Class#resolve called twice';
 
 			// resolve super types:
 			var resolvedSuperTypes = [];
 			$(this.superTypes).each(function(index) {
 				var typeName = this;
 				var refType = metaModel.classifiers[typeName];
-				if( !refType ) throw new Error("could not resolve super type '" + typeName + "' of " + _self.name);
-				if( !(refType instanceof Class) ) throw new Error("super type '" + typeName + "' is not a class");
+				if( !refType ) throw "could not resolve super type '" + typeName + "' of " + _self.name;
+				if( !(refType instanceof Class) ) throw "super type '" + typeName + "' is not a class";
 				resolvedSuperTypes.push(refType);
 			});
 			this.superTypes = resolvedSuperTypes;
@@ -143,7 +143,7 @@ jsmf.meta = function() {
 			$(this.superTypes).each(function() {
 				var eClass = this;
 				$.map(eClass.allFeatures(), function(feature, featureName) {
-					if( _allFeatures[featureName] ) throw new Error("duplicate feature named '" + featureName + "' in classes " + _self.name + " and " + eClass.name);
+					if( _allFeatures[featureName] ) throw "duplicate feature named '" + featureName + "' in classes " + _self.name + " and " + eClass.name;
 					_allFeatures[featureName] = feature;
 				});
 			});
@@ -166,15 +166,15 @@ jsmf.meta = function() {
 		this.getFeature = function(featureArg) {
 			if( typeof(featureArg) === 'string' )			return this.allFeatures()[featureArg];
 			if( featureArg instanceof jsmf.meta.Feature )	return featureArg;
-			throw new Error('invalid feature argument: ' + JSON.stringify(featureArg));
+			throw 'invalid feature argument: ' + JSON.stringify(featureArg);
 		};
 
 		this.checkAnnotation = function(annotationName) {
 			if( typeof(annotationName) !== 'string' ) {
-				throw new Error('invalid annotation argument: ' + JSON.stringify(annotationName));
+				throw 'invalid annotation argument: ' + JSON.stringify(annotationName);
 			}
 			if( !$.inArray(this.allAnnotations(), annotationName) ) {
-				throw new Error("class " + this.name + " doesn't have an annotation named '" + annotationName + "'");
+				throw "class " + this.name + " doesn't have an annotation named '" + annotationName + "'";
 			}
 		};
 
@@ -185,7 +185,7 @@ jsmf.meta = function() {
 		jsmf.util.checkProperties(initData, [ "metaMetaType", "name", "literals" ]);
 
 		if( !jsmf.util.isNonDegenerateStringArray(initData.literals) ) {
-			throw new Error("literals of an enumeration '" + initData.name + "' is not an (non-degenerate) array of strings");
+			throw "literals of an enumeration '" + initData.name + "' is not an (non-degenerate array of strings";
 		}
 
 		this.literals = initData.literals;
@@ -213,7 +213,7 @@ jsmf.meta = function() {
 		var feature = new jsmf.meta.Feature();
 		var kind = initData.kind || "attribute";
 		if( $.inArray(kind, [ "attribute", "containment", "reference" ]) < 0 ) {
-			throw new Error("given feature kind is invalid: " + kind);
+			throw "given feature kind is invalid: " + kind;
 		}
 		feature.kind = kind;
 
@@ -248,10 +248,10 @@ jsmf.meta = function() {
 
 		this.checkAnnotation = function(annotationName) {
 			if( typeof(annotationName) !== 'string' ) {
-				throw new Error('invalid annotation argument: ' + JSON.stringify(annotationName));
+				throw 'invalid annotation argument: ' + JSON.stringify(annotationName);
 			}
 			if( !$.inArray(this.annotations, annotationName) ) {
-				throw new Error("feature " + this.toString() + " doesn't have an annotation named '" + annotationName + "'");
+				throw "feature " + this.toString( + " doesn't have an annotation named '" + annotationName + "'");
 			}
 		};
 
