@@ -3,7 +3,7 @@
  * 
  * TODO  add license info
  * 
- * (c) 2012 Meinte Boersma
+ * (c) 2012-2014 Meinte Boersma
  */
 
 // pre-create all module containers:

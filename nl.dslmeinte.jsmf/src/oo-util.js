@@ -1,7 +1,7 @@
 /*
  * This module contains utility functions for use <em>outside of</em> JSMF.
  * 
- * (c) 2012 Meinte Boersma
+ * (c) 2012-2014 Meinte Boersma
  */
 
 var oo = {};

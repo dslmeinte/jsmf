@@ -2,10 +2,10 @@
  * This corresponds to the Ecore part of EMF.
  * (Also: ~ re-implementation of metamodel_provider.js)
  * 
- * (c) 2012 Meinte Boersma
+ * (c) 2012-2014 Meinte Boersma
  */
 
-/*global $:false, jsmf:false */
+/*global jsmf:false */
 /*jshint sub:true */
 jsmf.meta = function() {
 
@@ -20,19 +20,19 @@ jsmf.meta = function() {
 	 */
 	function createMetaModelFromJSON(metaModelJSON) {
 
-		if( !$.isArray(metaModelJSON) ) throw "meta model JSON is not an array";
+		if( !_.isArray(metaModelJSON) ) throw "meta model JSON is not an array";
 
 		var metaModel = new MetaModel();
 
-		$(metaModelJSON).each(function(index) {
-			if( typeof(this) !== 'object' ) throw 'non-Object encountered within meta model JSON array: index=' + index;
-			jsmf.util.checkName(this, "classifier name is empty");
-			if( metaModel.classifiers[this.name] ) throw "classifier name '" + this.name + "' not unique";
-			metaModel.classifiers[this.name] = createClassifier(this);
+		_.each(metaModelJSON, function(item, index) {
+			if( !_.isObject(item) ) throw 'non-Object encountered within meta model JSON array: index=' + index;
+			jsmf.util.checkName(item, "classifier name is empty");
+			if( metaModel.classifiers[item.name] ) throw "classifier name '" + item.name + "' not unique";
+			metaModel.classifiers[item.name] = createClassifier(item);
 		});
 		// post condition: all names in metaModelJSON are non-empty strings, or ("fatal") Error would have been thrown
 
-		$.map(metaModel.classifiers, function(eClassifier, name) {
+		_.map(metaModel.classifiers, function(eClassifier, name) {
 			if( eClassifier instanceof Class) {
 				eClassifier.resolveTypes(metaModel);
 			}
@@ -93,14 +93,13 @@ jsmf.meta = function() {
 
 		this.features = {};
 
-		var _self = this;	// for use in closures, to be able to access public features (can't do that through `this.`)
 		if( initData.features ) {
-			if( !$.isArray(initData.features) ) throw 'feature spec. is not an array (of features in class: ' + initData.name;
-			$(initData.features).each(function(index) {
-				jsmf.util.checkName(this, "feature name is empty");
-				if( _self.features[this.name] ) throw "feature name '" + this.name + "' is not unique in class: " + initData.name;
-				_self.features[this.name] = createFeature(this, _self);
-			});
+			if( !_.isArray(initData.features) ) throw 'feature spec. is not an array (of features in class: ' + initData.name;
+			_.each(initData.features, function(item, index) {
+				jsmf.util.checkName(item, "feature name is empty");
+				if( this.features[item.name] ) throw "feature name '" + item.name + "' is not unique in class: " + initData.name;
+				this.features[item.name] = createFeature(item, this);
+			}, this);
 		}
 
 		var typesResolved = false;
@@ -109,17 +108,16 @@ jsmf.meta = function() {
 
 			// resolve super types:
 			var resolvedSuperTypes = [];
-			$(this.superTypes).each(function(index) {
-				var typeName = this;
+			_.each(this.superTypes, function(typeName, index) {
 				var refType = metaModel.classifiers[typeName];
-				if( !refType ) throw "could not resolve super type '" + typeName + "' of " + _self.name;
+				if( !refType ) throw "could not resolve super type '" + typeName + "' of " + this.name;
 				if( !(refType instanceof Class) ) throw "super type '" + typeName + "' is not a class";
 				resolvedSuperTypes.push(refType);
 			});
 			this.superTypes = resolvedSuperTypes;
 
 			// resolve type references in Feature.type:
-			$.map(this.features, function(feature, featureName) {
+			_.map(this.features, function(feature, featureName) {
 				var refType = metaModel.classifiers[feature.type];
 				if( refType ) {
 					feature.type = refType;	// (the string value is overwritten by an actual object reference)
@@ -136,14 +134,13 @@ jsmf.meta = function() {
 			var _allFeatures = {};
 
 			// copy own features:
-			$.map(this.features, function(feature, featureName) {
+			_.map(this.features, function(feature, featureName) {
 				_allFeatures[featureName] = feature;
 			});
 
-			$(this.superTypes).each(function() {
-				var eClass = this;
-				$.map(eClass.allFeatures(), function(feature, featureName) {
-					if( _allFeatures[featureName] ) throw "duplicate feature named '" + featureName + "' in classes " + _self.name + " and " + eClass.name;
+			_.each(this.superTypes, function(eClass) {
+				_.map(eClass.allFeatures(), function(feature, featureName) {
+					if( _allFeatures[featureName] ) throw "duplicate feature named '" + featureName + "' in classes " + this.name + " and " + eClass.name;
 					_allFeatures[featureName] = feature;
 				});
 			});
@@ -156,8 +153,8 @@ jsmf.meta = function() {
 
 			_allAnnotations = _allAnnotations.concat(this.annotations);
 
-			$(this.superTypes).each(function() {
-				_allAnnotations = _allAnnotations.concat(this.allAnnotations());
+			_.each(this.superTypes, function(superType) {
+				_allAnnotations = _allAnnotations.concat(superType.allAnnotations());
 			});
 
 			return _allAnnotations;
@@ -173,7 +170,7 @@ jsmf.meta = function() {
 			if( typeof(annotationName) !== 'string' ) {
 				throw 'invalid annotation argument: ' + JSON.stringify(annotationName);
 			}
-			if( !$.inArray(this.allAnnotations(), annotationName) ) {
+			if( !_.contains(this.allAnnotations(), annotationName) ) {
 				throw "class " + this.name + " doesn't have an annotation named '" + annotationName + "'";
 			}
 		};
@@ -212,7 +209,7 @@ jsmf.meta = function() {
 
 		var feature = new jsmf.meta.Feature();
 		var kind = initData.kind || "attribute";
-		if( $.inArray(kind, [ "attribute", "containment", "reference" ]) < 0 ) {
+		if( !_.contains([ "attribute", "containment", "reference" ], kind) ) {
 			throw "given feature kind is invalid: " + kind;
 		}
 		feature.kind = kind;
@@ -250,7 +247,7 @@ jsmf.meta = function() {
 			if( typeof(annotationName) !== 'string' ) {
 				throw 'invalid annotation argument: ' + JSON.stringify(annotationName);
 			}
-			if( !$.inArray(this.annotations, annotationName) ) {
+			if( !_.contains(this.annotations, annotationName) ) {
 				throw "feature " + this.toString( + " doesn't have an annotation named '" + annotationName + "'");
 			}
 		};

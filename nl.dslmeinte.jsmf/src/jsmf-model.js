@@ -1,10 +1,10 @@
 /*
  * This corresponds to the pure/base part of EMF.
  * 
- * (c) 2012 Meinte Boersma
+ * (c) 2012-2014 Meinte Boersma
  */
 
-/*global $:false, jsmf:false, oo:false */
+/*global jsmf:false, oo:false */
 jsmf.model = function() {
 
 	"use strict";	// annotation for ECMAScript5
@@ -60,7 +60,7 @@ jsmf.model = function() {
 			json.localId = this.localId;
 			json.settings = {};
 
-			$.map(this.metaType.allFeatures(), function(feature, featureName) {
+			_.map(this.metaType.allFeatures(), function(feature, featureName) {
 				var setting = settings[featureName];
 				if( setting ) {
 					var convertedValue = setting.toJSON();
@@ -70,7 +70,7 @@ jsmf.model = function() {
 				}
 			});
 
-			$.map(this.metaType.allAnnotations(), function(annotationName) {
+			_.map(this.metaType.allAnnotations(), function(annotationName) {
 				json['@settings'][annotationName] = annotationSettings[annotationName];
 			});
 
@@ -196,21 +196,21 @@ jsmf.model = function() {
 		}
 
 		this.toJSON = function() {
-			return $.map(values, function(item) {
+			return _.map(values, function(item) {
 				return item.toJSON();
 			});
 		};
 
 		this.each = function(iterator) {
-			$(values).each(iterator);
+			_.each(values, iterator);
 		};
 
 		this.find = function(indicator) {
-			return $(values).filter(indicator).first();
+			return _.find(values, indicator);
 		};
 
 		this.map = function(mapper) {
-			return $.map(values, mapper);
+			return _.map(values, mapper);
 		};
 
 		// TODO  add more functions for traversal

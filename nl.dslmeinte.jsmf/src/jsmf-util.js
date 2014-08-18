@@ -1,11 +1,11 @@
 /*
  * This module contains utility functions for use <em>within</em> JSMF.
  * 
- * (c) 2012 Meinte Boersma
+ * (c) 2012-2014 Meinte Boersma
  */
 
 
-/*global $:false, jsmf:false, console:false */
+/*global jsmf:false, console:false */
 jsmf.util = function() {
 
 	"use strict";	// annotation for ECMAScript5
@@ -23,11 +23,11 @@ jsmf.util = function() {
 	}
 
 	function isNonDegenerateStringArray(a) {
-		return( $.isArray(a) && a.length > 0 && $.grep(a, function(l) { return isNonEmptyString(l); }).length === 0 );
+		return( _.isArray(a) && a.length > 0 && !_.some(a, function(l) { return isNonEmptyString(l); }) );
 	}
 
 	function isStringArrayOrNothing(a) {
-		return( !a || ( $.isArray(a) && $.grep(a, function(l) { return jsmf.util.isNonEmptyString(l); }).length === 0 ) );
+		return( !a || ( _.isArray(a) && !_.some(a, function(l) { return jsmf.util.isNonEmptyString(l); }) ) );
 	}
 
 	function checkNonEmptyStringAttribute(data, attributeName, message) {
@@ -41,7 +41,7 @@ jsmf.util = function() {
 		}
 
 		for( var propertyName in object ) {
-			if( $.inArray(propertyName, validPropertyNames) < 0 ) {
+			if( !_.contains(validPropertyNames, propertyName) ) {
 				throw "illegal poperty named '" + propertyName + "' in object: " + JSON.stringify(object);
 			}
 		}
@@ -54,7 +54,7 @@ jsmf.util = function() {
 	/* (mainly for unit testing purposes) */
 	function keys(object) {
 		if( typeof(object) !== 'object' ) throw 'cannot compute keys of a non-Object';
-		return $.map(object, function(value, key) { return key; });
+		return _.map(object, function(value, key) { return key; });
 	}
 
 	/* (mainly for unit testing purposes) */
